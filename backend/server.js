@@ -696,7 +696,6 @@ const createSecretHackerDb = () => {
   });
 };
 
-
 app.get("/api/zoo", (req, res) => {
   db.all(`SELECT * FROM Zoo`, [], (err, rows) => {
     if (err) {
@@ -820,7 +819,7 @@ app.get("/api/policeDB", (req, res) => {
   });
 });
 
-app.get('/api/secretHackerDb', (req, res) => {
+app.get("/api/secretHackerDb", (req, res) => {
   db.all(`SELECT * FROM Secret_hacker_db`, [], (err, rows) => {
     if (err) {
       console.error("Error retrieving hackers:", err.message);
@@ -828,8 +827,8 @@ app.get('/api/secretHackerDb', (req, res) => {
     } else {
       res.json(rows);
     }
-  })
-})
+  });
+});
 
 app.get("/api/solution", (req, res) => {
   db.all(
@@ -862,6 +861,31 @@ app.get("/api/solution", (req, res) => {
 //         }
 //     })
 // }
+
+/*
+  Tutorial végpontok:
+  Csak a select utasításokkal fogunk foglalkozni.
+  A delete és update nem lesznek bemutatva.
+*/
+
+app.post("/api/PoliceDB", (req, res) => {
+  const { query } = req.body;
+  if (!query) {
+    return res.status(404).json({ error: "No query found." });
+  }
+
+  if (!query.toLowerCase().startsWith("select")) {
+    return res.status(400).json({ error: "Only SELECT queries are allowed." });
+  }
+
+  db.all(query, [], (err, rows) => {
+    if (err) {
+      console.error("Error executing query: ", err.message);
+    } else {
+      res.json(rows);
+    }
+  });
+});
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
