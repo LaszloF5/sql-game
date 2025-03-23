@@ -568,16 +568,16 @@ const cities = [
 //   stmt.finalize();
 // });
 
-app.get('/api/crimes', (req, res) => {
-    db.all(`SELECT *FROM Crimes`, (err, rows) => {
-        if (err) {
-            console.error(err.message);
-            res.status(500).send({ error: 'Error retrieving data' });
-        } else {
-            res.send(rows);
-        }
-    } )
-})
+app.get("/api/crimes", (req, res) => {
+  db.all(`SELECT *FROM Crimes`, (err, rows) => {
+    if (err) {
+      console.error(err.message);
+      res.status(500).send({ error: "Error retrieving data" });
+    } else {
+      res.send(rows);
+    }
+  });
+});
 
 // const generatePerson = () => {
 //     return [
@@ -627,8 +627,59 @@ app.get("/api/persons", (req, res) => {
   });
 });
 
+// app.get("/api/persons/mydata", (req, res) => {
+//   db.all(`SELECT * FROM Persons WHERE `, [], (err, rows) => {
+//     if (err) {
+//       return res.status(500).json({ error: err.message });
+//     }
+//     res.json(rows);
+//   });
+// });
+
 app.get("/api/persons/mydata", (req, res) => {
-  db.all(`SELECT name, id FROM Persons`, [], (err, rows) => {
+  db.all(
+    `SELECT * FROM Persons 
+     WHERE name =
+       'Elaine Mayert-Deckow'`,
+    [],
+    (err, rows) => {
+      if (err) {
+        return res.status(500).json({ error: err.message });
+      }
+      res.json(rows);
+    }
+  );
+});
+
+// const createzoo = () => {
+//   const sql = `INSERT INTO Zoo (name, visit_date, hair_color, ticket_type, person_id) VALUES
+// ('Andres Prohaska', '2023-07-15', 'gold', 'normal', 83),
+// ('Angela Krajcik', '2024-02-10', 'magenta', 'normal', 22),
+// ('Austin Dietrich PhD', '2022-11-23', 'olive', 'normal', 69),
+// ('Ben Cruickshank', '2023-06-30', 'teal', 'vip', 94),
+// ('Beulah Mayert', '2024-01-05', 'olive', 'normal', 12),
+// ('Brian Deckow', '2023-09-14', 'cyan', 'normal', 97),
+// ('Candice Blanda-Strosin', '2022-08-19', 'violet', 'normal', 9),
+// ('Carolyn Boyle', '2023-12-07', 'silver', 'normal', 30),
+// ('Cecil Dickens', '2023-05-22', 'plum', 'normal', 70),
+// ('Christy Bartell', '2024-03-18', 'mint green', 'vip', 50),
+// ('Daniel Rowe', '2022-10-11', 'white', 'normal', 5),
+// ('Elaine Mayert-Deckow', '2023-04-29', 'orchid', 'vip', 29),
+// ('Franklin Fay', '2022-07-03', 'orchid', 'vip', 6),
+// ('Mitchell Durgan', '2024-02-25', 'silver', 'vip', 75),
+// ('Olga Rohan', '2023-11-13', 'lime', 'vip', 98);
+// `;
+//   db.run(sql, [], (err) => {
+//     if (err) {
+//       console.error("�� Error creating zoo table:", err.message);
+//     } else {
+//       console.log("�� Zoo table created successfully.");
+//     }
+//   })
+// }
+
+app.get("/api/zoo", (req, res) => {
+  db.all(`SELECT * FROM Zoo`, [], (err, rows) => {
     if (err) {
       return res.status(500).json({ error: err.message });
     }
@@ -750,8 +801,31 @@ app.get("/api/policeDB", (req, res) => {
   });
 });
 
+app.get("/api/solution", (req, res) => {
+  db.all(
+    `SELECT *
+     FROM Persons
+     JOIN Zoo ON Persons.id = Zoo.person_id
+     WHERE Persons.age > 48 
+       AND Persons.gender = 'male' 
+       AND Persons.annual_income < 490280 
+       AND Persons.car_type LIKE '%Taurus' 
+       AND Zoo.ticket_type = 'vip'`,
+    [],
+    (err, rows) => {
+      if (err) {
+        console.error("Error retrieving male persons:", err.message);
+        res.status(500).send("Error retrieving male persons.");
+      } else {
+        res.json(rows);
+      }
+    }
+  );
+});
+
+
 // const deletePersons = () => {
-//     db.run(`DELETE FROM Crimes`, (err) => {
+//     db.run(`DELETE FROM Zoo`, (err) => {
 //         if (err) {
 //             console.error("�� Error deleting persons:", err.message);
 //         } else {
@@ -762,4 +836,17 @@ app.get("/api/policeDB", (req, res) => {
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
+  // createzoo();
 });
+
+/*
+ Kész:
+ - policeDB // Ez úgyis kamu, szal nem érdekes
+ - Crimes // Ezt töröljük
+ - Persons // Ez a fő tábla, ez oké.
+ - Zoo
+ 
+ MA:
+ - Secret_hacker_db
+ - A Crimes táblát törölni kell majd, mert szerintem nem kell. De majd meglátjuk.
+*/
