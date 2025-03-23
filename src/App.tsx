@@ -14,6 +14,10 @@ function App() {
   const [result, setResult] = useState<PoliceData[]>([]);
   const [error, setError] = useState<string | null>(null);
 
+  // 1. A tutorial, és a 4 query.
+
+  const isCorrect: boolean[] = [false, false, false, false, false];
+
   const getMyQuery = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
