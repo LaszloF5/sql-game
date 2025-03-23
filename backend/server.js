@@ -678,6 +678,25 @@ app.get("/api/persons/mydata", (req, res) => {
 //   })
 // }
 
+const createSecretHackerDb = () => {
+  const sql = `INSERT INTO Secret_hacker_db (witness_testimony) VALUES 
+  ('Since the police force is the most corrupt institution in the city, you cannot rely on their reports to solve the murder. Fortunately, you managed to access the secret hacker database where witness testimonies are stored. Hopefully, with these, you will figure out who committed the murder.'),
+  ('Witness Testimony 1: The suspect is a man with short hair. His face was blurred. His clothing was quite simple but not noticeable. The short hair was typical, likely due to practical reasons and a simple lifestyle.'),
+  ('Witness Testimony 2: The man appeared to be elderly, judging by his movements. His steps were slow and uncertain. His face also resembled that of an older person, and his behavior displayed a sense of maturity.'),
+  ("Witness Testimony 3: He was poorly dressed, likely with a lower income than average. The man\'s clothing was quite worn and dirty, not reflecting a high social status."),
+  ('Witness Testimony 4: A Taurus-type car was parked not far from the scene, into which he hurriedly got, and he was wearing a green zoo entrance bracelet, which is only given to those who buy VIP tickets.');
+  `;
+
+  db.run(sql, [], (err) => {
+    if (err) {
+      console.error("Error creating secret hacker db table:", err.message);
+    } else {
+      console.log("Secret hacker db table created successfully.");
+    }
+  });
+};
+
+
 app.get("/api/zoo", (req, res) => {
   db.all(`SELECT * FROM Zoo`, [], (err, rows) => {
     if (err) {
@@ -801,6 +820,17 @@ app.get("/api/policeDB", (req, res) => {
   });
 });
 
+app.get('/api/secretHackerDb', (req, res) => {
+  db.all(`SELECT * FROM Secret_hacker_db`, [], (err, rows) => {
+    if (err) {
+      console.error("Error retrieving hackers:", err.message);
+      res.status(500).send("Error retrieving hackers.");
+    } else {
+      res.json(rows);
+    }
+  })
+})
+
 app.get("/api/solution", (req, res) => {
   db.all(
     `SELECT *
@@ -823,7 +853,6 @@ app.get("/api/solution", (req, res) => {
   );
 });
 
-
 // const deletePersons = () => {
 //     db.run(`DELETE FROM Zoo`, (err) => {
 //         if (err) {
@@ -836,7 +865,7 @@ app.get("/api/solution", (req, res) => {
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
-  // createzoo();
+  createSecretHackerDb();
 });
 
 /*
