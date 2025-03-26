@@ -869,16 +869,16 @@ app.get("/api/solution", (req, res) => {
 */
 
 app.post("/api/PoliceDB", (req, res) => {
-  const { query } = req.body;
-  if (!query) {
+  const { tutorialQuery } = req.body;
+  if (!tutorialQuery) {
     return res.status(404).json({ error: "No query found." });
   }
 
-  if (!query.toLowerCase().startsWith("select")) {
+  if (!tutorialQuery.toLowerCase().startsWith("select")) {
     return res.status(400).json({ error: "Only SELECT queries are allowed." });
   }
 
-  db.all(query, [], (err, rows) => {
+  db.all(tutorialQuery, [], (err, rows) => {
     if (err) {
       console.error("Error executing query: ", err.message);
     } else {
@@ -886,6 +886,23 @@ app.post("/api/PoliceDB", (req, res) => {
     }
   });
 });
+
+app.post("/api/Persons", (req, res) => {
+  const {query} = req.body;
+  if (!query) {
+    return res.status(404).json({ error: "No persons query found." });
+  }
+  if (!query.toLowerCase().startsWith('select')) {
+    return res.status(400).json({ error: "Only SELECT queries are allowed." });
+  }
+  db.all(query, [], (err, rows) => {
+    if (err) {
+      console.error("Error executing persons query: ", err.message);
+    } else {
+      res.json(rows);
+    }
+  })
+})
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
