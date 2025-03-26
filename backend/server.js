@@ -3,6 +3,7 @@ const cors = require("cors");
 const sqlite3 = require("sqlite3").verbose();
 const path = require("path");
 const { faker } = require("@faker-js/faker");
+const { error } = require("console");
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -679,7 +680,7 @@ app.get("/api/persons/mydata", (req, res) => {
 // }
 
 // const createSecretHackerDb = () => {
-//   const sql = `INSERT INTO Secret_hacker_db (witness_testimony) VALUES 
+//   const sql = `INSERT INTO Secret_hacker_db (witness_testimony) VALUES
 //   ('Since the police force is the most corrupt institution in the city, you cannot rely on their reports to solve the murder. Fortunately, you managed to access the secret hacker database where witness testimonies are stored. Hopefully, with these, you will figure out who committed the murder.'),
 //   ('Witness Testimony 1: The suspect is a man with short hair. His face was blurred. His clothing was quite simple but not noticeable. The short hair was typical, likely due to practical reasons and a simple lifestyle.'),
 //   ('Witness Testimony 2: The man appeared to be elderly, judging by his movements. His steps were slow and uncertain. His face also resembled that of an older person, and his behavior displayed a sense of maturity.'),
@@ -881,6 +882,7 @@ app.post("/api/PoliceDB", (req, res) => {
   db.all(tutorialQuery, [], (err, rows) => {
     if (err) {
       console.error("Error executing query: ", err.message);
+      return res.json({error: err.message});
     } else {
       res.json(rows);
     }
@@ -888,21 +890,22 @@ app.post("/api/PoliceDB", (req, res) => {
 });
 
 app.post("/api/Persons", (req, res) => {
-  const {query} = req.body;
+  const { query } = req.body;
   if (!query) {
     return res.status(404).json({ error: "No persons query found." });
   }
-  if (!query.toLowerCase().startsWith('select')) {
+  if (!query.toLowerCase().startsWith("select")) {
     return res.status(400).json({ error: "Only SELECT queries are allowed." });
   }
   db.all(query, [], (err, rows) => {
     if (err) {
       console.error("Error executing persons query: ", err.message);
+      return res.json({err: err.message});
     } else {
-      res.json(rows);
+      return res.json(rows);
     }
-  })
-})
+  });
+});
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
