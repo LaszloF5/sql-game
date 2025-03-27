@@ -140,12 +140,38 @@ function App() {
       const response = await axios.post("http://localhost:5000/api/Persons", {
         query,
       });
+      console.log("Server Response:", response.data);
       if (response.status === 200) {
         console.log("Check your dev tools for more details. (ctlr + shift + i");
       }
       setResult(response.data);
       console.log("Response status: ", response.status);
       console.log(response.data);
+      if (query === `SELECT * FROM Persons WHERE gender = 'male'`) {
+        console.log('Go to the second witness testimony.');
+        setTask0(false);
+        setTask1(true);
+      }
+      if (query === `SELECT AVG(age) AS age FROM Persons WHERE age < AVG(age)`) {
+        console.log('Go to the third witness testimony.');
+        setTask1(false);
+        setTask2(true);
+      }
+      if (query === `SELECT AVG(annual_income) as annual_income from Persons WHERE annual_income < AVG(annual_income)`) {
+        console.log('Go to the fourth witness testimony.');
+        setTask2(false);
+        setTask3(true);
+      }
+      if (query === `SELECT car_type from Persons JOIN zoo ON Persons.id = Zoo.person_id WHERE car_type LIKE '%Taurus' AND Zoo.ticket_type = 'vip'`) {
+        console.log('Go to the verification query.');
+        setTask3(false);
+        setTask4(true);
+      }
+      if (query === `SELECT * FROM Persons JOIN Zoo ON Persons.id = Zoo.person_id WHERE Person.age > 48 AND Person.gender = 'male' AND Persons.annual_income < 490280 AND Persons.car_type LIKE '%Taurus' AND Zoo.ticket_type = 'vip'`) {
+        console.log('GGWP.');
+        setTask5(true);
+      }
+
     } catch (err) {
       setError(err.response?.data?.message);
     }
