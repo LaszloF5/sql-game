@@ -85,6 +85,12 @@ function App() {
   Ha a lekérdezés megegyezik a SELECT city FROM Police_db WHERE city LIKE 'Lake%' -el, akkor továbbengedjük.
   `;
 
+  const task1Text: string = `Első lekérdezés`;
+  const task2Text: string = `Második lekérdezés`;
+  const task3Text: string = `Harmadik lekérdezés`;
+  const task4Text: string = `Negyedik lekérdezés`;
+  const solutionText: string = `Visit`;
+
   const getTutorialQuery = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError(null);
@@ -152,12 +158,12 @@ function App() {
         setTask0(false);
         setTask1(true);
       }
-      if (query === `SELECT AVG(age) AS age FROM Persons WHERE age < AVG(age)`) {
+      if (query === `SELECT AVG(age) AS age FROM Persons`) {
         console.log('Go to the third witness testimony.');
         setTask1(false);
         setTask2(true);
       }
-      if (query === `SELECT AVG(annual_income) as annual_income from Persons WHERE annual_income < AVG(annual_income)`) {
+      if (query === `SELECT AVG(annual_income) as annual_income from Persons`) {
         console.log('Go to the fourth witness testimony.');
         setTask2(false);
         setTask3(true);
@@ -167,8 +173,9 @@ function App() {
         setTask3(false);
         setTask4(true);
       }
-      if (query === `SELECT * FROM Persons JOIN Zoo ON Persons.id = Zoo.person_id WHERE Person.age > 48 AND Person.gender = 'male' AND Persons.annual_income < 490280 AND Persons.car_type LIKE '%Taurus' AND Zoo.ticket_type = 'vip'`) {
+      if (query === `SELECT * FROM Persons JOIN Zoo ON Persons.id = Zoo.person_id WHERE Persons.age > 48 AND Persons.gender = 'male' AND Persons.annual_income < 490280 AND Persons.car_type LIKE '%Taurus' AND Zoo.ticket_type = 'vip'`) {
         console.log('GGWP.');
+        setTask4(false);
         setTask5(true);
       }
 
@@ -306,9 +313,10 @@ function App() {
           )}
         </div>}
         { isVisibleTask && <div className="main-div">
-         {task0 && <form action="#" method="post" onSubmit={getMyQuery}>
-            <label htmlFor="query-id">Write your query here:</label>
+         {task0 && <form className='task-form' action="#" method="post" onSubmit={getMyQuery}>
+            <label className='task-form_label' htmlFor="query-id">{task1Text}</label>
             <input
+            className='task-form_input'
               type="text"
               id="query-id"
               name="query"
@@ -316,11 +324,12 @@ function App() {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
             />
-            <button type="submit">Submit</button>
+            <button className='task-form_button' type="submit">Submit</button>
           </form>}
-         {task1 && <form action="#" method="post" onSubmit={getMyQuery}>
-            <label htmlFor="query-id">Write your query here:</label>
+         {task1 && <form className='task-form' action="#" method="post" onSubmit={getMyQuery}>
+            <label className='task-form_label' htmlFor="query-id">{task2Text}</label>
             <input
+            className='task-form_input'
               type="text"
               id="query-id"
               name="query"
@@ -328,11 +337,12 @@ function App() {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
             />
-            <button type="submit">Submit</button>
+            <button className='task-form_button' type="submit">Submit</button>
           </form>}
-         {task2 && <form action="#" method="post" onSubmit={getMyQuery}>
-            <label htmlFor="query-id">Write your query here:</label>
+         {task2 && <form className='task-form' action="#" method="post" onSubmit={getMyQuery}>
+            <label className='task-form_label' htmlFor="query-id">{task3Text}</label>
             <input
+            className='task-form_input'
               type="text"
               id="query-id"
               name="query"
@@ -340,11 +350,12 @@ function App() {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
             />
-            <button type="submit">Submit</button>
+            <button className='task-form_button' type="submit">Submit</button>
           </form>}
-         {task3 && <form action="#" method="post" onSubmit={getMyQuery}>
-            <label htmlFor="query-id">Write your query here:</label>
+         {task3 && <form className='task-form' action="#" method="post" onSubmit={getMyQuery}>
+            <label className='task-form_label' htmlFor="query-id">{task4Text}</label>
             <input
+            className='task-form_input'
               type="text"
               id="query-id"
               name="query"
@@ -352,11 +363,12 @@ function App() {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
             />
-            <button type="submit">Submit</button>
+            <button className='task-form_button' type="submit">Submit</button>
           </form>}
-         {task4 && <form action="#" method="post" onSubmit={getMyQuery}>
-            <label htmlFor="query-id">Write your query here:</label>
+         {task4 && <form className='task-form' action="#" method="post" onSubmit={getMyQuery}>
+            <label className='task-form_label' htmlFor="query-id">{solutionText}</label>
             <input
+            className='task-form_input'
               type="text"
               id="query-id"
               name="query"
@@ -364,25 +376,14 @@ function App() {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
             />
-            <button type="submit">Submit</button>
+            <button className='task-form_button' type="submit">Submit</button>
           </form>}
-         {task5 && <form action="#" method="post" onSubmit={getMyQuery}>
-            <label htmlFor="query-id">Write your query here:</label>
-            <input
-              type="text"
-              id="query-id"
-              name="query"
-              placeholder="Enter your query"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-            />
-            <button type="submit">Submit</button>
-          </form>}
+         {task5 && <p>GGWP</p>}
           {error && <p className="error">{error}</p>}
           {result.length > 0 && (
-            <table>
-              <thead>
-                <tr>
+            <table className='task-table'>
+              <thead className='task-table_thead'>
+                <tr className='task-table_tr'>
                   {result[0]?.id !== undefined && <td>id</td>}
                   {result[0]?.name !== undefined && <td>name</td>}
                   {result[0]?.age !== undefined && <td>age</td>}
@@ -393,52 +394,52 @@ function App() {
                   {result[0]?.address !== undefined && <td>address</td>}
                   {result[0]?.city !== undefined && <td>city</td>}
                   {result[0]?.eye_color !== undefined && <td>eye color</td>}
-                  {result[0]?.hair_color !== undefined && <td>hair color</td>}
-                  {result[0]?.car_type !== undefined && <td>car type</td>}
-                  {result[0]?.bike_type !== undefined && <td>bike type</td>}
+                  {result[0]?.hair_color !== undefined && <td className='task-table_td'>hair color</td>}
+                  {result[0]?.car_type !== undefined && <td className='task-table_td'>car type</td>}
+                  {result[0]?.bike_type !== undefined && <td className='task-table_td'>bike type</td>}
                   {result[0]?.car_registration_number !== undefined && (
-                    <td>car registration number</td>
+                    <td className='task-table_td'>car registration number</td>
                   )}
                   {result[0]?.motorbike_registration_number !== undefined && (
-                    <td>motorbike registration number</td>
+                    <td className='task-table_td'>motorbike registration number</td>
                   )}
                   {result[0]?.annual_income !== undefined && (
-                    <td>annual income</td>
+                    <td className='task-table_td'>annual income</td>
                   )}
                 </tr>
               </thead>
 
-              <tbody>
+              <tbody className='task-table_tbody'>
                 {result.map((item, index) => {
                   return (
-                    <tr key={index}>
-                      {item.id !== undefined && <td>{item.id}</td>}
-                      {item.name !== undefined && <td>{item.name}</td>}
-                      {item.age !== undefined && <td>{item.age}</td>}
-                      {item.ssn !== undefined && <td>{item.ssn}</td>}
-                      {item.gender !== undefined && <td>{item.gender}</td>}
-                      {item.email !== undefined && <td>{item.email}</td>}
-                      {item.phone !== undefined && <td>{item.phone}</td>}
-                      {item.address !== undefined && <td>{item.address}</td>}
-                      {item.city !== undefined && <td>{item.city}</td>}
+                    <tr className='task-table_tr' key={index}>
+                      {item.id !== undefined && <td className='task-table_td'>{item.id}</td>}
+                      {item.name !== undefined && <td className='task-table_td'>{item.name}</td>}
+                      {item.age !== undefined && <td className='task-table_td'>{item.age}</td>}
+                      {item.ssn !== undefined && <td className='task-table_td'>{item.ssn}</td>}
+                      {item.gender !== undefined && <td className='task-table_td'>{item.gender}</td>}
+                      {item.email !== undefined && <td className='task-table_td'>{item.email}</td>}
+                      {item.phone !== undefined && <td className='task-table_td'>{item.phone}</td>}
+                      {item.address !== undefined && <td className='task-table_td'>{item.address}</td>}
+                      {item.city !== undefined && <td className='task-table_td'>{item.city}</td>}
                       {item.eye_color !== undefined && (
-                        <td>{item.eye_color}</td>
+                        <td className='task-table_td'>{item.eye_color}</td>
                       )}
                       {item.hair_color !== undefined && (
-                        <td>{item.hair_color}</td>
+                        <td className='task-table_td'>{item.hair_color}</td>
                       )}
-                      {item.car_type !== undefined && <td>{item.car_type}</td>}
+                      {item.car_type !== undefined && <td className='task-table_td'>{item.car_type}</td>}
                       {item.bike_type !== undefined && (
-                        <td>{item.bike_type}</td>
+                        <td className='task-table_td'>{item.bike_type}</td>
                       )}
                       {item.car_registration_number !== undefined && (
-                        <td>{item.car_registration_number}</td>
+                        <td className='task-table_td'>{item.car_registration_number}</td>
                       )}
                       {item.motorbike_registration_number !== undefined && (
-                        <td>{item.motorbike_registration_number}</td>
+                        <td className='task-table_td'>{item.motorbike_registration_number}</td>
                       )}
                       {item.annual_income !== undefined && (
-                        <td>{item.annual_income}</td>
+                        <td className='task-table_td'>{item.annual_income}</td>
                       )}
                     </tr>
                   );
@@ -457,4 +458,6 @@ export default App;
 /*
   A teszt tábla kész van, a hívás is hozzá.
   SessionStorage-be fogom szerintem menteni az adatokat, és valamilyen pont logika alapján fogom renderelni az aktuális feladatokat, és ha a megfelelő query-t írja be a felhasználó, akkor tovább fogom léptetni.
+
+  Csinálni kell 1 kis note részt, ahova a felhasználó feltudja jegyezni magának a kis adatokat, hogy a végső lekérdezésbe betudja írni az adatokat. Pl.: avg(age), income stb.
 */
