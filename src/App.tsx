@@ -36,9 +36,54 @@ function App() {
   const [tutorialResult, setTutorialResult] = useState<PersonsData[]>([]);
   const [error, setError] = useState<string | null>(null);
 
-  // 1. A tutorial, és a 4 query.
+  /*
+  1. SELECT gender
+  2. AVG age + AS
+  3. WHERE
+  4. % operator and car_registration_number
+  5. 2 table connect
+  */
 
-  const isCorrect: boolean[] = [false, false, false, false, false];
+  // Temporary settings !!!!
+ 
+   const [isVisibleTutorial, setIsVisibleTutorial] = useState<boolean>(false);
+   const [isVisibleTask, setIsVisibleTask] = useState<boolean>(true);
+
+  const [tutorial0, setTutorial0] = useState<boolean>(true);
+  const [tutorial1, setTutorial1] = useState<boolean>(false);
+  const [tutorial2, setTutorial2] = useState<boolean>(false);
+  const [tutorial3, setTutorial3] = useState<boolean>(false);
+  const [tutorial4, setTutorial4] = useState<boolean>(false);
+  const [tutorial5, setTutorial5] = useState<boolean>(false);
+
+  // Task
+
+  const [task0, setTask0] = useState<boolean>(true);
+  const [task1, setTask1] = useState<boolean>(false);
+  const [task2, setTask2] = useState<boolean>(false);
+  const [task3, setTask3] = useState<boolean>(false);
+  const [task4, setTask4] = useState<boolean>(false);
+  const [task5, setTask5] = useState<boolean>(false);
+
+  const toggleVisibility = (): void => {
+    setIsVisibleTutorial(false);
+    setIsVisibleTask(true);
+  }
+
+  const tutorial1Text: string = `Select lekérdezés oszlopok szerint. A SELECT * FROM Police_db -vel az összes oszlopot lekérdezzük. Próbáld ki. 
+  Ha sikerült, a * helyére írd be a city -t, mivel csak a city oszlopot szeretnénk most lekérdezni. Ha a lekérdezés megegyezik a SELECT city FROM Police_db -vel akkor továbbengedjük.`;
+  const tutorial2Text: string = `Select lekérdezés avg-vel kombinálva. Most az előzőhöz hasonlóan a SELECT-et kell használni, viszont kiegészítjük az AVG() -vel. A zárójelek közé azok az oszlopok kerülnek, melyeknek az átlagára vagyunk kíváncsiak. Nézzük meg az id-k átlagát ebben a lekérdezésben. Nevezzük el a megjeleníteni kívánt oszlopot id-nek. Ez az AVG() AS id vel tudod megtenni. Ha a lekérdezés megegyzik a SELECT AVG(id) AS id FROM Police_db -vel, akkor továbbengedjük.`;
+  const tutorial3Text: string = `Derítsd ki, hogy található-e olyan oszlop, ahol az id nagyobb mint a te életkorod. Csak az id oszlop jelenjen meg. A SELECT id from Police_Db lekérdezésedet a WHERE id > 'A te életkorod' résszel egészítsd ki. Ha a lekérdezés megegyezik a SELECT * from Police_db WHERE id > 28`;
+
+  // Ezt az életkoros dolgot valszeg úgy kell majd megoldani, hogy ??? ööö majd kiokoskodom.
+
+  const tutorial4Text: string = `Listázz ki 10 bűnügyi jelentést. Csak a bűnügyi jelentések jelenjenek meg. Ennek a lekérdezésnek a megírásához már majdnem minden tudás a rendelkezésedre áll. A 10 jelentés megjelenítéséhez használd a lekérdezés végén a LIMIT 10 utasítást.
+  Ha a lekérdezés megegyezik a SELECT crime_report from Police_db LIMIT 10 -el, akkor továbbengedjük.
+  `;
+
+  const tutorial5Text: string = `Keresd meg az összes olyan várost, ami Lake szóval kezdődik. Ehhez segítségedre lesz a LIKE 'Lake%' operátor. 
+  Ha a lekérdezés megegyezik a SELECT city FROM Police_db WHERE city LIKE 'Lake%' -el, akkor továbbengedjük.
+  `;
 
   const getTutorialQuery = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -47,9 +92,37 @@ function App() {
       const response = await axios.post("http://localhost:5000/api/PoliceDB", {
         tutorialQuery,
       });
+      console.log("Server Response:", response.data);
+      if (response.status === 200) {
+        console.log("Check your dev tools for more details. (ctlr + shift + i");
+      }
       setTutorialResult(response.data);
       console.log("Response status: ", response.status);
-      console.log(response.data);
+      if (tutorialQuery === `SELECT city FROM Police_db`) {
+        console.log('Go to tutorial 2.');
+        setTutorial0(false);
+        setTutorial1(true);
+      }
+      if (tutorialQuery === `SELECT AVG(id) AS id FROM Police_db`) {
+        console.log('Go to tutorial 3.');
+        setTutorial1(false);
+        setTutorial2(true);
+      }
+      if (tutorialQuery === `SELECT * from Police_db WHERE id > 28`) {
+        console.log('Go to tutorial 4.');
+        setTutorial2(false);
+        setTutorial3(true);
+      }
+      if (tutorialQuery === `SELECT crime_report from Police_db LIMIT 10`) {
+        console.log('Go to tutorial 5.');
+        setTutorial3(false);
+        setTutorial4(true);
+      }
+      if (tutorialQuery === `SELECT city FROM Police_db WHERE city LIKE 'Lake%'`) {
+        console.log('Go to the real task.');
+        setTutorial5(true);
+      }
+
     } catch (error) {
       if (error.response) {
         console.error("Hiba történt:", error.response.data.error);
@@ -58,6 +131,8 @@ function App() {
     }
   };
 
+  // Persons queries
+
   const getMyQuery = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError(null);
@@ -65,6 +140,9 @@ function App() {
       const response = await axios.post("http://localhost:5000/api/Persons", {
         query,
       });
+      if (response.status === 200) {
+        console.log("Check your dev tools for more details. (ctlr + shift + i");
+      }
       setResult(response.data);
       console.log("Response status: ", response.status);
       console.log(response.data);
@@ -79,56 +157,130 @@ function App() {
         <h1>Learn SQLite</h1>
       </header>
       <main>
-        <div className="tutorialDiv">
-          <form onSubmit={getTutorialQuery}>
-            <label htmlFor="tutorial-query-id">
-              Write your SQLite query here:
-            </label>
+        {isVisibleTutorial && <div className="tutorialDiv">
+          {tutorial0 && <form className='tutorial-form' onSubmit={getTutorialQuery}>
+            <label className='tutorial-form_label' htmlFor="tutorial-query-id">{tutorial1Text}</label>
             <input
+            className='tutorial-form_input'
               type="text"
               id="tutorial-query-id"
               value={tutorialQuery}
-              placeholder="Enter your query"
+              placeholder="Write your solution..."
               onChange={(e) => setTutorialQuery(e.target.value)}
             />
-            <button type="submit">Submit</button>
-          </form>
+            <button className='tutorial-form_button' type="submit">Submit</button>
+          </form>}
 
           {error && <p className="error">{error}</p>}
+          {tutorial1 && (
+            <div>
+              <p>Tutorial 1 kész.</p>
+              <form className='tutorial-form' onSubmit={getTutorialQuery}>
+                <label className='tutorial-form_label' htmlFor="tutorial-query-id">{tutorial2Text}</label>
+                <input
+                className='tutorial-form_input'
+                  type="text"
+                  id="tutorial-query-id"
+                  value={tutorialQuery}
+                  placeholder="Write your solution..."
+                  onChange={(e) => setTutorialQuery(e.target.value)}
+                />
+                <button className='tutorial-form_button' type="submit">Submit</button>
+              </form>
+            </div>
+          )}
+          {tutorial2 && (
+            <div>
+              <p>Tutorial 2 kész.</p>
+              <form className='tutorial-form' onSubmit={getTutorialQuery}>
+                <label className='tutorial-form_label' htmlFor="tutorial-query-id">{tutorial3Text}</label>
+                <input
+                className='tutorial-form_input'
+                  type="text"
+                  id="tutorial-query-id"
+                  value={tutorialQuery}
+                  placeholder="Write your solution..."
+                  onChange={(e) => setTutorialQuery(e.target.value)}
+                />
+                <button className='tutorial-form_button' type="submit">Submit</button>
+              </form>
+            </div>
+          )}
+          {tutorial3 && (
+            <div>
+              <p>Tutorial 3 kész.</p>
+              <form className='tutorial-form' onSubmit={getTutorialQuery}>
+                <label className='tutorial-form_label' htmlFor="tutorial-query-id">{tutorial4Text}</label>
+                <input
+                className='tutorial-form_input'
+                  type="text"
+                  id="tutorial-query-id"
+                  value={tutorialQuery}
+                  placeholder="Write your solution..."
+                  onChange={(e) => setTutorialQuery(e.target.value)}
+                />
+                <button className='tutorial-form_button' type="submit">Submit</button>
+              </form>
+            </div>
+          )}
+          {tutorial4 && (
+            <div>
+              <p>Tutorial 4 kész.</p>
+              <form className='tutorial-form' onSubmit={getTutorialQuery}>
+                <label className='tutorial-form_label' htmlFor="tutorial-query-id">{tutorial5Text}</label>
+                <input
+                className='tutorial-form_input'
+                  type="text"
+                  id="tutorial-query-id"
+                  value={tutorialQuery}
+                  placeholder="Write your solution..."
+                  onChange={(e) => setTutorialQuery(e.target.value)}
+                />
+                <button className='tutorial-form_button' type="submit">Submit</button>
+              </form>
+            </div>
+          )}
+          {tutorial5 && (
+            <div>
+              <p>Tutorial 5 kész.</p>
+              <p>Sikeresen teljesítetted a tutorialt, nézzük a feladatot.</p>
+              <button onClick={toggleVisibility}>Tovább a feladathoz.</button>
+            </div>
+          )}
 
           {tutorialResult.length > 0 && (
-            <table>
-              <thead>
-                <tr>
-                  {tutorialResult[0]?.id !== undefined && <th>ID</th>}
+            <table className='tutorial-table'>
+              <thead className='tutorial-table_thead'>
+                <tr className='tutorial-table_tr'>
+                  {tutorialResult[0]?.id !== undefined && <th className='tutorial-table_th'>ID</th>}
                   {tutorialResult[0]?.crime_type !== undefined && (
-                    <th>Crime Type</th>
+                    <th className='tutorial-table_th'>Crime Type</th>
                   )}
-                  {tutorialResult[0]?.city !== undefined && <th>City</th>}
+                  {tutorialResult[0]?.city !== undefined && <th className='tutorial-table_th'>City</th>}
                   {tutorialResult[0]?.crime_report !== undefined && (
-                    <th>Crime Report</th>
+                    <th className='tutorial-table_th'>Crime Report</th>
                   )}
                 </tr>
               </thead>
-              <tbody>
+              <tbody className='tutorial-table_tbody'>
                 {tutorialResult.map((item, index) => (
-                  <tr key={index}>
+                  <tr className='tutorial-table_tr' key={index}>
                     {item?.id !== undefined && <td>{item.id}</td>}
                     {item?.crime_type !== undefined && (
-                      <td>{item.crime_type}</td>
+                      <td className='tutorial-table_td'>{item.crime_type}</td>
                     )}
-                    {item?.city !== undefined && <td>{item.city}</td>}
+                    {item?.city !== undefined && <td className='tutorial-table_td'>{item.city}</td>}
                     {item?.crime_report !== undefined && (
-                      <td>{item.crime_report}</td>
+                      <td className='tutorial-table_td'>{item.crime_report}</td>
                     )}
                   </tr>
                 ))}
               </tbody>
             </table>
           )}
-        </div>
-        <div className="main-div">
-          <form action="#" method="post" onSubmit={getMyQuery}>
+        </div>}
+        { isVisibleTask && <div className="main-div">
+         {task0 && <form action="#" method="post" onSubmit={getMyQuery}>
             <label htmlFor="query-id">Write your query here:</label>
             <input
               type="text"
@@ -139,7 +291,67 @@ function App() {
               onChange={(e) => setQuery(e.target.value)}
             />
             <button type="submit">Submit</button>
-          </form>
+          </form>}
+         {task1 && <form action="#" method="post" onSubmit={getMyQuery}>
+            <label htmlFor="query-id">Write your query here:</label>
+            <input
+              type="text"
+              id="query-id"
+              name="query"
+              placeholder="Enter your query"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+            />
+            <button type="submit">Submit</button>
+          </form>}
+         {task2 && <form action="#" method="post" onSubmit={getMyQuery}>
+            <label htmlFor="query-id">Write your query here:</label>
+            <input
+              type="text"
+              id="query-id"
+              name="query"
+              placeholder="Enter your query"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+            />
+            <button type="submit">Submit</button>
+          </form>}
+         {task3 && <form action="#" method="post" onSubmit={getMyQuery}>
+            <label htmlFor="query-id">Write your query here:</label>
+            <input
+              type="text"
+              id="query-id"
+              name="query"
+              placeholder="Enter your query"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+            />
+            <button type="submit">Submit</button>
+          </form>}
+         {task4 && <form action="#" method="post" onSubmit={getMyQuery}>
+            <label htmlFor="query-id">Write your query here:</label>
+            <input
+              type="text"
+              id="query-id"
+              name="query"
+              placeholder="Enter your query"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+            />
+            <button type="submit">Submit</button>
+          </form>}
+         {task5 && <form action="#" method="post" onSubmit={getMyQuery}>
+            <label htmlFor="query-id">Write your query here:</label>
+            <input
+              type="text"
+              id="query-id"
+              name="query"
+              placeholder="Enter your query"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+            />
+            <button type="submit">Submit</button>
+          </form>}
           {error && <p className="error">{error}</p>}
           {result.length > 0 && (
             <table>
@@ -208,7 +420,7 @@ function App() {
               </tbody>
             </table>
           )}
-        </div>
+        </div>}
       </main>
     </div>
   );
