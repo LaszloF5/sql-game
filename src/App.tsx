@@ -428,6 +428,10 @@ function App() {
         )}
         {isVisibleTask && (
           <div className="main-div">
+            <div className='notes-container'>
+            <label htmlFor='notes'>Írd ide a jegyzeteidet:</label>
+            <textarea id='notes' col='10' rows='10' placeholder='ex.: age = 20'></textarea>
+            </div>
             {task0 && (
               <form
                 className="task-form"
