@@ -72,6 +72,80 @@ db.serialize(() => {
         person_id INTEGER NOT NULL,
         FOREIGN KEY (person_id) REFERENCES Persons(id) ON DELETE CASCADE
         )`);
+
+  db.run(`CREATE TABLE IF NOT EXISTS Session (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    fruit_name TEXT NOT NULL,
+    quantity TEXT NOT NULL,
+    )`);
+});
+
+app.get("/api/session", (req, res) => {
+  db.all("SELECT * FROM Session", [], (err, rows) => {
+    if (err) {
+      return res.status(500).json({ error: err.message });
+    }
+    res.json(rows);
+  });
+});
+
+app.post("/api/session", (req, res) => {
+  const { fruitName, quantity } = req.body;
+
+  if (fruitName.length === 0 || quantity.length === 0) {
+    return res
+      .status(400)
+      .json({ error: "Missing required fields: fruitName, quantity" });
+  }
+
+  const sql = `INSERT INTO Session (fruit_name, quantity) VALUES (?, ?)`;
+
+  db.run(sql, [fruitName, quantity], function (err) {
+    if (err) {
+      return res.status(500).json({ error: err.message });
+    }
+    res.json(`Session with ID ${this.lastID} added successfully.`);
+  });
+});
+
+app.delete("/api/session", (req, res) => {
+  const { id } = req.body;
+  if (!id) {
+    return res.status(400).json({ error: "Missing required field: id" });
+  }
+  const sql = `DELETE FROM Session WHERE id = ?`;
+
+  db.run(sql, [id], function (err) {
+    if (err) {
+      return res.status(500).json({ error: err.message });
+    }
+    if (this.changes === 0) {
+      return res.status(404).json({ error: "Session not found" });
+    }
+    res.json("Session deleted succesfully.");
+  });
+});
+
+app.put("/api/session", (req, res) => {
+  const { id, fruitName, quantity } = req.body;
+
+  if (!id || fruitName.length === 0 || quantity.length === 0) {
+    return res
+      .status(400)
+      .json({ error: "Missing required fields: id, fruitName, quantity" });
+  }
+
+  const sql = `UPDATE Session SET fruit_name = ?, quantity = ? WHERE id = ?`;
+
+  db.run(sql, [fruitName, quantity, id], function (err) {
+    if (err) {
+      return res.status(500).json({ error: err.message });
+    }
+    if (this.changes === 0) {
+      return res.status(404).json({ error: "Session not found" });
+    }
+    res.json("Session updated successfully.");
+  });
 });
 
 const crimeTypes = [
@@ -570,7 +644,7 @@ const cities = [
 // });
 
 app.get("/api/crimes", (req, res) => {
-  db.all(`SELECT *FROM Crimes`, (err, rows) => {
+  db.all(`SELECT * FROM Crimes`, (err, rows) => {
     if (err) {
       console.error(err.message);
       res.status(500).send({ error: "Error retrieving data" });
@@ -863,12 +937,6 @@ app.get("/api/solution", (req, res) => {
 //     })
 // }
 
-/*
-  Tutorial végpontok:
-  Csak a select utasításokkal fogunk foglalkozni.
-  A delete és update nem lesznek bemutatva.
-*/
-
 app.post("/api/PoliceDB", (req, res) => {
   const { tutorialQuery } = req.body;
   if (!tutorialQuery) {
@@ -882,7 +950,7 @@ app.post("/api/PoliceDB", (req, res) => {
   db.all(tutorialQuery, [], (err, rows) => {
     if (err) {
       console.error("Error executing query: ", err.message);
-      return res.json({error: err.message});
+      return res.json({ error: err.message });
     } else {
       res.json(rows);
     }
@@ -900,7 +968,7 @@ app.post("/api/Persons", (req, res) => {
   db.all(query, [], (err, rows) => {
     if (err) {
       console.error("Error executing persons query: ", err.message);
-      return res.json({err: err.message});
+      return res.json({ err: err.message });
     } else {
       return res.json(rows);
     }
