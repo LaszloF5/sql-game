@@ -4,6 +4,7 @@ import { createInferTypeNode } from "typescript";
 import TutorialSelectComponent from "./Components/TutorialSelectComponent.tsx";
 import SelectTaskComponent from "./Components/SelectTaskComponent.tsx";
 import DataBaseStructure from "./Components/DataBaseStructure.tsx";
+import OtherQueries from "./Components/OtherQueries.tsx";
 
 function App() {
   const [error, setError] = useState<string | null>(null);
@@ -18,6 +19,7 @@ function App() {
         <h1>Learn SQLite</h1>
       </header>
       <main>
+        <OtherQueries/>
         <DataBaseStructure/>
         <TutorialSelectComponent
           showMe={showMe}

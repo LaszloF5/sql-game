@@ -90,32 +90,44 @@ app.get("/api/session", (req, res) => {
 });
 
 app.post("/api/session", (req, res) => {
-  const { fruitName, quantity } = req.body;
+  const { otherQuery } = req.body;
 
-  if (fruitName.length === 0 || quantity.length === 0) {
-    return res
-      .status(400)
-      .json({ error: "Missing required fields: fruitName, quantity" });
+  const expectedQuery1 = `INSERT INTO Session (fruit_name, quantity) VALUES ('apple', '1kg')`;
+  const expectedQuery2 = `INSERT INTO Session (fruit_name, quantity) VALUES ('banana', '2kg')`;
+
+  if (
+    otherQuery.trim() !== expectedQuery1 &&
+    otherQuery.trim() !== expectedQuery2
+  ) {
+    return res.status(400).json({ error: "Invalid query" });
   }
-
   const sql = `INSERT INTO Session (fruit_name, quantity) VALUES (?, ?)`;
 
-  db.run(sql, [fruitName, quantity], function (err) {
+  const values = otherQuery.includes("apple")
+    ? ["apple", "1kg"]
+    : ["banana", "2kg"];
+  db.run(sql, values, function (err) {
     if (err) {
       return res.status(500).json({ error: err.message });
     }
-    res.json(`Session with ID ${this.lastID} added successfully.`);
+    res.json(`Session with ${this.lastID} added successfully.`);
   });
 });
 
-app.delete("/api/session", (req, res) => {
-  const { id } = req.body;
-  if (!id) {
-    return res.status(400).json({ error: "Missing required field: id" });
-  }
-  const sql = `DELETE FROM Session WHERE id = ?`;
+/*Ált. id alapján törlünk, de mivel ez egy oktatási céllal készült anyag, a látványosság és érthetőség kedvéért name alapján törlünk.*/
 
-  db.run(sql, [id], function (err) {
+app.delete("/api/session", (req, res) => {
+  const { deleteQuery } = req.body;
+
+  const expectedDeleteQuery = `DELETE FROM Session WHERE fruit_name = 'apple'`;
+
+  if (deleteQuery.trim() !== expectedDeleteQuery) {
+    return res.status(400).json({ error: "Invalid query" });
+  }
+
+  const sql = `DELETE FROM Session WHERE fruit_name = ?`;
+
+  db.run(sql, ["apple"], function (err) {
     if (err) {
       return res.status(500).json({ error: err.message });
     }
@@ -126,18 +138,18 @@ app.delete("/api/session", (req, res) => {
   });
 });
 
-app.put("/api/session", (req, res) => {
-  const { id, fruitName, quantity } = req.body;
+app.post("/api/session", (req, res) => {
+  const { updateQuery } = req.body;
 
-  if (!id || fruitName.length === 0 || quantity.length === 0) {
-    return res
-      .status(400)
-      .json({ error: "Missing required fields: id, fruitName, quantity" });
+  const expectedUpdateQuery = `UPDATE Session SET quantity = '1kg' WHERE fruit_name = 'banana'`;
+
+  if (updateQuery.trim() !== expectedUpdateQuery) {
+    return res.status(400).json({ error: "Invalid query" });
   }
 
-  const sql = `UPDATE Session SET fruit_name = ?, quantity = ? WHERE id = ?`;
+  const sql = `UPDATE Session SET quantity = ? WHERE fruit_name = ?`;
 
-  db.run(sql, [fruitName, quantity, id], function (err) {
+  db.run(sql, ["1kg", "banana"], function (err) {
     if (err) {
       return res.status(500).json({ error: err.message });
     }
@@ -147,6 +159,28 @@ app.put("/api/session", (req, res) => {
     res.json("Session updated successfully.");
   });
 });
+
+// app.put("/api/session", (req, res) => {
+//   const { id, fruitName, quantity } = req.body;
+
+//   if (!id || fruitName.length === 0 || quantity.length === 0) {
+//     return res
+//       .status(400)
+//       .json({ error: "Missing required fields: id, fruitName, quantity" });
+//   }
+
+//   const sql = `UPDATE Session SET fruit_name = ?, quantity = ? WHERE id = ?`;
+
+//   db.run(sql, [fruitName, quantity, id], function (err) {
+//     if (err) {
+//       return res.status(500).json({ error: err.message });
+//     }
+//     if (this.changes === 0) {
+//       return res.status(404).json({ error: "Session not found" });
+//     }
+//     res.json("Session updated successfully.");
+//   });
+// });
 
 const crimeTypes = [
   "Theft",
