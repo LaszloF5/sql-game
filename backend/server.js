@@ -76,7 +76,7 @@ db.serialize(() => {
   db.run(`CREATE TABLE IF NOT EXISTS Session (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     fruit_name TEXT NOT NULL,
-    quantity TEXT NOT NULL,
+    quantity TEXT NOT NULL
     )`);
 });
 
@@ -110,54 +110,97 @@ app.post("/api/session", (req, res) => {
     if (err) {
       return res.status(500).json({ error: err.message });
     }
-    res.json(`Session with ${this.lastID} added successfully.`);
+    res.json({
+      message: `Session with ${this.lastID} added successfully.`,
+      newRecord: {
+        id: this.lastID,
+        fruit_name: values[0],
+        quantity: values[1],
+      },
+    });
   });
 });
 
 /*Ált. id alapján törlünk, de mivel ez egy oktatási céllal készült anyag, a látványosság és érthetőség kedvéért name alapján törlünk.*/
 
-app.delete("/api/session", (req, res) => {
-  const { deleteQuery } = req.body;
+// app.delete("/api/session", (req, res) => {
+//   const { deleteQuery } = req.body;
 
-  const expectedDeleteQuery = `DELETE FROM Session WHERE fruit_name = 'apple'`;
+//   const expectedDeleteQuery = `DELETE FROM Session WHERE fruit_name = 'apple'`;
 
-  if (deleteQuery.trim() !== expectedDeleteQuery) {
-    return res.status(400).json({ error: "Invalid query" });
+//   if (deleteQuery.trim() !== expectedDeleteQuery) {
+//     return res.status(400).json({ error: "Invalid query" });
+//   }
+
+//   const sql = `DELETE FROM Session WHERE fruit_name = ?`;
+
+//   db.run(sql, ["apple"], function (err) {
+//     if (err) {
+//       return res.status(500).json({ error: err.message });
+//     }
+//     if (this.changes === 0) {
+//       return res.status(404).json({ error: "Session not found" });
+//     }
+//     res.json("Session deleted succesfully.");
+//   });
+// });
+
+app.delete("/api/session/:id", (req, res) => {
+  const { id } = req.params;
+  if (!id) {
+    return res.status(400).json({ error: "Missing required field: id" });
   }
 
-  const sql = `DELETE FROM Session WHERE fruit_name = ?`;
+  const sql = `DELETE FROM Session WHERE id = ?`;
 
-  db.run(sql, ["apple"], function (err) {
+  const params = [id];
+
+  db.run(sql, params, function (err) {
     if (err) {
       return res.status(500).json({ error: err.message });
     }
     if (this.changes === 0) {
       return res.status(404).json({ error: "Session not found" });
     }
-    res.json("Session deleted succesfully.");
+    res.json({ message: "Session deleted successfully." });
   });
 });
 
-app.post("/api/session", (req, res) => {
-  const { updateQuery } = req.body;
-
+app.put("/api/session", (req, res) => {
+  const { otherQuery } = req.body;
   const expectedUpdateQuery = `UPDATE Session SET quantity = '1kg' WHERE fruit_name = 'banana'`;
 
-  if (updateQuery.trim() !== expectedUpdateQuery) {
-    return res.status(400).json({ error: "Invalid query" });
+  if (otherQuery.trim() !== expectedUpdateQuery) {
+    console.log(`Invalid query attempt: ${otherQuery}`);
+    return res.status(400).json({
+      error: "Invalid query",
+      expectedFormat: expectedUpdateQuery,
+      note: "This is a training endpoint that only accepts one specific query"
+    });
   }
 
-  const sql = `UPDATE Session SET quantity = ? WHERE fruit_name = ?`;
-
-  db.run(sql, ["1kg", "banana"], function (err) {
-    if (err) {
-      return res.status(500).json({ error: err.message });
+  db.run(
+    `UPDATE Session SET quantity = ? WHERE fruit_name = ?`,
+    ["1kg", "banana"],
+    function(err) {
+      if (err) {
+        return res.status(500).json({
+          error: "Database error",
+          details: err.message
+        });
+      }
+      if (this.changes === 0) {
+        return res.status(404).json({
+          error: "No matching record found",
+          solution: "Create a banana record first"
+        });
+      }
+      res.json({
+        message: "Successfully updated banana quantity to 1kg",
+        changes: this.changes
+      });
     }
-    if (this.changes === 0) {
-      return res.status(404).json({ error: "Session not found" });
-    }
-    res.json("Session updated successfully.");
-  });
+  );
 });
 
 // app.put("/api/session", (req, res) => {
