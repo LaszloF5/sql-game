@@ -60,7 +60,8 @@ pre {
 }
 
 .tutorial-form,
-.task-form {
+.task-form,
+.other-form {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -75,7 +76,8 @@ pre {
 }
 
 .tutorial-form_label,
-.task-form_label {
+.task-form_label,
+.other-form_label {
   font-size: 16px;
   margin-bottom: 10px;
   font-weight: bold;
@@ -84,7 +86,8 @@ pre {
 }
 
 .tutorial-form_input,
-.task-form_input {
+.task-form_input,
+.other-form_input {
   width: 100%;
   padding: 10px;
   font-size: 16px;
@@ -96,13 +99,15 @@ pre {
 }
 
 .tutorial-form_input:focus,
-.task-form_input:focus {
+.task-form_input:focus,
+.other-form_input:focus {
   border-color: #3498db;
   box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
 }
 
 .tutorial-form_button,
-.task-form_button {
+.task-form_button,
+.other-form_button {
   padding: 10px 15px;
   font-size: 16px;
   color: #fff;
@@ -114,19 +119,22 @@ pre {
 }
 
 .tutorial-form_button:hover,
-.task-form_button:hover {
+.task-form_button:hover,
+.other-form_button:hover {
   background: #2980b9;
 }
 
 @media (max-width: 768px) {
   .tutorial-form,
-  .task-form {
+  .task-form,
+  .other-form {
     width: 90%;
   }
 }
 
 .tutorial-table,
-.task-table {
+.task-table,
+.other-table {
   width: 80%;
   margin: 20px auto;
   border-collapse: collapse;
@@ -137,7 +145,8 @@ pre {
 }
 
 .tutorial-table_thead,
-.task-table_thead {
+.task-table_thead,
+.other-table_thead {
   background: #2c3e50;
   color: #ecf0f1;
 }
@@ -145,7 +154,9 @@ pre {
 .tutorial-table_th,
 .tutorial-table_td,
 .task-table_th,
-.task-table_td {
+.task-table_td,
+.other-table_th,
+.other-table_td {
   padding: 12px;
   text-align: left;
   border-bottom: 1px solid #ddd;
@@ -153,18 +164,21 @@ pre {
 }
 
 .tutorial-table_tbody tr:hover,
-.task-table_tbody:hover {
+.task-table_tbody:hover,
+.other-table_tbody:hover {
   background: #f5f5f5;
 }
 
 .tutorial-table_th,
-.task-table_th {
+.task-table_th,
+.other-table_th {
   font-weight: bold;
 }
 
 @media (max-width: 768px) {
   .tutorial-table,
-  .task-table {
+  .task-table,
+  .other-table {
     width: 100%;
   }
 }

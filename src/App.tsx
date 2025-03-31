@@ -40,3 +40,14 @@ function App() {
   );
 }
 export default App;
+
+/*
+TODO: 
+  - nav létrehozása,
+  - feladatok sorrendbe állítása, melyik pakk melyik után jöjjön,
+  - utána az egyik pakkból a másikba átléptetni a felhasználót,
+  - ha végezett az egésszel, minden lenullázni, és újrakezdeni,
+  - átnézni, mennyire érthető az egész,
+  - az Session táblához is készíteni struktúrát,
+  - az egészet lefordítani,
+*/

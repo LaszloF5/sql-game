@@ -124,13 +124,17 @@ app.post("/api/session", (req, res) => {
 app.delete("/api/session", (req, res) => {
   const { otherQuery } = req.body;
 
-  const expectedDeleteQuery = "DELETE FROM Session WHERE id = 1";
+  const possibleQuery1 = "DELETE FROM Session WHERE id = 1";
+  const possibleQuery2 = "DELETE FROM Session WHERE id = 2";
 
-  if (otherQuery.trim() !== expectedDeleteQuery) {
+  let sql;
+  if (otherQuery === possibleQuery1) {
+    sql = "DELETE FROM Session WHERE id = 1";
+  } else if (otherQuery === possibleQuery2) {
+    sql = "DELETE FROM Session WHERE id = 2";
+  } else {
     return res.status(400).json({ error: "Invalid query" });
   }
-
-  const sql = "DELETE FROM Session WHERE id = 1";
 
   db.run(sql, function (err) {
     if (err) {
@@ -150,7 +154,7 @@ app.delete("/api/session", (req, res) => {
           if (err) {
             return res.status(500).json({ error: err.message });
           }
-          return res.json("Session deleted successfully and ID sequence reset.");
+          return res.json({ message: "Session deleted successfully and ID sequence reset." });
         });
       } else {
         return res.json({ message: "Session deleted successfully." });
@@ -158,6 +162,7 @@ app.delete("/api/session", (req, res) => {
     });
   });
 });
+
 
 
 // Ezt később töröljük.
