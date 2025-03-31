@@ -121,38 +121,53 @@ app.post("/api/session", (req, res) => {
   });
 });
 
-/*Ált. id alapján törlünk, de mivel ez egy oktatási céllal készült anyag, a látványosság és érthetőség kedvéért name alapján törlünk.*/
+app.delete("/api/session", (req, res) => {
+  const { otherQuery } = req.body;
 
-// app.delete("/api/session", (req, res) => {
-//   const { deleteQuery } = req.body;
+  const expectedDeleteQuery = "DELETE FROM Session WHERE id = 1";
 
-//   const expectedDeleteQuery = `DELETE FROM Session WHERE fruit_name = 'apple'`;
+  if (otherQuery.trim() !== expectedDeleteQuery) {
+    return res.status(400).json({ error: "Invalid query" });
+  }
 
-//   if (deleteQuery.trim() !== expectedDeleteQuery) {
-//     return res.status(400).json({ error: "Invalid query" });
-//   }
+  const sql = "DELETE FROM Session WHERE id = 1";
 
-//   const sql = `DELETE FROM Session WHERE fruit_name = ?`;
+  db.run(sql, function (err) {
+    if (err) {
+      return res.status(500).json({ error: err.message });
+    }
+    if (this.changes === 0) {
+      return res.status(404).json({ error: "Session not found" });
+    }
 
-//   db.run(sql, ["apple"], function (err) {
-//     if (err) {
-//       return res.status(500).json({ error: err.message });
-//     }
-//     if (this.changes === 0) {
-//       return res.status(404).json({ error: "Session not found" });
-//     }
-//     res.json("Session deleted succesfully.");
-//   });
-// });
+    db.get("SELECT COUNT(*) AS count FROM Session", [], (err, row) => {
+      if (err) {
+        return res.status(500).json({ error: err.message });
+      }
+
+      if (row.count === 0) {
+        db.run("DELETE FROM sqlite_sequence WHERE name = 'Session'", [], (err) => {
+          if (err) {
+            return res.status(500).json({ error: err.message });
+          }
+          return res.json("Session deleted successfully and ID sequence reset.");
+        });
+      } else {
+        return res.json({ message: "Session deleted successfully." });
+      }
+    });
+  });
+});
+
+
+// Ezt később töröljük.
 
 app.delete("/api/session/:id", (req, res) => {
   const { id } = req.params;
   if (!id) {
-    return res.status(400).json({ error: "Missing required field: id" });
+    return res.status(400).json({ error: "Missing id parameter" });
   }
-
-  const sql = `DELETE FROM Session WHERE id = ?`;
-
+  const sql = `DELETE FROM Session WHERE id =?`;
   const params = [id];
 
   db.run(sql, params, function (err) {
@@ -162,9 +177,31 @@ app.delete("/api/session/:id", (req, res) => {
     if (this.changes === 0) {
       return res.status(404).json({ error: "Session not found" });
     }
-    res.json({ message: "Session deleted successfully." });
+    db.get("SELECT COUNT(*) AS count FROM Session", [], (err, row) => {
+      if (err) {
+        console.error(err.message);
+        return res.status(500).json({ error: err.message });
+      }
+      if (row.count === 0) {
+        db.run(
+          'DELETE FROM sqlite_sequence WHERE name = "Session"',
+          [],
+          (err) => {
+            if (err) {
+              console.error(err.message);
+              return res.status(500).json({ error: err.message });
+            }
+            res.json("Session table ID sequence reset.");
+          }
+        );
+      } else {
+        res.json("Session deleted succesfully.");
+      }
+    });
   });
 });
+
+//UPDATE
 
 app.put("/api/session", (req, res) => {
   const { otherQuery } = req.body;
@@ -175,55 +212,34 @@ app.put("/api/session", (req, res) => {
     return res.status(400).json({
       error: "Invalid query",
       expectedFormat: expectedUpdateQuery,
-      note: "This is a training endpoint that only accepts one specific query"
+      note: "This is a training endpoint that only accepts one specific query",
     });
   }
 
   db.run(
     `UPDATE Session SET quantity = ? WHERE fruit_name = ?`,
     ["1kg", "banana"],
-    function(err) {
+    function (err) {
       if (err) {
         return res.status(500).json({
           error: "Database error",
-          details: err.message
+          details: err.message,
         });
       }
       if (this.changes === 0) {
         return res.status(404).json({
           error: "No matching record found",
-          solution: "Create a banana record first"
+          solution: "Create a banana record first",
         });
       }
       res.json({
         message: "Successfully updated banana quantity to 1kg",
-        changes: this.changes
+        changes: this.changes,
       });
     }
   );
 });
 
-// app.put("/api/session", (req, res) => {
-//   const { id, fruitName, quantity } = req.body;
-
-//   if (!id || fruitName.length === 0 || quantity.length === 0) {
-//     return res
-//       .status(400)
-//       .json({ error: "Missing required fields: id, fruitName, quantity" });
-//   }
-
-//   const sql = `UPDATE Session SET fruit_name = ?, quantity = ? WHERE id = ?`;
-
-//   db.run(sql, [fruitName, quantity, id], function (err) {
-//     if (err) {
-//       return res.status(500).json({ error: err.message });
-//     }
-//     if (this.changes === 0) {
-//       return res.status(404).json({ error: "Session not found" });
-//     }
-//     res.json("Session updated successfully.");
-//   });
-// });
 
 const crimeTypes = [
   "Theft",
