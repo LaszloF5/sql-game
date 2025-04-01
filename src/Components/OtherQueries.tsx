@@ -6,7 +6,15 @@ interface OtherQueryData {
   quantity: string;
 }
 
-const OtherQueries: FC = () => {
+interface visibleState {
+  isVisibleOtherTask: boolean;
+  setIsVisibleOtherTask: React.Dispatch<React.SetStateAction<Boolean>>;
+}
+
+const OtherQueries: FC<visibleState> = ({
+  isVisibleOtherTask,
+  setIsVisibleOtherTask,
+}) => {
   const [visibleAnswer, setVisibleAnswer] = useState<number>(0);
 
   const otherShowMe = "Show me the answer!";
@@ -191,198 +199,208 @@ Feladat: Most próbáld meg saját magad összeállítani ezt az SQL utasítást
   };
 
   return (
-    <div>
-      <h2>Other Queries</h2>
-      <main className="otherQueries-container">
-        <button type="button" onClick={getElements}>
-          Get my elements
-        </button>
-        {otherTask0 && (
-          <form
-            className="other-form"
-            action="#"
-            method="post"
-            onSubmit={handleSubmit}
-          >
-            <label className="other-form_label" htmlFor="test">
-              <p className="text-style">{otherTask0Text}</p>
-              <button
-                className="showMe-btn"
-                type="button"
-                onClick={() => handleVisibleAnswer(1)}
-              >
-                {otherShowMe}
+    <>
+      {isVisibleOtherTask && <div>
+        <h2>Other Queries</h2>
+        <main className="otherQueries-container">
+          <button type="button" onClick={getElements}>
+            Get my elements
+          </button>
+          {otherTask0 && (
+            <form
+              className="other-form"
+              action="#"
+              method="post"
+              onSubmit={handleSubmit}
+            >
+              <label className="other-form_label" htmlFor="test">
+                <p className="text-style">{otherTask0Text}</p>
+                <button
+                  className="showMe-btn"
+                  type="button"
+                  onClick={() => handleVisibleAnswer(1)}
+                >
+                  {otherShowMe}
+                </button>
+                {visibleAnswer === 1 && <pre>{otherTask0Solution}</pre>}
+              </label>
+              <input
+                className="other-form_input"
+                type="text"
+                id="test"
+                name="otherQuery"
+                value={otherQuery}
+                onChange={(e) => setOtherQuery(e.target.value)}
+              />
+              <button className="other-form_button" type="submit">
+                Submit
               </button>
-              {visibleAnswer === 1 && <pre>{otherTask0Solution}</pre>}
-            </label>
-            <input
-              className="other-form_input"
-              type="text"
-              id="test"
-              name="otherQuery"
-              value={otherQuery}
-              onChange={(e) => setOtherQuery(e.target.value)}
-            />
-            <button className="other-form_button" type="submit">
-              Submit
-            </button>
-          </form>
-        )}
-        {otherTask1 && (
-          <form
-            className="other-form"
-            action="#"
-            method="post"
-            onSubmit={handleSubmit}
-          >
-            <label className="other-form_label" htmlFor="test">
-              <p className="text-style">{otherTask1Text}</p>
-              <button
-                className="showMe-btn"
-                type="button"
-                onClick={() => handleVisibleAnswer(2)}
-              >
-                {otherShowMe}
+            </form>
+          )}
+          {otherTask1 && (
+            <form
+              className="other-form"
+              action="#"
+              method="post"
+              onSubmit={handleSubmit}
+            >
+              <label className="other-form_label" htmlFor="test">
+                <p className="text-style">{otherTask1Text}</p>
+                <button
+                  className="showMe-btn"
+                  type="button"
+                  onClick={() => handleVisibleAnswer(2)}
+                >
+                  {otherShowMe}
+                </button>
+                {visibleAnswer === 2 && <pre>{otherTask1Solution}</pre>}
+              </label>
+              <input
+                className="other-form_input"
+                type="text"
+                id="test"
+                name="otherQuery"
+                value={otherQuery}
+                onChange={(e) => setOtherQuery(e.target.value)}
+              />
+              <button className="other-form_button" type="submit">
+                Submit
               </button>
-              {visibleAnswer === 2 && <pre>{otherTask1Solution}</pre>}
-            </label>
-            <input
-              className="other-form_input"
-              type="text"
-              id="test"
-              name="otherQuery"
-              value={otherQuery}
-              onChange={(e) => setOtherQuery(e.target.value)}
-            />
-            <button className="other-form_button" type="submit">
-              Submit
-            </button>
-          </form>
-        )}
-        {otherTask2 && (
-          <form
-            className="other-form"
-            action="#"
-            method="post"
-            onSubmit={handleDelete}
-          >
-            <label className="other-form_label" htmlFor="test">
-              <p className="text-style">{otherTask2Text}</p>
-              <button
-                className="showMe-btn"
-                type="button"
-                onClick={() => handleVisibleAnswer(2)}
-              >
-                {otherShowMe}
+            </form>
+          )}
+          {otherTask2 && (
+            <form
+              className="other-form"
+              action="#"
+              method="post"
+              onSubmit={handleDelete}
+            >
+              <label className="other-form_label" htmlFor="test">
+                <p className="text-style">{otherTask2Text}</p>
+                <button
+                  className="showMe-btn"
+                  type="button"
+                  onClick={() => handleVisibleAnswer(2)}
+                >
+                  {otherShowMe}
+                </button>
+                {visibleAnswer === 2 && <pre>{otherTask2Solution}</pre>}
+              </label>
+              <input
+                className="other-form_input"
+                type="text"
+                id="test"
+                name="otherQuery"
+                value={otherQuery}
+                onChange={(e) => setOtherQuery(e.target.value)}
+              />
+              <button className="other-form_button" type="submit">
+                Submit
               </button>
-              {visibleAnswer === 2 && <pre>{otherTask2Solution}</pre>}
-            </label>
-            <input
-              className="other-form_input"
-              type="text"
-              id="test"
-              name="otherQuery"
-              value={otherQuery}
-              onChange={(e) => setOtherQuery(e.target.value)}
-            />
-            <button className="other-form_button" type="submit">
-              Submit
-            </button>
-          </form>
-        )}
-        {otherTask3 && (
-          <form
-            className="other-form"
-            action="#"
-            method="post"
-            onSubmit={updateItem}
-          >
-            <label className="other-form_label" htmlFor="test">
-              <p className="text-style">{otherTask3Text}</p>
-              <button
-                className="showMe-btn"
-                type="button"
-                onClick={() => handleVisibleAnswer(3)}
-              >
-                {otherShowMe}
+            </form>
+          )}
+          {otherTask3 && (
+            <form
+              className="other-form"
+              action="#"
+              method="post"
+              onSubmit={updateItem}
+            >
+              <label className="other-form_label" htmlFor="test">
+                <p className="text-style">{otherTask3Text}</p>
+                <button
+                  className="showMe-btn"
+                  type="button"
+                  onClick={() => handleVisibleAnswer(3)}
+                >
+                  {otherShowMe}
+                </button>
+                {visibleAnswer === 3 && <pre>{otherTask3Solution}</pre>}
+              </label>
+              <input
+                className="other-form_input"
+                type="text"
+                id="test"
+                name="otherQuery"
+                value={otherQuery}
+                onChange={(e) => setOtherQuery(e.target.value)}
+              />
+              <button className="other-form_button" type="submit">
+                Submit
               </button>
-              {visibleAnswer === 3 && <pre>{otherTask3Solution}</pre>}
-            </label>
-            <input
-              className="other-form_input"
-              type="text"
-              id="test"
-              name="otherQuery"
-              value={otherQuery}
-              onChange={(e) => setOtherQuery(e.target.value)}
-            />
-            <button className="other-form_button" type="submit">
-              Submit
-            </button>
-          </form>
-        )}
-        {otherTask4 && (
-          <form
-            className="other-form"
-            action="#"
-            method="post"
-            onSubmit={handleDelete}
-          >
-            <label className="other-form_label" htmlFor="test">
-              <p className="text-style">{otherTask4Text}</p>
-              <button
-                className="showMe-btn"
-                type="button"
-                onClick={() => handleVisibleAnswer(4)}
-              >
-                {otherShowMe}
+            </form>
+          )}
+          {otherTask4 && (
+            <form
+              className="other-form"
+              action="#"
+              method="post"
+              onSubmit={handleDelete}
+            >
+              <label className="other-form_label" htmlFor="test">
+                <p className="text-style">{otherTask4Text}</p>
+                <button
+                  className="showMe-btn"
+                  type="button"
+                  onClick={() => handleVisibleAnswer(4)}
+                >
+                  {otherShowMe}
+                </button>
+                {visibleAnswer === 4 && <pre>{otherTask4Solution}</pre>}
+              </label>
+              <input
+                className="other-form_input"
+                type="text"
+                id="test"
+                name="otherQuery"
+                value={otherQuery}
+                onChange={(e) => setOtherQuery(e.target.value)}
+              />
+              <button className="other-form_button" type="submit">
+                Submit
               </button>
-              {visibleAnswer === 4 && <pre>{otherTask4Solution}</pre>}
-            </label>
-            <input
-              className="other-form_input"
-              type="text"
-              id="test"
-              name="otherQuery"
-              value={otherQuery}
-              onChange={(e) => setOtherQuery(e.target.value)}
-            />
-            <button className="other-form_button" type="submit">
-              Submit
-            </button>
-          </form>
-        )}
-        {otherTask5 && <h2>GGWP</h2>}
-        {tableData && (
-          <table className="other-table">
-            <thead className="other-table_thead">
-              <tr className="other-table_tr">
-                <td className="other-table_td">ID</td>
-                <td className="other-table_td">Fruit Name</td>
-                <td className="other-table_td">Quantity</td>
-                <td className="other-table_td">Delete method</td>
-              </tr>
-            </thead>
-            <tbody className="other-table_tbody">
-              {tableData.map((item) => {
-                return (
-                  <tr className="other-table_tr" key={item.id}>
-                    <td className="other-table_td">{item.id}</td>
-                    <td className="other-table_td">{item.fruit_name}</td>
-                    <td className="other-table_td">{item.quantity}</td>
-                    <td className="other-table_td">
-                      <button onClick={() => deleteItem(item.id)}>
-                        Delete item
-                      </button>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        )}
-      </main>
-    </div>
+            </form>
+          )}
+          {otherTask5 && (
+            <>
+              <p>
+                You have successfully completed the sqlite UPDATE, INSERT INTO
+                and DELETE statements. Congratulations!
+              </p>
+              <h2>GGWP</h2>
+            </>
+          )}
+          {tableData && (
+            <table className="other-table">
+              <thead className="other-table_thead">
+                <tr className="other-table_tr">
+                  <td className="other-table_td">ID</td>
+                  <td className="other-table_td">Fruit Name</td>
+                  <td className="other-table_td">Quantity</td>
+                  <td className="other-table_td">Delete method</td>
+                </tr>
+              </thead>
+              <tbody className="other-table_tbody">
+                {tableData.map((item) => {
+                  return (
+                    <tr className="other-table_tr" key={item.id}>
+                      <td className="other-table_td">{item.id}</td>
+                      <td className="other-table_td">{item.fruit_name}</td>
+                      <td className="other-table_td">{item.quantity}</td>
+                      <td className="other-table_td">
+                        <button onClick={() => deleteItem(item.id)}>
+                          Delete item
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          )}
+        </main>
+      </div>}
+    </>
   );
 };
 

@@ -26,6 +26,8 @@ interface SelectTaskProps {
   error: string | null;
   setError: React.Dispatch<React.SetStateAction<string | null>>;
   showMe: string;
+  isVisibleOtherTask: boolean;
+  setIsVisibleOtherTask: React.Dispatch<React.SetStateAction<Boolean>>;
 }
 
 const SelectTaskComponent: FC<SelectTaskProps> = ({
@@ -34,7 +36,15 @@ const SelectTaskComponent: FC<SelectTaskProps> = ({
   error,
   setError,
   showMe,
+  isVisibleOtherTask,
+  setIsVisibleOtherTask,
 }) => {
+
+  const toggleVisibilityOtherQ = (): void => {
+    setIsVisibleTask(false);
+    setIsVisibleOtherTask(true);
+  };
+  
   const [query, setQuery] = useState<string>("");
   const [result, setResult] = useState<PersonsData[]>([]);
 
@@ -294,10 +304,12 @@ const SelectTaskComponent: FC<SelectTaskProps> = ({
             </form>
           )}
           {task5 && (
-            <p>
+            <><p>
               Gratulálok! Sikeresen megoldottad a feladatot. Remélem sikerült
               elsajátítani az SQLite SELECT utasítás alapjait!
             </p>
+            <button onClick={toggleVisibilityOtherQ}>Fedezd fel az sqlite többi utasítását is!</button>
+            </>
           )}
           {error && <p className="error">{error}</p>}
           {result.length > 0 && (

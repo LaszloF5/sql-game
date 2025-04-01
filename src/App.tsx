@@ -10,8 +10,9 @@ function App() {
   const [error, setError] = useState<string | null>(null);
   const showMe: string = "Show me the answer!";
 
-  const [isVisibleTutorial, setIsVisibleTutorial] = useState<boolean>(true);
-  const [isVisibleTask, setIsVisibleTask] = useState<boolean>(false);
+  const [isVisibleTutorial, setIsVisibleTutorial] = useState<boolean>(false);
+  const [isVisibleTask, setIsVisibleTask] = useState<boolean>(true);
+  const [isVisibleOtherTask, setIsVisibleOtherTask] = useState<boolean>(false);
 
   return (
     <div className="App">
@@ -19,8 +20,11 @@ function App() {
         <h1>Learn SQLite</h1>
       </header>
       <main>
-        <OtherQueries/>
-        <DataBaseStructure/>
+        <OtherQueries
+          isVisibleOtherTask={isVisibleOtherTask}
+          setIsVisibleOtherTask={setIsVisibleOtherTask}
+        />
+        <DataBaseStructure />
         <TutorialSelectComponent
           showMe={showMe}
           isVisibleTutorial={isVisibleTutorial}
@@ -34,6 +38,8 @@ function App() {
           error={error}
           setError={setError}
           showMe={showMe}
+          isVisibleOtherTask={isVisibleOtherTask}
+          setIsVisibleOtherTask={setIsVisibleOtherTask}
         />
       </main>
     </div>
