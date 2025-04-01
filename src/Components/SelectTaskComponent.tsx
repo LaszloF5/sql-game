@@ -67,12 +67,21 @@ const SelectTaskComponent: FC<SelectTaskProps> = ({
   const task4Solution: string = `SELECT car_type from Persons JOIN Zoo ON Persons.id = Zoo.person_id WHERE car_type LIKE '%Taurus' AND Zoo.ticket_type = 'vip'`;
   const task5Solution: string = `SELECT * FROM Persons JOIN Zoo ON Persons.id = Zoo.Person_id WHERE gender = 'male' AND age > 49 AND annual_income < 490281 AND car_type LIKE '%Taurus' AND ticket_type = 'vip'`;
 
-  const task1Text: string =
-    "Első lekérdezés \n Az első tanú egy férfit látott, de az arcát nem tudta megnézni közelebbről. Viszont határozottan állította, hogy a neme férfi. Ez szerencsére már egy kiindulópont. \n Keresd meg az összes férfit a Persons táblában, és listázd ki az összes oszlopot.";
-  const task2Text: string = `Második lekérdezés \n A második tanú is látta a férfit, viszont észrevette hogy a mozgása lassú volt, és a szakálla és haja is ősz volt. Valószínű hogy az átlagnál idősebb volt a férfi. \n Derítsd ki az összes ember átlagéletkorát a Persons táblába. Az átlagéletkort AS age ként jelenítsd meg a táblázatban.`;
-  const task3Text: string = `Harmadik lekérdezés \n A harmadik tanú látta, hogy rosszul öltözött volt a férfi. Az átlagnál biztos hogy kevesebb jövedelemmel rendelkezik. \n Derítsd ki, hogy mennyi a Persons táblában lévő emberek átlagkeresete. Csak az átlagkereset oszlopot jelenítsd meg. Jegyezd fel a lekérdezés eredményét.`;
-  const task4Text: string = `Negyedik lekérdezés \n A negyedik tanú nem látta az autó márkáját, csak a típusát, ami Taurus volt. A helyszíntől nem messze parkolt, amibe az idős férfi sietve szállt be. A karján zöld karszalag volt, pont olyan mint amilyet az állatkertben adnak a VIP jegyet vásárlóknak. \n Derítsd ki, hogy kiknek van Taurus típusú autójuk, és kik voltak az állatkertben, akik VIP jegyet vásároltak. Segítségedre lesz az alábbi lekérdezés, neked csak folytatnod kell: \n SELECT car_type from Persons JOIN zoo ON Persons.id = Zoo.person_id WHERE`;
-  const task5Text: string = `Kombináld össze a WHERE után az előző lekérdezésben összegyűjtött adatokat és lekérdezési feltételeket. \n(Mivel a két táblában nincsenek azonos oszlopok, ezért a WHERE után NEM kell a táblák oszlopait megnevezni így: Persons.age, elég az age -oszlop) Folytasd a következő lekérdezést: \nSELECT * FROM Persons JOIN Zoo ON Persons.id = Zoo.Person_id WHERE `;
+  const task1Text: string = 
+  "Első lekérdezés \n Az első tanú egy férfit látott, de az arcát nem tudta megnézni közelebbről. Viszont határozottan állította, hogy a neme férfi. Ez szerencsére már egy kiindulópont. \n Keresd meg és listázd ki az összes férfit a Persons táblából, az összes oszlop megjelenítésével.";  
+
+const task2Text: string = 
+  "Második lekérdezés \n A második tanú észrevette, hogy a férfi mozgása lassú volt, a szakálla és haja pedig ősz. Ez arra utal, hogy az átlagnál idősebb lehetett. \n Derítsd ki a Persons táblában szereplő emberek átlagéletkorát! Az eredményt az age oszlopnév alatt jelenítsd meg a táblázatban.";  
+
+const task3Text: string = 
+  "Harmadik lekérdezés \n A harmadik tanú azt mondta, hogy a férfi rosszul öltözött volt, ami arra utal, hogy az átlagnál alacsonyabb jövedelemmel rendelkezik. \n Határozd meg a Persons táblában lévő emberek átlagkeresetét! Az eredménynek csak az átlagkeresetet kell tartalmaznia, az oszlopnév pedig annual_income legyen.";  
+
+const task4Text: string = 
+  "Negyedik lekérdezés \n A negyedik tanú nem látta az autó márkáját, csak a típusát: Taurus. A jármű a helyszíntől nem messze parkolt, ahova az idős férfi sietve szállt be. A tanú azt is észrevette, hogy a karján zöld karszalag volt, amelyet az állatkert VIP-jegyet vásárló látogatói kapnak. \n Derítsd ki, kik rendelkeznek Taurus típusú autóval és kik vásároltak VIP jegyet az állatkertben! \n Segítségképpen itt van egy részleges lekérdezés, amelyet neked kell befejezned: \n SELECT car_type FROM Persons JOIN Zoo ON Persons.id = Zoo.person_id WHERE";  
+
+const task5Text: string = 
+  "Ötödik lekérdezés \n Most kombinálnod kell az eddig összegyűjtött adatokat és lekérdezési feltételeket. \n Keresd meg azokat a személyeket, akik megfelelnek a következő kritériumoknak: férfiak, idősebbek az átlagnál, alacsonyabb keresetűek, Taurus típusú autót vezetnek és VIP jegyet vásároltak az állatkertben. \n Mivel a két tábla oszlopai különböznek, a WHERE feltételben elég az oszlopneveket megadni (például age), nem kell eléjük írni a táblanevet (például Persons.age). \n Folytasd az alábbi lekérdezést: \n SELECT * FROM Persons JOIN Zoo ON Persons.id = Zoo.Person_id WHERE";  
+
 
   const getMyQuery = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

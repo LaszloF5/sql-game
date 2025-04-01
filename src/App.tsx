@@ -56,4 +56,5 @@ TODO:
   - átnézni, mennyire érthető az egész,
   - az Session táblához is készíteni struktúrát,
   - az egészet lefordítani,
+  - A nyelvekre: magyar és angol verzió is lesz, kell 1 toggle btn.
 */

@@ -54,14 +54,20 @@ const TutorialSelectComponent: FC<TutorialSelectProps> = ({
   const tutorial4Solution: string = `SELECT crime_report from Police_db LIMIT 10`;
   const tutorial5Solution: string = `SELECT city FROM Police_db WHERE city LIKE 'Lake%'`;
 
-  const tutorial1Text: string = `Select lekérdezés oszlopok szerint. \n A SELECT * FROM Police_db -vel az összes oszlopot lekérdezzük. Próbáld ki. Ha sikerült, a * helyére írd be a city -t, mivel csak a city oszlopot szeretnénk most lekérdezni.`;
-  const tutorial2Text: string = `Select lekérdezés avg-vel kombinálva. \n Most az előzőhöz hasonlóan a SELECT-et kell használni, viszont kiegészítjük az AVG() -vel. A zárójelek közé annak az oszlopnak a neve kerül, amelyiknek az átlagára kíváncsiak vagyunk. Nézzük meg az id-k átlagát ebben a lekérdezésben. Nevezzük el a megjeleníteni kívánt oszlopot id-nek. Ez az AVG() után AS id vel tudod megtenni.`;
-  const tutorial3Text: string = `Derítsd ki, hogy található-e olyan oszlop, ahol az id nagyobb mint 50. \n Csak az id oszlop jelenjen meg. A SELECT id from Police_Db lekérdezést a WHERE id > 50 -el folytasd.`;
-  const tutorial4Text: string = `Listázz ki 10 bűnügyi jelentést. \n Csak a bűnügyi jelentések jelenjenek meg. Ennek a lekérdezésnek a megírásához már majdnem minden tudás a rendelkezésedre áll. A 10 jelentés megjelenítéséhez használd a lekérdezés végén a LIMIT 10 utasítást.
-      `;
+  const tutorial1Text: string =
+    "SELECT lekérdezés oszlopok szerint. \n A SELECT * FROM Police_db lekérdezéssel az összes oszlopot megjeleníthetjük. \n Próbáld ki ezt a lekérdezést! \n Ha sikerült, módosítsd úgy, hogy csak a city oszlopot jelenítsd meg az összes  (*) helyett.";
 
-  const tutorial5Text: string = `Keresd meg az összes olyan várost, ami Lake szóval kezdődik. \n Ehhez segítségedre lesz a LIKE 'Lake%' operátor, amit a WHERE után kell írnod.
-      `;
+  const tutorial2Text: string =
+    "SELECT lekérdezés AVG() függvénnyel kombinálva. \n Az előzőhöz hasonlóan most is a SELECT-et használjuk, de kiegészítjük az AVG() függvénnyel. \n A zárójelek közé annak az oszlopnak a nevét kell írnod, amelynek az átlagértékét szeretnéd kiszámolni. \n Most az id oszlop átlagát számoljuk ki. \n Az eredményoszlop nevét az AS id utasítással tudod megadni.";
+
+  const tutorial3Text: string =
+    "Ellenőrizd, hogy található-e olyan rekord, ahol az id nagyobb, mint 50. \n Csak az id oszlop értékei jelenjenek meg. \n A SELECT id FROM Police_db lekérdezést egészítsd ki a WHERE id > 50 feltétellel.";
+
+  const tutorial4Text: string =
+    "Listázz ki 10 bűnügyi jelentést. \n Csak a bűnügyi jelentések jelenjenek meg. \n Ennek a lekérdezésnek a megírásához már majdnem minden szükséges tudásod megvan! \n A 10 jelentés megjelenítéséhez a lekérdezés végére írd hozzá a LIMIT 10 utasítást.";
+
+  const tutorial5Text: string =
+    "Keresd meg az összes olyan várost, amelynek neve Lake szóval kezdődik. \n Ehhez a LIKE 'Lake%' operátort kell használnod a WHERE után.";
 
   const getTutorialQuery = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
