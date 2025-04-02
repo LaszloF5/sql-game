@@ -126,12 +126,15 @@ app.delete("/api/session", (req, res) => {
 
   const possibleQuery1 = "DELETE FROM Session WHERE id = 1";
   const possibleQuery2 = "DELETE FROM Session WHERE id = 2";
+  const possibleQuery3 = "del";
 
   let sql;
   if (otherQuery === possibleQuery1) {
     sql = "DELETE FROM Session WHERE id = 1";
   } else if (otherQuery === possibleQuery2) {
     sql = "DELETE FROM Session WHERE id = 2";
+  } else if (otherQuery === possibleQuery3) {
+    sql = "DELETE FROM Session";
   } else {
     return res.status(400).json({ error: "Invalid query" });
   }
@@ -141,6 +144,9 @@ app.delete("/api/session", (req, res) => {
       return res.status(500).json({ error: err.message });
     }
     if (this.changes === 0) {
+      if (otherQuery === possibleQuery3) {
+        return console.log('The db was empty.');
+      }
       return res.status(404).json({ error: "Session not found" });
     }
 
@@ -150,20 +156,24 @@ app.delete("/api/session", (req, res) => {
       }
 
       if (row.count === 0) {
-        db.run("DELETE FROM sqlite_sequence WHERE name = 'Session'", [], (err) => {
-          if (err) {
-            return res.status(500).json({ error: err.message });
+        db.run(
+          "DELETE FROM sqlite_sequence WHERE name = 'Session'",
+          [],
+          (err) => {
+            if (err) {
+              return res.status(500).json({ error: err.message });
+            }
+            return res.json({
+              message: "Session deleted successfully and ID sequence reset.",
+            });
           }
-          return res.json({ message: "Session deleted successfully and ID sequence reset." });
-        });
+        );
       } else {
         return res.json({ message: "Session deleted successfully." });
       }
     });
   });
 });
-
-
 
 // Ezt később töröljük.
 
@@ -245,6 +255,16 @@ app.put("/api/session", (req, res) => {
   );
 });
 
+// Delete Session datas
+
+app.post("/api/session", [], (req, res) => {
+  db.run("DELETE FROM Session", [], (err) => {
+    if (err) {
+      return res.status(500).json({ error: err.message });
+    }
+    res.json({ message: "All Session data has been deleted." });
+  });
+});
 
 const crimeTypes = [
   "Theft",
@@ -1024,16 +1044,6 @@ app.get("/api/solution", (req, res) => {
     }
   );
 });
-
-// const deletePersons = () => {
-//     db.run(`DELETE FROM Zoo`, (err) => {
-//         if (err) {
-//             console.error("�� Error deleting persons:", err.message);
-//         } else {
-//             console.log("�� Személyek törlésére sikeresen megtörtént.");
-//         }
-//     })
-// }
 
 app.post("/api/PoliceDB", (req, res) => {
   const { tutorialQuery } = req.body;

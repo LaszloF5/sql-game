@@ -39,12 +39,34 @@ const SelectTaskComponent: FC<SelectTaskProps> = ({
   isVisibleOtherTask,
   setIsVisibleOtherTask,
 }) => {
+  // Így 100% hogy tiszta lesz a Session tábla.
+
+  const clearSession = async () => {
+    try {
+      const response = await axios.delete("http://localhost:5000/api/session", {
+        data: { otherQuery: "del" },
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      console.log("Sikeres törlés:", response.data);
+      return response.data;
+    } catch (error) {
+      console.error("Hiba a session törlésekor:", {
+        status: error.response?.status,
+        message: error.response?.data?.error || error.message,
+      });
+      throw error;
+    }
+  };
 
   const toggleVisibilityOtherQ = (): void => {
+    clearSession();
     setIsVisibleTask(false);
     setIsVisibleOtherTask(true);
   };
-  
+
   const [query, setQuery] = useState<string>("");
   const [result, setResult] = useState<PersonsData[]>([]);
 
@@ -63,25 +85,24 @@ const SelectTaskComponent: FC<SelectTaskProps> = ({
 
   const task1Solution: string = `SELECT * FROM Persons WHERE gender = 'male'`;
   const task2Solution: string = `SELECT AVG(age) AS age FROM Persons`;
-  const task3Solution: string = `SELECT AVG(annual_income) AS annual_income from Persons`;
-  const task4Solution: string = `SELECT car_type from Persons JOIN Zoo ON Persons.id = Zoo.person_id WHERE car_type LIKE '%Taurus' AND Zoo.ticket_type = 'vip'`;
+  const task3Solution: string = `SELECT AVG(annual_income) AS annual_income FROM Persons`;
+  const task4Solution: string = `SELECT car_type FROM Persons JOIN Zoo ON Persons.id = Zoo.person_id WHERE car_type LIKE '%Taurus' AND ticket_type = 'vip'`;
   const task5Solution: string = `SELECT * FROM Persons JOIN Zoo ON Persons.id = Zoo.Person_id WHERE gender = 'male' AND age > 49 AND annual_income < 490281 AND car_type LIKE '%Taurus' AND ticket_type = 'vip'`;
 
-  const task1Text: string = 
-  "Első lekérdezés \n Az első tanú egy férfit látott, de az arcát nem tudta megnézni közelebbről. Viszont határozottan állította, hogy a neme férfi. Ez szerencsére már egy kiindulópont. \n Keresd meg és listázd ki az összes férfit a Persons táblából, az összes oszlop megjelenítésével.";  
+  const task1Text: string =
+    "First Query \n The first witness saw a man, but he couldn't get a closer look at his face. However, he was certain that the person's gender was male. Fortunately, this gives us a starting point. \n Find and list all men from the Persons table, displaying all columns.";
 
-const task2Text: string = 
-  "Második lekérdezés \n A második tanú észrevette, hogy a férfi mozgása lassú volt, a szakálla és haja pedig ősz. Ez arra utal, hogy az átlagnál idősebb lehetett. \n Derítsd ki a Persons táblában szereplő emberek átlagéletkorát! Az eredményt az age oszlopnév alatt jelenítsd meg a táblázatban.";  
+  const task2Text: string =
+    "Second Query \n The second witness noticed that the man's movements were slow, and he had gray hair and a beard. This suggests that he was older than average. \n Determine the average age of the people in the Persons table! Display the result under the column name age in the table.";
 
-const task3Text: string = 
-  "Harmadik lekérdezés \n A harmadik tanú azt mondta, hogy a férfi rosszul öltözött volt, ami arra utal, hogy az átlagnál alacsonyabb jövedelemmel rendelkezik. \n Határozd meg a Persons táblában lévő emberek átlagkeresetét! Az eredménynek csak az átlagkeresetet kell tartalmaznia, az oszlopnév pedig annual_income legyen.";  
+  const task3Text: string =
+    "Third Query \n The third witness stated that the man was poorly dressed, which suggests that he had a lower-than-average income. \n Determine the average income of the people in the Persons table! The result should only include the average income, and the column name should be annual_income.";
 
-const task4Text: string = 
-  "Negyedik lekérdezés \n A negyedik tanú nem látta az autó márkáját, csak a típusát: Taurus. A jármű a helyszíntől nem messze parkolt, ahova az idős férfi sietve szállt be. A tanú azt is észrevette, hogy a karján zöld karszalag volt, amelyet az állatkert VIP-jegyet vásárló látogatói kapnak. \n Derítsd ki, kik rendelkeznek Taurus típusú autóval és kik vásároltak VIP jegyet az állatkertben! \n Segítségképpen itt van egy részleges lekérdezés, amelyet neked kell befejezned: \n SELECT car_type FROM Persons JOIN Zoo ON Persons.id = Zoo.person_id WHERE";  
+  const task4Text: string =
+    "Fourth Query \n The fourth witness did not see the car's brand, only its model: Taurus. The vehicle was parked not far from the scene, where the elderly man hurriedly got in. The witness also noticed that he was wearing a green wristband, which is given to visitors who purchase a VIP ticket at the zoo. \n Find out who owns a Taurus model car and who has purchased a VIP ticket at the zoo! \n As a hint, here is a partial query that you need to complete: \n SELECT car_type FROM Persons JOIN Zoo ON Persons.id = Zoo.person_id WHERE";
 
-const task5Text: string = 
-  "Ötödik lekérdezés \n Most kombinálnod kell az eddig összegyűjtött adatokat és lekérdezési feltételeket. \n Keresd meg azokat a személyeket, akik megfelelnek a következő kritériumoknak: férfiak, idősebbek az átlagnál, alacsonyabb keresetűek, Taurus típusú autót vezetnek és VIP jegyet vásároltak az állatkertben. \n Mivel a két tábla oszlopai különböznek, a WHERE feltételben elég az oszlopneveket megadni (például age), nem kell eléjük írni a táblanevet (például Persons.age). \n Folytasd az alábbi lekérdezést: \n SELECT * FROM Persons JOIN Zoo ON Persons.id = Zoo.Person_id WHERE";  
-
+  const task5Text: string =
+    "Fifth Query \n Now you need to combine the collected data and query conditions. \n Find the individuals who meet the following criteria: male, older than average, lower income, drive a Taurus model car, and have purchased a VIP ticket at the zoo. \n Since the columns of the two tables differ, in the WHERE condition, it is sufficient to specify the column names (e.g., age) without prefixing them with the table name (e.g., Persons.age). \n Continue the following query: \n SELECT * FROM Persons JOIN Zoo ON Persons.id = Zoo.Person_id WHERE";
 
   const getMyQuery = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -98,33 +119,36 @@ const task5Text: string =
       console.log("Response status: ", response.status);
       console.log(response.data);
       if (
-        query.replace(/"/g, "'") ===
+        query.trim().replace(/"/g, "'") ===
         `SELECT * FROM Persons WHERE gender = 'male'`
       ) {
         console.log("Go to the second witness testimony.");
         setTask0(false);
         setTask1(true);
       }
-      if (query === `SELECT AVG(age) AS age FROM Persons`) {
+      if (query.trim() === `SELECT AVG(age) AS age FROM Persons`) {
         console.log("Go to the third witness testimony.");
         setTask1(false);
         setTask2(true);
       }
-      if (query === `SELECT AVG(annual_income) AS annual_income from Persons`) {
+      if (
+        query.trim() ===
+        `SELECT AVG(annual_income) AS annual_income FROM Persons`
+      ) {
         console.log("Go to the fourth witness testimony.");
         setTask2(false);
         setTask3(true);
       }
       if (
-        query.replace(/"/g, "'") ===
-        `SELECT car_type from Persons JOIN Zoo ON Persons.id = Zoo.person_id WHERE car_type LIKE '%Taurus' AND Zoo.ticket_type = 'vip'`
+        query.trim().replace(/"/g, "'") ===
+        `SELECT car_type FROM Persons JOIN Zoo ON Persons.id = Zoo.person_id WHERE car_type LIKE '%Taurus' AND ticket_type = 'vip'`
       ) {
         console.log("Go to the verification query.");
         setTask3(false);
         setTask4(true);
       }
       if (
-        query.replace(/"/g, "'") ===
+        query.trim().replace(/"/g, "'") ===
         `SELECT * FROM Persons JOIN Zoo ON Persons.id = Zoo.Person_id WHERE gender = 'male' AND age > 49 AND annual_income < 490281 AND car_type LIKE '%Taurus' AND ticket_type = 'vip'`
       ) {
         console.log("GGWP.");
@@ -313,11 +337,18 @@ const task5Text: string =
             </form>
           )}
           {task5 && (
-            <><p>
-              Gratulálok! Sikeresen megoldottad a feladatot. Remélem sikerült
-              elsajátítani az SQLite SELECT utasítás alapjait!
-            </p>
-            <button onClick={toggleVisibilityOtherQ}>Fedezd fel az sqlite többi utasítását is!</button>
+            <>
+              <p>
+                Congratulations! You have successfully completed the task. I
+                hope you have mastered the basics of the SQLite SELECT
+                statement!
+              </p>
+              <button
+                className="task-form_button"
+                onClick={toggleVisibilityOtherQ}
+              >
+                Discover other sqlite commands!{" "}
+              </button>
             </>
           )}
           {error && <p className="error">{error}</p>}

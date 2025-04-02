@@ -36,36 +36,42 @@ const OtherQueries: FC<visibleState> = ({
   const otherTask3Solution: string = `UPDATE Session SET quantity = '1kg' WHERE fruit_name = 'banana'`;
   const otherTask4Solution: string = `DELETE FROM Session WHERE id = 2`;
 
-  const otherTask0Text: string = `Az INSERT INTO parancs segítségével adatokat tudunk beszúrni egy táblába. A parancs után meg kell adni annak a táblának a nevét, amelybe az adatokat szeretnénk beszúrni – jelen esetben ez a Session tábla. \n
-Ezután zárójelek között felsoroljuk, hogy mely oszlopokba szeretnénk adatokat beszúrni: (fruit_name, quantity). Mivel minden beszúrt értéknek egy adott oszlophoz kell tartoznia, a megadott oszlopok sorrendje fontos. \n
-A VALUES kulcsszó után meg kell adni az oszlopokhoz tartozó értékeket ugyanabban a sorrendben, ahogyan az oszlopokat megadtuk. A szöveges (STRING) típusú értékeket mindig idézőjelek közé kell tenni, ezért szerepel az 'apple' és az '1kg' idézőjelekben. \n
-Feladat: Most próbáld meg saját magad összeállítani ezt az SQL utasítást!`;
-  const otherTask1Text: string = `Az előző feladat példájához hasonlóan most egy újabb rekordot fogunk beszúrni a Session táblába. \n Feladat: Illeszd be a következő adatokat a táblába: \n
+  const otherTask0Text: string = `The INSERT INTO command allows us to insert data into a table. After the command, we need to specify the name of the table where we want to insert the data – in this case, the Session table. \n
+Next, we list the columns where we want to insert data in parentheses: (fruit_name, quantity). Since each inserted value must belong to a specific column, the order of the specified columns is important. \n
+After the VALUES keyword, we must provide the corresponding values in the same order as the columns were specified. String-type values should always be enclosed in quotation marks, which is why 'apple' and '1kg' are in quotes. \n
+Task: Now try to construct this SQL statement on your own!`;
+
+const otherTask1Text: string = `Similar to the previous example, we will now insert another record into the Session table. \n
+Task: Insert the following data into the table: \n
   fruit_name: 'banana' \n 
   quantity: '2kg' \n
-  Használd az INSERT INTO parancsot a megfelelő formátumban! `;
-  const otherTask2Text: string = `Az SQL DELETE parancs segítségével egy adott rekordot törölhetünk egy táblából. A parancs után meg kell adni annak a táblának a nevét, amelyből az adatokat szeretnénk törölni – jelen esetben a Session tábla. \n
-  Ezután a WHERE kulcsszóval megadjuk a feltételt, hogy melyik sort töröljük. Az id = 1 azt jelenti, hogy a tábla első rekordját (amelynek az id-je 1) töröljük, tehát az 'apple' és '1kg' adatokat tartalmazó sort.\n
-  Fontos, hogy a WHERE feltétel nélkül az egész tábla törlődne, így mindig ügyelj arra, hogy pontosan megadd a törlés feltételeit! \n
-  Most lépésről lépésre végigmegyünk rajta: \n 
-  DELETE FROM Session \n
-  Itt kezdjük az utasítást. A DELETE parancsot követően meg kell adni, hogy melyik táblából szeretnénk törölni. Mivel a feladatban a Session tábla a cél, ezt kell megírnunk. \n
-  WHERE id = 1 \n
-  Miután megadtuk a táblát, következik a WHERE kulcsszó. Ezzel meghatározzuk a törlés feltételét. A WHERE után az id = 1 kifejezés azt jelenti, hogy az id oszlopban lévő 1-es értékkel rendelkező rekordot szeretnénk törölni. Ez fogja biztosítani, hogy csak az adott rekord, az id = 1-hez tartozó sor kerül törlésre. \n
-  Most próbáld meg saját magad összeállítani az SQL utasítást a következő feladatban:\n
-  Töröld a Session táblából az 'apple' nevű gyümölcsöt, amelynek mennyisége '1kg' és az id-je 1.`;
-  const otherTask3Text: string = `Ez a feladat azt mutatja be, hogy hogyan frissítsük egy tábla adatát az SQL UPDATE parancs segítségével. Az UPDATE parancsot akkor használjuk, amikor egy meglévő rekordot szeretnénk módosítani.\n
-  Most lépésről lépésre végigmegyünk rajta, hogy mit, mi után kell írni az SQL utasításban:\n
-  UPDATE Session\n
-  Az UPDATE parancsot a tábla nevével folytatjuk. Mi most a Session táblát szeretnénk frissíteni.\n
-  SET quantity = '1kg'\n
-  A SET kulcsszó segítségével adhatjuk meg, hogy melyik oszlopot szeretnénk módosítani. Mivel most a quantity oszlopot kell módosítani, az új értéket, a '1kg'-ot itt kell megadnunk.\n
-  WHERE id = 2\n
-  A WHERE kulcsszó segítségével tudjuk meghatározni a módosítás feltételét. Mivel a feladatban azt kérik, hogy a 2-es id-jű rekordot módosítsuk, itt kell megadni, hogy az id = 2 legyen.\n
-  Az SQL UPDATE parancs segítségével egy meglévő rekordot tudunk módosítani. Most a Session táblában a banana nevű gyümölcs mennyiségét kell frissítenünk. Az id-ja 2, és az új mennyiség 1kg lesz.`;
-  const otherTask4Text: string = `Most pedig frissítsük fel a DELETE utasítás használatát. \n
-  A feladatod, hogy töröld a Session táblából a banana nevű gyümölcsöt, melynek id-je 2. \n
-  Használj DELETE parancsot a rekord eltávolításához!`;
+  Use the INSERT INTO command in the correct format!`;
+
+const otherTask2Text: string = `The SQL DELETE command allows us to delete a specific record from a table. After the command, we need to specify the name of the table from which we want to delete data – in this case, the Session table. \n
+Then, using the WHERE keyword, we define the condition for deleting a specific row. The condition id = 1 means that we will delete the first record in the table (with id 1), which contains the data 'apple' and '1kg'.\n
+It's important to note that without the WHERE condition, the entire table would be deleted, so always ensure that you specify the deletion conditions precisely! \n
+Now, let's go through it step by step: \n 
+DELETE FROM Session \n
+This is how we start the command. After the DELETE keyword, we need to specify the table from which we want to delete data. Since the task involves the Session table, this is what we need to write. \n
+WHERE id = 1 \n
+After specifying the table, we use the WHERE keyword to set the deletion condition. The expression id = 1 means that we want to delete the record where the id column has the value 1. This ensures that only the specific record, with id = 1, is deleted. \n
+Now try to construct the SQL statement on your own in the next task:\n
+Delete the record from the Session table where the fruit is 'apple', the quantity is '1kg', and the id is 1.`;
+
+const otherTask3Text: string = `This task demonstrates how to update a table's data using the SQL UPDATE command. The UPDATE command is used when we want to modify an existing record.\n
+Now, let's go step by step through the SQL statement structure:\n
+UPDATE Session\n
+The UPDATE command is followed by the name of the table. In this case, we want to update the Session table.\n
+SET quantity = '1kg'\n
+The SET keyword specifies which column we want to update. Since we need to update the quantity column, we provide the new value, '1kg', here.\n
+WHERE fruit_name = 'banana'\n
+The WHERE keyword is used to define the update condition. Since the task requires updating the record where fruit_name is 'banana', we specify fruit_name = 'banana' here.\n
+Using the SQL UPDATE command, we can modify an existing record. Now, update the quantity of the banana entry in the Session table. The fruit_name should be 'banana', and the new quantity should be '1kg'.`;
+
+const otherTask4Text: string = `Now, let's refresh our knowledge of the DELETE statement. \n
+Your task is to delete the banana fruit from the Session table, where the id is 2. \n
+Use the DELETE command to remove the record!`;
+
 
   const [otherQuery, setOtherQuery] = useState<string>("");
   const [tableData, setTableData] = useState<OtherQueryData | string>("");
@@ -203,7 +209,7 @@ Feladat: Most próbáld meg saját magad összeállítani ezt az SQL utasítást
       {isVisibleOtherTask && <div>
         <h2>Other Queries</h2>
         <main className="otherQueries-container">
-          <button type="button" onClick={getElements}>
+          <button className="other-form_button" type="button" onClick={getElements}>
             Get my elements
           </button>
           {otherTask0 && (
@@ -367,7 +373,7 @@ Feladat: Most próbáld meg saját magad összeállítani ezt az SQL utasítást
                 You have successfully completed the sqlite UPDATE, INSERT INTO
                 and DELETE statements. Congratulations!
               </p>
-              <h2>GGWP</h2>
+              <button type='button'>Go to the home page</button>
             </>
           )}
           {tableData && (

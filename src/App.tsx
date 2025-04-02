@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { Link, Routes, Route } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import "./App.css";
 import { createInferTypeNode } from "typescript";
 import TutorialSelectComponent from "./Components/TutorialSelectComponent.tsx";
@@ -7,6 +9,8 @@ import DataBaseStructure from "./Components/DataBaseStructure.tsx";
 import OtherQueries from "./Components/OtherQueries.tsx";
 
 function App() {
+  const location = useLocation();
+
   const [error, setError] = useState<string | null>(null);
   const showMe: string = "Show me the answer!";
 
@@ -17,30 +21,44 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <h1>Learn SQLite</h1>
+        <nav className="header-nav">
+          <h1 className="header-nav_h1">Learn SQLite</h1>
+          <Link className="header-nav_link" to="/">
+            Home
+          </Link>
+          <Link className="header-nav_link" to="/db-structure">
+            Database structure
+          </Link>
+        </nav>
       </header>
       <main>
-        <OtherQueries
-          isVisibleOtherTask={isVisibleOtherTask}
-          setIsVisibleOtherTask={setIsVisibleOtherTask}
-        />
-        <DataBaseStructure />
-        <TutorialSelectComponent
-          showMe={showMe}
-          isVisibleTutorial={isVisibleTutorial}
-          setIsVisibleTutorial={setIsVisibleTutorial}
-          setIsVisibleTask={setIsVisibleTask}
-          setError={setError}
-        />
-        <SelectTaskComponent
-          isVisibleTask={isVisibleTask}
-          setIsVisibleTask={setIsVisibleTask}
-          error={error}
-          setError={setError}
-          showMe={showMe}
-          isVisibleOtherTask={isVisibleOtherTask}
-          setIsVisibleOtherTask={setIsVisibleOtherTask}
-        />
+        <Routes>
+          <Route path="/db-structure" element={<DataBaseStructure />} />
+        </Routes>
+        {location.pathname !== "/db-structure" && (
+          <>
+            <TutorialSelectComponent
+              showMe={showMe}
+              isVisibleTutorial={isVisibleTutorial}
+              setIsVisibleTutorial={setIsVisibleTutorial}
+              setIsVisibleTask={setIsVisibleTask}
+              setError={setError}
+            />
+            <SelectTaskComponent
+              isVisibleTask={isVisibleTask}
+              setIsVisibleTask={setIsVisibleTask}
+              error={error}
+              setError={setError}
+              showMe={showMe}
+              isVisibleOtherTask={isVisibleOtherTask}
+              setIsVisibleOtherTask={setIsVisibleOtherTask}
+            />
+            <OtherQueries
+              isVisibleOtherTask={isVisibleOtherTask}
+              setIsVisibleOtherTask={setIsVisibleOtherTask}
+            />
+          </>
+        )}
       </main>
     </div>
   );

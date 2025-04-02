@@ -51,23 +51,23 @@ const TutorialSelectComponent: FC<TutorialSelectProps> = ({
   const tutorial1Solution: string = `SELECT city FROM Police_db`;
   const tutorial2Solution: string = `SELECT AVG(id) AS id FROM Police_db`;
   const tutorial3Solution: string = `SELECT id FROM Police_db WHERE id > 50`;
-  const tutorial4Solution: string = `SELECT crime_report from Police_db LIMIT 10`;
+  const tutorial4Solution: string = `SELECT crime_report FROM Police_db LIMIT 10`;
   const tutorial5Solution: string = `SELECT city FROM Police_db WHERE city LIKE 'Lake%'`;
 
   const tutorial1Text: string =
-    "SELECT lekérdezés oszlopok szerint. \n A SELECT * FROM Police_db lekérdezéssel az összes oszlopot megjeleníthetjük. \n Próbáld ki ezt a lekérdezést! \n Ha sikerült, módosítsd úgy, hogy csak a city oszlopot jelenítsd meg az összes  (*) helyett.";
+    "SELECT query by columns. \n Using the query SELECT * FROM Police_db, we can display all columns. \n Try this query! \n If it works, modify it so that only the city column is displayed instead of all (*).";
 
   const tutorial2Text: string =
-    "SELECT lekérdezés AVG() függvénnyel kombinálva. \n Az előzőhöz hasonlóan most is a SELECT-et használjuk, de kiegészítjük az AVG() függvénnyel. \n A zárójelek közé annak az oszlopnak a nevét kell írnod, amelynek az átlagértékét szeretnéd kiszámolni. \n Most az id oszlop átlagát számoljuk ki. \n Az eredményoszlop nevét az AS id utasítással tudod megadni.";
+    "SELECT query combined with the AVG() function. \n Similar to the previous one, we still use SELECT, but now we add the AVG() function. \n Inside the parentheses, you need to write the name of the column whose average value you want to calculate. \n Now, we will calculate the average of the id column. \n You can name the result column using the AS id statement.";
 
   const tutorial3Text: string =
-    "Ellenőrizd, hogy található-e olyan rekord, ahol az id nagyobb, mint 50. \n Csak az id oszlop értékei jelenjenek meg. \n A SELECT id FROM Police_db lekérdezést egészítsd ki a WHERE id > 50 feltétellel.";
+    "Check if there is a record where the id is greater than 50. \n Only the values of the id column should be displayed. \n Extend the query SELECT id FROM Police_db with the condition WHERE id > 50.";
 
   const tutorial4Text: string =
-    "Listázz ki 10 bűnügyi jelentést. \n Csak a bűnügyi jelentések jelenjenek meg. \n Ennek a lekérdezésnek a megírásához már majdnem minden szükséges tudásod megvan! \n A 10 jelentés megjelenítéséhez a lekérdezés végére írd hozzá a LIMIT 10 utasítást.";
+    "List 10 crime reports. \n Only crime reports should be displayed. \n You already have almost all the necessary knowledge to write this query! \n To display 10 reports, add the LIMIT 10 statement at the end of the query.";
 
   const tutorial5Text: string =
-    "Keresd meg az összes olyan várost, amelynek neve Lake szóval kezdődik. \n Ehhez a LIKE 'Lake%' operátort kell használnod a WHERE után.";
+    "Find all cities whose names start with 'Lake'. \n To do this, use the LIKE 'Lake%' operator after WHERE.";
 
   const getTutorialQuery = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -89,28 +89,30 @@ const TutorialSelectComponent: FC<TutorialSelectProps> = ({
       setTutorialResult(response.data);
       console.log("Response status: ", response.status);
 
-      if (tutorialQuery === `SELECT city FROM Police_db`) {
+      if (tutorialQuery.trim() === `SELECT city FROM Police_db`) {
         console.log("Go to tutorial 2.");
         setTutorial0(false);
         setTutorial1(true);
       }
-      if (tutorialQuery === `SELECT AVG(id) AS id FROM Police_db`) {
+      if (tutorialQuery.trim() === `SELECT AVG(id) AS id FROM Police_db`) {
         console.log("Go to tutorial 3.");
         setTutorial1(false);
         setTutorial2(true);
       }
-      if (tutorialQuery === `SELECT id FROM Police_db WHERE id > 50`) {
+      if (tutorialQuery.trim() === `SELECT id FROM Police_db WHERE id > 50`) {
         console.log("Go to tutorial 4.");
         setTutorial2(false);
         setTutorial3(true);
       }
-      if (tutorialQuery === `SELECT crime_report from Police_db LIMIT 10`) {
+      if (
+        tutorialQuery.trim() === `SELECT crime_report FROM Police_db LIMIT 10`
+      ) {
         console.log("Go to tutorial 5.");
         setTutorial3(false);
         setTutorial4(true);
       }
       if (
-        tutorialQuery.replace(/"/g, "'") ===
+        tutorialQuery.trim().replace(/"/g, "'") ===
         `SELECT city FROM Police_db WHERE city LIKE 'Lake%'`
       ) {
         console.log("Go to the real task.");
@@ -166,7 +168,7 @@ const TutorialSelectComponent: FC<TutorialSelectProps> = ({
           {error && <p className="error">{error}</p>}
           {tutorial1 && (
             <div>
-              <p>Tutorial 1 kész.</p>
+              <p>Tutorial part 1 is done.</p>
               <form className="tutorial-form" onSubmit={getTutorialQuery}>
                 <label
                   className="tutorial-form_label"
@@ -198,7 +200,7 @@ const TutorialSelectComponent: FC<TutorialSelectProps> = ({
           )}
           {tutorial2 && (
             <div>
-              <p>Tutorial 2 kész.</p>
+              <p>Tutorial part 2 is done.</p>
               <form className="tutorial-form" onSubmit={getTutorialQuery}>
                 <label
                   className="tutorial-form_label"
@@ -230,7 +232,7 @@ const TutorialSelectComponent: FC<TutorialSelectProps> = ({
           )}
           {tutorial3 && (
             <div>
-              <p>Tutorial 3 kész.</p>
+              <p>Tutorial part 3 is done.</p>
               <form className="tutorial-form" onSubmit={getTutorialQuery}>
                 <label
                   className="tutorial-form_label"
@@ -262,7 +264,7 @@ const TutorialSelectComponent: FC<TutorialSelectProps> = ({
           )}
           {tutorial4 && (
             <div>
-              <p>Tutorial 4 kész.</p>
+              <p>Tutorial part 4 is done.</p>
               <form className="tutorial-form" onSubmit={getTutorialQuery}>
                 <label
                   className="tutorial-form_label"
@@ -294,9 +296,17 @@ const TutorialSelectComponent: FC<TutorialSelectProps> = ({
           )}
           {tutorial5 && (
             <div>
-              <p>Tutorial 5 kész.</p>
-              <p>Sikeresen teljesítetted a tutorialt, nézzük a feladatot.</p>
-              <button onClick={toggleVisibility}>Tovább a feladathoz.</button>
+              <p>Tutorial part 5 is done.</p>
+              <p>
+                You have successfully completed the tutorial. Now, let's take a
+                look at the real task.
+              </p>
+              <button
+                className="tutorial-form_button"
+                onClick={toggleVisibility}
+              >
+                Go to task
+              </button>
             </div>
           )}
 
