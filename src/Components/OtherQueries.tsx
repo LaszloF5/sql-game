@@ -7,12 +7,44 @@ interface OtherQueryData {
 }
 
 interface visibleState {
+  otherTask0: boolean;
+  otherTask1: boolean;
+  otherTask2: boolean;
+  otherTask3: boolean;
+  otherTask4: boolean;
+  otherTask5: boolean;
+  setOtherTask0: React.Dispatch<React.SetStateAction<boolean>>;
+  setOtherTask1: React.Dispatch<React.SetStateAction<boolean>>;
+  setOtherTask2: React.Dispatch<React.SetStateAction<boolean>>;
+  setOtherTask3: React.Dispatch<React.SetStateAction<boolean>>;
+  setOtherTask4: React.Dispatch<React.SetStateAction<boolean>>;
+  setOtherTask5: React.Dispatch<React.SetStateAction<boolean>>;
+  setTutorial0: React.Dispatch<React.SetStateAction<boolean>>;
+  setTutorial5: React.Dispatch<React.SetStateAction<boolean>>;
+  setTask5: React.Dispatch<React.SetStateAction<boolean>>;
+  importantRules: string;
   isVisibleOtherTask: boolean;
   setIsVisibleOtherTask: React.Dispatch<React.SetStateAction<Boolean>>;
   setIsVisibleTutorial: React.Dispatch<React.SetStateAction<Boolean>>;
 }
 
 const OtherQueries: FC<visibleState> = ({
+  otherTask0,
+  otherTask1,
+  otherTask2,
+  otherTask3,
+  otherTask4,
+  otherTask5,
+  setOtherTask0,
+  setOtherTask1,
+  setOtherTask2,
+  setOtherTask3,
+  setOtherTask4,
+  setOtherTask5,
+  setTutorial0,
+  setTutorial5,
+  setTask5,
+  importantRules,
   isVisibleOtherTask,
   setIsVisibleOtherTask,
   setIsVisibleTutorial,
@@ -20,6 +52,9 @@ const OtherQueries: FC<visibleState> = ({
   const goToTheStart = () => {
     setIsVisibleOtherTask(false);
     setIsVisibleTutorial(true);
+    setTutorial5(false);
+    setTask5(false);
+    setTutorial0(true);
   };
 
   const [visibleAnswer, setVisibleAnswer] = useState<number>(0);
@@ -29,13 +64,6 @@ const OtherQueries: FC<visibleState> = ({
   const handleVisibleAnswer = (otherTaskNumber: number) => {
     setVisibleAnswer(otherTaskNumber);
   };
-
-  const [otherTask0, setOtherTask0] = useState<boolean>(true);
-  const [otherTask1, setOtherTask1] = useState<boolean>(false);
-  const [otherTask2, setOtherTask2] = useState<boolean>(false);
-  const [otherTask3, setOtherTask3] = useState<boolean>(false);
-  const [otherTask4, setOtherTask4] = useState<boolean>(false);
-  const [otherTask5, setOtherTask5] = useState<boolean>(false);
 
   const otherTask0Solution: string = `INSERT INTO Session (fruit_name, quantity) VALUES ('apple', '1kg')`;
   const otherTask1Solution: string = `INSERT INTO Session (fruit_name, quantity) VALUES ('banana', '2kg')`;
@@ -88,7 +116,6 @@ Use the DELETE command to remove the record!`;
     try {
       const response = await axios.get("http://localhost:5000/api/session");
       setTableData(response.data);
-      console.log(response.data);
     } catch (error) {
       console.error("Error:", error);
       alert("An error occurred. Please try again later.");
@@ -103,19 +130,31 @@ Use the DELETE command to remove the record!`;
       alert("Please enter a query");
       return;
     }
+
+    if (
+      (otherQuery.trim() === otherTask0Solution && otherTask0) ||
+      (otherQuery.trim() === otherTask1Solution && otherTask1)
+    ) {
+      console.log("");
+    } else {
+      alert("The given query does not match the expected solution.");
+      return;
+    }
+
+    const formattedQuery = otherQuery.replace(/"/g, "'");
     try {
       const response = await axios.post("http://localhost:5000/api/session", {
-        otherQuery,
+        formattedQuery,
       });
-      console.log(response.data);
       setTableData([...tableData, response.data.newRecord]);
-      if (otherQuery.includes("apple")) {
+      if (formattedQuery.includes("apple")) {
         setOtherTask0(false);
         setOtherTask1(true);
-      } else if (otherQuery.includes("banana")) {
+      } else if (formattedQuery.includes("banana")) {
         setOtherTask1(false);
         setOtherTask2(true);
       }
+      setOtherQuery("");
     } catch (error) {
       console.error("Error:", error);
       alert("An error occurred. Please try again later.");
@@ -129,8 +168,8 @@ Use the DELETE command to remove the record!`;
       const response = await axios.delete(
         `http://localhost:5000/api/session/${i}`
       );
-      console.log(response.data);
       setTableData(tableData.filter((item) => item.id !== i));
+      setOtherQuery("");
     } catch (error) {
       console.error("Error:", error);
       alert("An error occurred. Please try again later.");
@@ -145,20 +184,21 @@ Use the DELETE command to remove the record!`;
       alert("Please enter a query");
       return;
     }
+    const formattedQuery = otherQuery.replace(/"/g, "'");
     const expectedQuery = `UPDATE Session SET quantity = '1kg' WHERE fruit_name = 'banana'`;
-    if (otherQuery.trim() !== expectedQuery) {
+    if (formattedQuery.trim() !== expectedQuery) {
       alert("The query does not match the expected format.");
       return;
     }
 
     try {
       const response = await axios.put("http://localhost:5000/api/session", {
-        otherQuery,
+        formattedQuery,
       });
-      console.log(response.data);
       getElements();
       setOtherTask3(false);
       setOtherTask4(true);
+      setOtherQuery("");
     } catch (error) {
       console.error("Error:", error);
       alert("An error occurred. Please try again later.");
@@ -173,14 +213,25 @@ Use the DELETE command to remove the record!`;
       alert("Please enter a query");
       return;
     }
-    let query: string;
 
+    if (
+      (otherQuery.trim() === otherTask2Solution && otherTask2) ||
+      (otherQuery.trim() === otherTask4Solution && otherTask4)
+    ) {
+      console.log("");
+    } else {
+      alert("The query does not match the expected format.");
+      return;
+    }
+
+    let query: string;
+    const formattedQuery = otherQuery.replace(/"/g, "'").trim();
     const possibleQuery1 = "DELETE FROM Session WHERE id = 1";
     const possibleQuery2 = "DELETE FROM Session WHERE id = 2";
 
-    if (otherQuery === possibleQuery1) {
+    if (formattedQuery === possibleQuery1) {
       query = possibleQuery1;
-    } else if (otherQuery === possibleQuery2) {
+    } else if (formattedQuery === possibleQuery2) {
       query = possibleQuery2;
     } else {
       alert("The query does not match the expected format.");
@@ -189,7 +240,7 @@ Use the DELETE command to remove the record!`;
 
     try {
       const response = await axios.delete("http://localhost:5000/api/session", {
-        data: { otherQuery: query },
+        data: { formattedQuery: query },
       });
       setTableData((prevTableData) => {
         prevTableData.filter((item) => {
@@ -197,12 +248,14 @@ Use the DELETE command to remove the record!`;
         });
       });
       alert("Item deleted successfully.");
-      if (otherQuery.includes(1)) {
+      if (formattedQuery.includes(1)) {
         setOtherTask2(false);
         setOtherTask3(true);
-      } else if (otherQuery.includes(2)) {
+        setOtherQuery("");
+      } else if (formattedQuery.includes(2)) {
         setOtherTask4(false);
         setOtherTask5(true);
+        setOtherQuery("");
       }
       setOtherQuery("");
     } catch (error) {
@@ -232,6 +285,7 @@ Use the DELETE command to remove the record!`;
                 onSubmit={handleSubmit}
               >
                 <label className="other-form_label" htmlFor="test">
+                  <p className="text-style rules">{importantRules}</p>
                   <p className="text-style">{otherTask0Text}</p>
                   <button
                     className="showMe-btn"
@@ -300,11 +354,11 @@ Use the DELETE command to remove the record!`;
                   <button
                     className="showMe-btn"
                     type="button"
-                    onClick={() => handleVisibleAnswer(2)}
+                    onClick={() => handleVisibleAnswer(3)}
                   >
                     {otherShowMe}
                   </button>
-                  {visibleAnswer === 2 && <pre>{otherTask2Solution}</pre>}
+                  {visibleAnswer === 3 && <pre>{otherTask2Solution}</pre>}
                 </label>
                 <input
                   autoFocus
@@ -332,11 +386,11 @@ Use the DELETE command to remove the record!`;
                   <button
                     className="showMe-btn"
                     type="button"
-                    onClick={() => handleVisibleAnswer(3)}
+                    onClick={() => handleVisibleAnswer(4)}
                   >
                     {otherShowMe}
                   </button>
-                  {visibleAnswer === 3 && <pre>{otherTask3Solution}</pre>}
+                  {visibleAnswer === 4 && <pre>{otherTask3Solution}</pre>}
                 </label>
                 <input
                   autoFocus
@@ -364,11 +418,11 @@ Use the DELETE command to remove the record!`;
                   <button
                     className="showMe-btn"
                     type="button"
-                    onClick={() => handleVisibleAnswer(4)}
+                    onClick={() => handleVisibleAnswer(5)}
                   >
                     {otherShowMe}
                   </button>
-                  {visibleAnswer === 4 && <pre>{otherTask4Solution}</pre>}
+                  {visibleAnswer === 5 && <pre>{otherTask4Solution}</pre>}
                 </label>
                 <input
                   autoFocus

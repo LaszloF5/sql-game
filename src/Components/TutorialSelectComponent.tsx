@@ -9,6 +9,19 @@ interface PoliceData {
 }
 
 interface TutorialSelectProps {
+  tutorial0: boolean;
+  tutorial1: boolean;
+  tutorial2: boolean;
+  tutorial3: boolean;
+  tutorial4: boolean;
+  tutorial5: boolean;
+  setTutorial0: React.Dispatch<React.SetStateAction<boolean>>;
+  setTutorial1: React.Dispatch<React.SetStateAction<boolean>>;
+  setTutorial2: React.Dispatch<React.SetStateAction<boolean>>;
+  setTutorial3: React.Dispatch<React.SetStateAction<boolean>>;
+  setTutorial4: React.Dispatch<React.SetStateAction<boolean>>;
+  setTutorial5: React.Dispatch<React.SetStateAction<boolean>>;
+  importantRules: string;
   showMe: boolean;
   isVisibleTutorial: boolean;
   setIsVisibleTutorial: React.Dispatch<React.SetStateAction<boolean>>;
@@ -20,6 +33,19 @@ interface TutorialSelectProps {
 }
 
 const TutorialSelectComponent: FC<TutorialSelectProps> = ({
+  tutorial0,
+  tutorial1,
+  tutorial2,
+  tutorial3,
+  tutorial4,
+  tutorial5,
+  setTutorial0,
+  setTutorial1,
+  setTutorial2,
+  setTutorial3,
+  setTutorial4,
+  setTutorial5,
+  importantRules,
   showMe,
   isVisibleTutorial,
   setIsVisibleTutorial,
@@ -40,13 +66,6 @@ const TutorialSelectComponent: FC<TutorialSelectProps> = ({
 
   const [tutorialQuery, setTutorialQuery] = useState<string>("");
   const [tutorialResult, setTutorialResult] = useState<PoliceData[]>([]);
-
-  const [tutorial0, setTutorial0] = useState<boolean>(true);
-  const [tutorial1, setTutorial1] = useState<boolean>(false);
-  const [tutorial2, setTutorial2] = useState<boolean>(false);
-  const [tutorial3, setTutorial3] = useState<boolean>(false);
-  const [tutorial4, setTutorial4] = useState<boolean>(false);
-  const [tutorial5, setTutorial5] = useState<boolean>(false);
 
   const tutorial1Solution: string = `SELECT city FROM Police_db`;
   const tutorial2Solution: string = `SELECT AVG(id) AS id FROM Police_db`;
@@ -72,6 +91,12 @@ const TutorialSelectComponent: FC<TutorialSelectProps> = ({
   const getTutorialQuery = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError(null);
+    if (tutorialQuery.trim() === `SELECT city FROM Police_db` || tutorialQuery.trim() === `SELECT AVG(id) AS id FROM Police_db` || tutorialQuery.trim() === `SELECT crime_report FROM Police_db LIMIT 10` || tutorialQuery.trim().replace(/"/g, "'") === `SELECT city FROM Police_db WHERE city LIKE 'Lake%'`) {
+      console.log('');
+    } else {
+      alert("The query does not match the expected format.");
+      return;
+    }
     try {
       const response = await axios.post("http://localhost:5000/api/PoliceDB", {
         tutorialQuery,
@@ -89,32 +114,27 @@ const TutorialSelectComponent: FC<TutorialSelectProps> = ({
       setTutorialResult(response.data);
       console.log("Response status: ", response.status);
 
-      if (tutorialQuery.trim() === `SELECT city FROM Police_db`) {
+      if (tutorialQuery.trim() === `SELECT city FROM Police_db` && tutorial0) {
         console.log("Go to tutorial 2.");
         setTutorial0(false);
         setTutorial1(true);
       }
-      if (tutorialQuery.trim() === `SELECT AVG(id) AS id FROM Police_db`) {
+      if (tutorialQuery.trim() === `SELECT AVG(id) AS id FROM Police_db` && tutorial1) {
         console.log("Go to tutorial 3.");
         setTutorial1(false);
         setTutorial2(true);
       }
-      if (tutorialQuery.trim() === `SELECT id FROM Police_db WHERE id > 50`) {
+      if (tutorialQuery.trim() === `SELECT id FROM Police_db WHERE id > 50` && tutorial2) {
         console.log("Go to tutorial 4.");
         setTutorial2(false);
         setTutorial3(true);
       }
-      if (
-        tutorialQuery.trim() === `SELECT crime_report FROM Police_db LIMIT 10`
-      ) {
+      if ( tutorialQuery.trim() === `SELECT crime_report FROM Police_db LIMIT 10` && tutorial3) {
         console.log("Go to tutorial 5.");
         setTutorial3(false);
         setTutorial4(true);
       }
-      if (
-        tutorialQuery.trim().replace(/"/g, "'") ===
-        `SELECT city FROM Police_db WHERE city LIKE 'Lake%'`
-      ) {
+      if (tutorialQuery.trim().replace(/"/g, "'") === `SELECT city FROM Police_db WHERE city LIKE 'Lake%'` && tutorial4) {
         console.log("Go to the real task.");
         setTutorial4(false);
         setTutorial5(true);
@@ -141,6 +161,7 @@ const TutorialSelectComponent: FC<TutorialSelectProps> = ({
                 className="tutorial-form_label"
                 htmlFor="tutorial-query-id"
               >
+                <p className="text-style rules">{importantRules}</p>
                 <p className="text-style">{tutorial1Text}</p>
                 <button
                   className="showMe-btn"

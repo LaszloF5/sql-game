@@ -21,6 +21,19 @@ interface PersonsData {
 }
 
 interface SelectTaskProps {
+  task0: boolean;
+  task1: boolean;
+  task2: boolean;
+  task3: boolean;
+  task4: boolean;
+  task5: boolean;
+  setTask0: React.Dispatch<React.SetStateAction<Boolean>>;
+  setTask1: React.Dispatch<React.SetStateAction<Boolean>>;
+  setTask2: React.Dispatch<React.SetStateAction<Boolean>>;
+  setTask3: React.Dispatch<React.SetStateAction<Boolean>>;
+  setTask4: React.Dispatch<React.SetStateAction<Boolean>>;
+  setTask5: React.Dispatch<React.SetStateAction<Boolean>>;
+  importantRules: string;
   isVisibleTask: boolean;
   setIsVisibleTask: React.Dispatch<React.SetStateAction<Boolean>>;
   error: string | null;
@@ -31,6 +44,19 @@ interface SelectTaskProps {
 }
 
 const SelectTaskComponent: FC<SelectTaskProps> = ({
+  task0,
+  task1,
+  task2,
+  task3,
+  task4,
+  task5,
+  setTask0,
+  setTask1,
+  setTask2,
+  setTask3,
+  setTask4,
+  setTask5,
+  importantRules,
   isVisibleTask,
   setIsVisibleTask,
   error,
@@ -44,7 +70,7 @@ const SelectTaskComponent: FC<SelectTaskProps> = ({
   const clearSession = async () => {
     try {
       const response = await axios.delete("http://localhost:5000/api/session", {
-        data: { otherQuery: "del" },
+        data: { formattedQuery: "del" },
         headers: {
           "Content-Type": "application/json",
         },
@@ -76,18 +102,11 @@ const SelectTaskComponent: FC<SelectTaskProps> = ({
     setActiveTask(taskNumber);
   };
 
-  const [task0, setTask0] = useState<boolean>(true);
-  const [task1, setTask1] = useState<boolean>(false);
-  const [task2, setTask2] = useState<boolean>(false);
-  const [task3, setTask3] = useState<boolean>(false);
-  const [task4, setTask4] = useState<boolean>(false);
-  const [task5, setTask5] = useState<boolean>(false);
-
   const task1Solution: string = `SELECT * FROM Persons WHERE gender = 'male'`;
   const task2Solution: string = `SELECT AVG(age) AS age FROM Persons`;
   const task3Solution: string = `SELECT AVG(annual_income) AS annual_income FROM Persons`;
   const task4Solution: string = `SELECT car_type FROM Persons JOIN Zoo ON Persons.id = Zoo.person_id WHERE car_type LIKE '%Taurus' AND ticket_type = 'vip'`;
-  const task5Solution: string = `SELECT * FROM Persons JOIN Zoo ON Persons.id = Zoo.Person_id WHERE gender = 'male' AND age > 49 AND annual_income < 490281 AND car_type LIKE '%Taurus' AND ticket_type = 'vip'`;
+  const task5Solution: string = `SELECT * FROM Persons JOIN Zoo ON Persons.id = Zoo.person_id WHERE gender = 'male' AND age > 49 AND annual_income < 490281 AND car_type LIKE '%Taurus' AND ticket_type = 'vip'`;
 
   const task1Text: string =
     "First Query \n The first witness saw a man, but he couldn't get a closer look at his face. However, he was certain that the person's gender was male. Fortunately, this gives us a starting point. \n Find and list all men from the Persons table, displaying all columns.";
@@ -102,11 +121,27 @@ const SelectTaskComponent: FC<SelectTaskProps> = ({
     "Fourth Query \n The fourth witness did not see the car's brand, only its model: Taurus. The vehicle was parked not far from the scene, where the elderly man hurriedly got in. The witness also noticed that he was wearing a green wristband, which is given to visitors who purchase a VIP ticket at the zoo. \n Find out who owns a Taurus model car and who has purchased a VIP ticket at the zoo! \n As a hint, here is a partial query that you need to complete: \n SELECT car_type FROM Persons JOIN Zoo ON Persons.id = Zoo.person_id WHERE";
 
   const task5Text: string =
-    "Fifth Query \n Now you need to combine the collected data and query conditions. \n Find the individuals who meet the following criteria: male, older than average, lower income, drive a Taurus model car, and have purchased a VIP ticket at the zoo. \n Since the columns of the two tables differ, in the WHERE condition, it is sufficient to specify the column names (e.g., age) without prefixing them with the table name (e.g., Persons.age). \n Continue the following query: \n SELECT * FROM Persons JOIN Zoo ON Persons.id = Zoo.Person_id WHERE";
+    "Fifth Query \n Now you need to combine the collected data and query conditions. \n Find the individuals who meet the following criteria: male, older than average, lower income, drive a Taurus model car, and have purchased a VIP ticket at the zoo. \n Since the columns of the two tables differ, in the WHERE condition, it is sufficient to specify the column names (e.g., age) without prefixing them with the table name (e.g., Persons.age). \n Continue the following query: \n SELECT * FROM Persons JOIN Zoo ON Persons.id = Zoo.person_id WHERE";
 
   const getMyQuery = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError(null);
+    if (
+      query.trim().replace(/"/g, "'") ===
+        `SELECT * FROM Persons WHERE gender = 'male'` ||
+      query.trim() === `SELECT AVG(age) AS age FROM Persons` ||
+      query.trim() ===
+        `SELECT AVG(annual_income) AS annual_income FROM Persons` ||
+      query.trim().replace(/"/g, "'") ===
+        `SELECT car_type FROM Persons JOIN Zoo ON Persons.id = Zoo.person_id WHERE car_type LIKE '%Taurus' AND ticket_type = 'vip'` ||
+      query.trim().replace(/"/g, "'") ===
+        `SELECT * FROM Persons JOIN Zoo ON Persons.id = Zoo.person_id WHERE gender = 'male' AND age > 49 AND annual_income < 490281 AND car_type LIKE '%Taurus' AND ticket_type = 'vip'`
+    ) {
+      console.log("");
+    } else {
+      alert("The query does not match the expected format.");
+      return;
+    }
     try {
       const response = await axios.post("http://localhost:5000/api/Persons", {
         query,
@@ -120,20 +155,20 @@ const SelectTaskComponent: FC<SelectTaskProps> = ({
       console.log(response.data);
       if (
         query.trim().replace(/"/g, "'") ===
-        `SELECT * FROM Persons WHERE gender = 'male'`
+        `SELECT * FROM Persons WHERE gender = 'male'` && task0
       ) {
         console.log("Go to the second witness testimony.");
         setTask0(false);
         setTask1(true);
       }
-      if (query.trim() === `SELECT AVG(age) AS age FROM Persons`) {
+      if (query.trim() === `SELECT AVG(age) AS age FROM Persons` && task1) {
         console.log("Go to the third witness testimony.");
         setTask1(false);
         setTask2(true);
       }
       if (
         query.trim() ===
-        `SELECT AVG(annual_income) AS annual_income FROM Persons`
+        `SELECT AVG(annual_income) AS annual_income FROM Persons` && task2
       ) {
         console.log("Go to the fourth witness testimony.");
         setTask2(false);
@@ -141,7 +176,7 @@ const SelectTaskComponent: FC<SelectTaskProps> = ({
       }
       if (
         query.trim().replace(/"/g, "'") ===
-        `SELECT car_type FROM Persons JOIN Zoo ON Persons.id = Zoo.person_id WHERE car_type LIKE '%Taurus' AND ticket_type = 'vip'`
+        `SELECT car_type FROM Persons JOIN Zoo ON Persons.id = Zoo.person_id WHERE car_type LIKE '%Taurus' AND ticket_type = 'vip'` && task3
       ) {
         console.log("Go to the verification query.");
         setTask3(false);
@@ -149,7 +184,7 @@ const SelectTaskComponent: FC<SelectTaskProps> = ({
       }
       if (
         query.trim().replace(/"/g, "'") ===
-        `SELECT * FROM Persons JOIN Zoo ON Persons.id = Zoo.Person_id WHERE gender = 'male' AND age > 49 AND annual_income < 490281 AND car_type LIKE '%Taurus' AND ticket_type = 'vip'`
+        `SELECT * FROM Persons JOIN Zoo ON Persons.id = Zoo.person_id WHERE gender = 'male' AND age > 49 AND annual_income < 490281 AND car_type LIKE '%Taurus' AND ticket_type = 'vip'` && task4
       ) {
         console.log("GGWP.");
         setTask4(false);
@@ -165,17 +200,6 @@ const SelectTaskComponent: FC<SelectTaskProps> = ({
     <div>
       {isVisibleTask && (
         <div className="main-div">
-          <div className="notes-container">
-            <label htmlFor="notes">Írd ide a jegyzeteidet:</label>
-            {isVisibleTask && (
-              <textarea
-                id="notes"
-                cols="10"
-                rows="10"
-                placeholder="ex.: age = 20"
-              ></textarea>
-            )}
-          </div>
           {task0 && (
             <form
               className="task-form"
@@ -184,6 +208,7 @@ const SelectTaskComponent: FC<SelectTaskProps> = ({
               onSubmit={getMyQuery}
             >
               <label className="task-form_label" htmlFor="query-id">
+                <p className="text-style rules">{importantRules}</p>
                 <p className="text-style">{task1Text}</p>
                 <button
                   className="showMe-btn"

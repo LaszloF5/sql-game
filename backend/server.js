@@ -90,20 +90,20 @@ app.get("/api/session", (req, res) => {
 });
 
 app.post("/api/session", (req, res) => {
-  const { otherQuery } = req.body;
+  const { formattedQuery } = req.body;
 
   const expectedQuery1 = `INSERT INTO Session (fruit_name, quantity) VALUES ('apple', '1kg')`;
   const expectedQuery2 = `INSERT INTO Session (fruit_name, quantity) VALUES ('banana', '2kg')`;
 
   if (
-    otherQuery.trim() !== expectedQuery1 &&
-    otherQuery.trim() !== expectedQuery2
+    formattedQuery.trim() !== expectedQuery1 &&
+    formattedQuery.trim() !== expectedQuery2
   ) {
     return res.status(400).json({ error: "Invalid query" });
   }
   const sql = `INSERT INTO Session (fruit_name, quantity) VALUES (?, ?)`;
 
-  const values = otherQuery.includes("apple")
+  const values = formattedQuery.includes("apple")
     ? ["apple", "1kg"]
     : ["banana", "2kg"];
   db.run(sql, values, function (err) {
@@ -122,18 +122,18 @@ app.post("/api/session", (req, res) => {
 });
 
 app.delete("/api/session", (req, res) => {
-  const { otherQuery } = req.body;
+  const { formattedQuery } = req.body;
 
   const possibleQuery1 = "DELETE FROM Session WHERE id = 1";
   const possibleQuery2 = "DELETE FROM Session WHERE id = 2";
   const possibleQuery3 = "del";
 
   let sql;
-  if (otherQuery === possibleQuery1) {
+  if (formattedQuery === possibleQuery1) {
     sql = "DELETE FROM Session WHERE id = 1";
-  } else if (otherQuery === possibleQuery2) {
+  } else if (formattedQuery === possibleQuery2) {
     sql = "DELETE FROM Session WHERE id = 2";
-  } else if (otherQuery === possibleQuery3) {
+  } else if (formattedQuery === possibleQuery3) {
     sql = "DELETE FROM Session";
   } else {
     return res.status(400).json({ error: "Invalid query" });
@@ -144,7 +144,7 @@ app.delete("/api/session", (req, res) => {
       return res.status(500).json({ error: err.message });
     }
     if (this.changes === 0) {
-      if (otherQuery === possibleQuery3) {
+      if (formattedQuery === possibleQuery3) {
         return console.log('The db was empty.');
       }
       return res.status(404).json({ error: "Session not found" });
@@ -219,11 +219,11 @@ app.delete("/api/session/:id", (req, res) => {
 //UPDATE
 
 app.put("/api/session", (req, res) => {
-  const { otherQuery } = req.body;
+  const { formattedQuery } = req.body;
   const expectedUpdateQuery = `UPDATE Session SET quantity = '1kg' WHERE fruit_name = 'banana'`;
 
-  if (otherQuery.trim() !== expectedUpdateQuery) {
-    console.log(`Invalid query attempt: ${otherQuery}`);
+  if (formattedQuery.trim() !== expectedUpdateQuery) {
+    console.log(`Invalid query attempt: ${formattedQuery}`);
     return res.status(400).json({
       error: "Invalid query",
       expectedFormat: expectedUpdateQuery,
