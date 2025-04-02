@@ -14,8 +14,8 @@ function App() {
   const [error, setError] = useState<string | null>(null);
   const showMe: string = "Show me the answer!";
 
-  const [isVisibleTutorial, setIsVisibleTutorial] = useState<boolean>(false);
-  const [isVisibleTask, setIsVisibleTask] = useState<boolean>(true);
+  const [isVisibleTutorial, setIsVisibleTutorial] = useState<boolean>(true);
+  const [isVisibleTask, setIsVisibleTask] = useState<boolean>(false);
   const [isVisibleOtherTask, setIsVisibleOtherTask] = useState<boolean>(false);
 
   return (
@@ -43,7 +43,7 @@ function App() {
               setIsVisibleTutorial={setIsVisibleTutorial}
               setIsVisibleTask={setIsVisibleTask}
               setError={setError}
-            />
+              />
             <SelectTaskComponent
               isVisibleTask={isVisibleTask}
               setIsVisibleTask={setIsVisibleTask}
@@ -52,10 +52,11 @@ function App() {
               showMe={showMe}
               isVisibleOtherTask={isVisibleOtherTask}
               setIsVisibleOtherTask={setIsVisibleOtherTask}
-            />
+              />
             <OtherQueries
               isVisibleOtherTask={isVisibleOtherTask}
               setIsVisibleOtherTask={setIsVisibleOtherTask}
+              setIsVisibleTutorial={setIsVisibleTutorial}
             />
           </>
         )}

@@ -195,6 +195,7 @@ const SelectTaskComponent: FC<SelectTaskProps> = ({
                 {activeTask === 1 && <pre>{task1Solution}</pre>}
               </label>
               <input
+                autoFocus
                 className="task-form_input"
                 type="text"
                 id="query-id"
@@ -227,6 +228,7 @@ const SelectTaskComponent: FC<SelectTaskProps> = ({
                 {activeTask === 2 && <pre>{task2Solution}</pre>}
               </label>
               <input
+                autoFocus
                 className="task-form_input"
                 type="text"
                 id="query-id"
@@ -259,6 +261,7 @@ const SelectTaskComponent: FC<SelectTaskProps> = ({
                 {activeTask === 3 && <pre>{task3Solution}</pre>}
               </label>
               <input
+                autoFocus
                 className="task-form_input"
                 type="text"
                 id="query-id"
@@ -291,6 +294,7 @@ const SelectTaskComponent: FC<SelectTaskProps> = ({
                 {activeTask === 4 && <pre>{task4Solution}</pre>}
               </label>
               <input
+                autoFocus
                 className="task-form_input"
                 type="text"
                 id="query-id"
@@ -323,6 +327,7 @@ const SelectTaskComponent: FC<SelectTaskProps> = ({
                 {activeTask === 5 && <pre>{task5Solution}</pre>}
               </label>
               <input
+                autoFocus
                 className="task-form_input"
                 type="text"
                 id="query-id"

@@ -152,6 +152,7 @@ const TutorialSelectComponent: FC<TutorialSelectProps> = ({
                 {activeTutorial === 1 && <pre>{tutorial1Solution}</pre>}
               </label>
               <input
+                autoFocus
                 className="tutorial-form_input"
                 type="text"
                 id="tutorial-query-id"
@@ -185,6 +186,7 @@ const TutorialSelectComponent: FC<TutorialSelectProps> = ({
                   {activeTutorial === 2 && <pre>{tutorial2Solution}</pre>}
                 </label>
                 <input
+                  autoFocus
                   className="tutorial-form_input"
                   type="text"
                   id="tutorial-query-id"
@@ -217,6 +219,7 @@ const TutorialSelectComponent: FC<TutorialSelectProps> = ({
                   {activeTutorial === 3 && <pre>{tutorial3Solution}</pre>}
                 </label>
                 <input
+                  autoFocus
                   className="tutorial-form_input"
                   type="text"
                   id="tutorial-query-id"
@@ -249,6 +252,7 @@ const TutorialSelectComponent: FC<TutorialSelectProps> = ({
                   {activeTutorial === 4 && <pre>{tutorial4Solution}</pre>}
                 </label>
                 <input
+                  autoFocus
                   className="tutorial-form_input"
                   type="text"
                   id="tutorial-query-id"
@@ -281,6 +285,7 @@ const TutorialSelectComponent: FC<TutorialSelectProps> = ({
                   {activeTutorial === 5 && <pre>{tutorial5Solution}</pre>}
                 </label>
                 <input
+                  autoFocus
                   className="tutorial-form_input"
                   type="text"
                   id="tutorial-query-id"
