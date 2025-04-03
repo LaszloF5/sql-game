@@ -95,6 +95,8 @@ const SelectTaskComponent: FC<SelectTaskProps> = ({
 
   const [query, setQuery] = useState<string>("");
   const [result, setResult] = useState<PersonsData[]>([]);
+  const successText: string = `Congratulations! You have successfully completed the task. \n
+  I hope you have mastered the basics of the SQLite SELECT statement!`;
 
   const [activeTask, setActiveTask] = useState<number>(0);
 
@@ -155,7 +157,8 @@ const SelectTaskComponent: FC<SelectTaskProps> = ({
       console.log(response.data);
       if (
         query.trim().replace(/"/g, "'") ===
-        `SELECT * FROM Persons WHERE gender = 'male'` && task0
+          `SELECT * FROM Persons WHERE gender = 'male'` &&
+        task0
       ) {
         console.log("Go to the second witness testimony.");
         setTask0(false);
@@ -168,7 +171,8 @@ const SelectTaskComponent: FC<SelectTaskProps> = ({
       }
       if (
         query.trim() ===
-        `SELECT AVG(annual_income) AS annual_income FROM Persons` && task2
+          `SELECT AVG(annual_income) AS annual_income FROM Persons` &&
+        task2
       ) {
         console.log("Go to the fourth witness testimony.");
         setTask2(false);
@@ -176,7 +180,8 @@ const SelectTaskComponent: FC<SelectTaskProps> = ({
       }
       if (
         query.trim().replace(/"/g, "'") ===
-        `SELECT car_type FROM Persons JOIN Zoo ON Persons.id = Zoo.person_id WHERE car_type LIKE '%Taurus' AND ticket_type = 'vip'` && task3
+          `SELECT car_type FROM Persons JOIN Zoo ON Persons.id = Zoo.person_id WHERE car_type LIKE '%Taurus' AND ticket_type = 'vip'` &&
+        task3
       ) {
         console.log("Go to the verification query.");
         setTask3(false);
@@ -184,7 +189,8 @@ const SelectTaskComponent: FC<SelectTaskProps> = ({
       }
       if (
         query.trim().replace(/"/g, "'") ===
-        `SELECT * FROM Persons JOIN Zoo ON Persons.id = Zoo.person_id WHERE gender = 'male' AND age > 49 AND annual_income < 490281 AND car_type LIKE '%Taurus' AND ticket_type = 'vip'` && task4
+          `SELECT * FROM Persons JOIN Zoo ON Persons.id = Zoo.person_id WHERE gender = 'male' AND age > 49 AND annual_income < 490281 AND car_type LIKE '%Taurus' AND ticket_type = 'vip'` &&
+        task4
       ) {
         console.log("GGWP.");
         setTask4(false);
@@ -368,11 +374,7 @@ const SelectTaskComponent: FC<SelectTaskProps> = ({
           )}
           {task5 && (
             <>
-              <p>
-                Congratulations! You have successfully completed the task. I
-                hope you have mastered the basics of the SQLite SELECT
-                statement!
-              </p>
+              <p className="text-style">{successText}</p>
               <button
                 className="task-form_button"
                 onClick={toggleVisibilityOtherQ}
@@ -383,105 +385,109 @@ const SelectTaskComponent: FC<SelectTaskProps> = ({
           )}
           {error && <p className="error">{error}</p>}
           {result.length > 0 && (
-            <table className="task-table">
-              <thead className="task-table_thead">
-                <tr className="task-table_tr">
-                  {result[0]?.id !== undefined && <td>id</td>}
-                  {result[0]?.name !== undefined && <td>name</td>}
-                  {result[0]?.age !== undefined && <td>age</td>}
-                  {result[0]?.ssn !== undefined && <td>ssn</td>}
-                  {result[0]?.gender !== undefined && <td>gender</td>}
-                  {result[0]?.email !== undefined && <td>email</td>}
-                  {result[0]?.phone !== undefined && <td>phone</td>}
-                  {result[0]?.address !== undefined && <td>address</td>}
-                  {result[0]?.city !== undefined && <td>city</td>}
-                  {result[0]?.eye_color !== undefined && <td>eye color</td>}
-                  {result[0]?.hair_color !== undefined && (
-                    <td className="task-table_td">hair color</td>
-                  )}
-                  {result[0]?.car_type !== undefined && (
-                    <td className="task-table_td">car type</td>
-                  )}
-                  {result[0]?.bike_type !== undefined && (
-                    <td className="task-table_td">bike type</td>
-                  )}
-                  {result[0]?.car_registration_number !== undefined && (
-                    <td className="task-table_td">car registration number</td>
-                  )}
-                  {result[0]?.motorbike_registration_number !== undefined && (
-                    <td className="task-table_td">
-                      motorbike registration number
-                    </td>
-                  )}
-                  {result[0]?.annual_income !== undefined && (
-                    <td className="task-table_td">annual income</td>
-                  )}
-                </tr>
-              </thead>
+            <div className="table-container">
+              <table className="task-table">
+                <thead className="task-table_thead">
+                  <tr className="task-table_tr">
+                    {result[0]?.id !== undefined && <td>id</td>}
+                    {result[0]?.name !== undefined && <td>name</td>}
+                    {result[0]?.age !== undefined && <td>age</td>}
+                    {result[0]?.ssn !== undefined && <td>ssn</td>}
+                    {result[0]?.gender !== undefined && <td>gender</td>}
+                    {result[0]?.email !== undefined && <td>email</td>}
+                    {result[0]?.phone !== undefined && <td>phone</td>}
+                    {result[0]?.address !== undefined && <td>address</td>}
+                    {result[0]?.city !== undefined && <td>city</td>}
+                    {result[0]?.eye_color !== undefined && <td>eye color</td>}
+                    {result[0]?.hair_color !== undefined && (
+                      <td className="task-table_td">hair color</td>
+                    )}
+                    {result[0]?.car_type !== undefined && (
+                      <td className="task-table_td">car type</td>
+                    )}
+                    {result[0]?.bike_type !== undefined && (
+                      <td className="task-table_td">bike type</td>
+                    )}
+                    {result[0]?.car_registration_number !== undefined && (
+                      <td className="task-table_td">car registration number</td>
+                    )}
+                    {result[0]?.motorbike_registration_number !== undefined && (
+                      <td className="task-table_td">
+                        motorbike registration number
+                      </td>
+                    )}
+                    {result[0]?.annual_income !== undefined && (
+                      <td className="task-table_td">annual income</td>
+                    )}
+                  </tr>
+                </thead>
 
-              <tbody className="task-table_tbody">
-                {result.map((item, index) => {
-                  return (
-                    <tr className="task-table_tr" key={index}>
-                      {item.id !== undefined && (
-                        <td className="task-table_td">{item.id}</td>
-                      )}
-                      {item.name !== undefined && (
-                        <td className="task-table_td">{item.name}</td>
-                      )}
-                      {item.age !== undefined && (
-                        <td className="task-table_td">{item.age.toFixed()}</td>
-                      )}
-                      {item.ssn !== undefined && (
-                        <td className="task-table_td">{item.ssn}</td>
-                      )}
-                      {item.gender !== undefined && (
-                        <td className="task-table_td">{item.gender}</td>
-                      )}
-                      {item.email !== undefined && (
-                        <td className="task-table_td">{item.email}</td>
-                      )}
-                      {item.phone !== undefined && (
-                        <td className="task-table_td">{item.phone}</td>
-                      )}
-                      {item.address !== undefined && (
-                        <td className="task-table_td">{item.address}</td>
-                      )}
-                      {item.city !== undefined && (
-                        <td className="task-table_td">{item.city}</td>
-                      )}
-                      {item.eye_color !== undefined && (
-                        <td className="task-table_td">{item.eye_color}</td>
-                      )}
-                      {item.hair_color !== undefined && (
-                        <td className="task-table_td">{item.hair_color}</td>
-                      )}
-                      {item.car_type !== undefined && (
-                        <td className="task-table_td">{item.car_type}</td>
-                      )}
-                      {item.bike_type !== undefined && (
-                        <td className="task-table_td">{item.bike_type}</td>
-                      )}
-                      {item.car_registration_number !== undefined && (
-                        <td className="task-table_td">
-                          {item.car_registration_number}
-                        </td>
-                      )}
-                      {item.motorbike_registration_number !== undefined && (
-                        <td className="task-table_td">
-                          {item.motorbike_registration_number}
-                        </td>
-                      )}
-                      {item.annual_income !== undefined && (
-                        <td className="task-table_td">
-                          {item.annual_income.toFixed()}
-                        </td>
-                      )}
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+                <tbody className="task-table_tbody">
+                  {result.map((item, index) => {
+                    return (
+                      <tr className="task-table_tr" key={index}>
+                        {item.id !== undefined && (
+                          <td className="task-table_td">{item.id}</td>
+                        )}
+                        {item.name !== undefined && (
+                          <td className="task-table_td">{item.name}</td>
+                        )}
+                        {item.age !== undefined && (
+                          <td className="task-table_td">
+                            {item.age.toFixed()}
+                          </td>
+                        )}
+                        {item.ssn !== undefined && (
+                          <td className="task-table_td">{item.ssn}</td>
+                        )}
+                        {item.gender !== undefined && (
+                          <td className="task-table_td">{item.gender}</td>
+                        )}
+                        {item.email !== undefined && (
+                          <td className="task-table_td">{item.email}</td>
+                        )}
+                        {item.phone !== undefined && (
+                          <td className="task-table_td">{item.phone}</td>
+                        )}
+                        {item.address !== undefined && (
+                          <td className="task-table_td">{item.address}</td>
+                        )}
+                        {item.city !== undefined && (
+                          <td className="task-table_td">{item.city}</td>
+                        )}
+                        {item.eye_color !== undefined && (
+                          <td className="task-table_td">{item.eye_color}</td>
+                        )}
+                        {item.hair_color !== undefined && (
+                          <td className="task-table_td">{item.hair_color}</td>
+                        )}
+                        {item.car_type !== undefined && (
+                          <td className="task-table_td">{item.car_type}</td>
+                        )}
+                        {item.bike_type !== undefined && (
+                          <td className="task-table_td">{item.bike_type}</td>
+                        )}
+                        {item.car_registration_number !== undefined && (
+                          <td className="task-table_td">
+                            {item.car_registration_number}
+                          </td>
+                        )}
+                        {item.motorbike_registration_number !== undefined && (
+                          <td className="task-table_td">
+                            {item.motorbike_registration_number}
+                          </td>
+                        )}
+                        {item.annual_income !== undefined && (
+                          <td className="task-table_td">
+                            {item.annual_income.toFixed()}
+                          </td>
+                        )}
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
           )}
         </div>
       )}

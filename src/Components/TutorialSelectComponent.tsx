@@ -21,6 +21,7 @@ interface TutorialSelectProps {
   setTutorial3: React.Dispatch<React.SetStateAction<boolean>>;
   setTutorial4: React.Dispatch<React.SetStateAction<boolean>>;
   setTutorial5: React.Dispatch<React.SetStateAction<boolean>>;
+  setTask0: React.Dispatch<React.SetStateAction<boolean>>;
   importantRules: string;
   showMe: boolean;
   isVisibleTutorial: boolean;
@@ -45,6 +46,7 @@ const TutorialSelectComponent: FC<TutorialSelectProps> = ({
   setTutorial3,
   setTutorial4,
   setTutorial5,
+  setTask0,
   importantRules,
   showMe,
   isVisibleTutorial,
@@ -53,19 +55,28 @@ const TutorialSelectComponent: FC<TutorialSelectProps> = ({
   error,
   setError,
 }) => {
+  // % circle
+
+  const [tutorialPercentage, setTutorialPercentage] = useState<number>(0);
+
   const [activeTutorial, setActiveTutorial] = useState<number>(0);
 
   const toggleTutorial = (tutorialNumber: number) => {
     setActiveTutorial(tutorialNumber);
   };
 
+  // Ezt a setActiveTutorial-t még át kell gondolni.
+
   const toggleVisibility = (): void => {
+    setActiveTutorial(10);
     setIsVisibleTutorial(false);
+    setTask0(true);
     setIsVisibleTask(true);
   };
 
   const [tutorialQuery, setTutorialQuery] = useState<string>("");
   const [tutorialResult, setTutorialResult] = useState<PoliceData[]>([]);
+  const successTutorialText: string = `You have successfully completed the tutorial. \n Now, let's take a look at the real task.`;
 
   const tutorial1Solution: string = `SELECT city FROM Police_db`;
   const tutorial2Solution: string = `SELECT AVG(id) AS id FROM Police_db`;
@@ -91,8 +102,15 @@ const TutorialSelectComponent: FC<TutorialSelectProps> = ({
   const getTutorialQuery = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError(null);
-    if (tutorialQuery.trim() === `SELECT city FROM Police_db` || tutorialQuery.trim() === `SELECT AVG(id) AS id FROM Police_db` || tutorialQuery.trim() === `SELECT crime_report FROM Police_db LIMIT 10` || tutorialQuery.trim().replace(/"/g, "'") === `SELECT city FROM Police_db WHERE city LIKE 'Lake%'`) {
-      console.log('');
+    if (
+      tutorialQuery.trim() === `SELECT city FROM Police_db` ||
+      tutorialQuery.trim() === `SELECT AVG(id) AS id FROM Police_db` ||
+      tutorialQuery.trim() === `SELECT id FROM Police_db WHERE id > 50` ||
+      tutorialQuery.trim() === `SELECT crime_report FROM Police_db LIMIT 10` ||
+      tutorialQuery.trim().replace(/"/g, "'") ===
+        `SELECT city FROM Police_db WHERE city LIKE 'Lake%'`
+    ) {
+      console.log("");
     } else {
       alert("The query does not match the expected format.");
       return;
@@ -115,26 +133,45 @@ const TutorialSelectComponent: FC<TutorialSelectProps> = ({
       console.log("Response status: ", response.status);
 
       if (tutorialQuery.trim() === `SELECT city FROM Police_db` && tutorial0) {
+        setTutorialPercentage(20);
         console.log("Go to tutorial 2.");
         setTutorial0(false);
         setTutorial1(true);
       }
-      if (tutorialQuery.trim() === `SELECT AVG(id) AS id FROM Police_db` && tutorial1) {
+      if (
+        tutorialQuery.trim() === `SELECT AVG(id) AS id FROM Police_db` &&
+        tutorial1
+      ) {
+        setTutorialPercentage(40);
         console.log("Go to tutorial 3.");
         setTutorial1(false);
         setTutorial2(true);
       }
-      if (tutorialQuery.trim() === `SELECT id FROM Police_db WHERE id > 50` && tutorial2) {
+      if (
+        tutorialQuery.trim() === `SELECT id FROM Police_db WHERE id > 50` &&
+        tutorial2
+      ) {
+        setTutorialPercentage(60);
         console.log("Go to tutorial 4.");
         setTutorial2(false);
         setTutorial3(true);
       }
-      if ( tutorialQuery.trim() === `SELECT crime_report FROM Police_db LIMIT 10` && tutorial3) {
+      if (
+        tutorialQuery.trim() ===
+          `SELECT crime_report FROM Police_db LIMIT 10` &&
+        tutorial3
+      ) {
+        setTutorialPercentage(80);
         console.log("Go to tutorial 5.");
         setTutorial3(false);
         setTutorial4(true);
       }
-      if (tutorialQuery.trim().replace(/"/g, "'") === `SELECT city FROM Police_db WHERE city LIKE 'Lake%'` && tutorial4) {
+      if (
+        tutorialQuery.trim().replace(/"/g, "'") ===
+          `SELECT city FROM Police_db WHERE city LIKE 'Lake%'` &&
+        tutorial4
+      ) {
+        setTutorialPercentage(100);
         console.log("Go to the real task.");
         setTutorial4(false);
         setTutorial5(true);
@@ -323,10 +360,7 @@ const TutorialSelectComponent: FC<TutorialSelectProps> = ({
           {tutorial5 && (
             <div>
               <p>Tutorial part 5 is done.</p>
-              <p>
-                You have successfully completed the tutorial. Now, let's take a
-                look at the real task.
-              </p>
+              <p className="text-style">{successTutorialText}</p>
               <button
                 className="tutorial-form_button"
                 onClick={toggleVisibility}
@@ -335,42 +369,48 @@ const TutorialSelectComponent: FC<TutorialSelectProps> = ({
               </button>
             </div>
           )}
-
+          <div className="circle-container">
+            <div className={`circle circle-${tutorialPercentage}`}></div>
+          </div>
           {tutorialResult.length > 0 && (
-            <table className="tutorial-table">
-              <thead className="tutorial-table_thead">
-                <tr className="tutorial-table_tr">
-                  {tutorialResult[0]?.id !== undefined && (
-                    <th className="tutorial-table_th">ID</th>
-                  )}
-                  {tutorialResult[0]?.crime_type !== undefined && (
-                    <th className="tutorial-table_th">Crime Type</th>
-                  )}
-                  {tutorialResult[0]?.city !== undefined && (
-                    <th className="tutorial-table_th">City</th>
-                  )}
-                  {tutorialResult[0]?.crime_report !== undefined && (
-                    <th className="tutorial-table_th">Crime Report</th>
-                  )}
-                </tr>
-              </thead>
-              <tbody className="tutorial-table_tbody">
-                {tutorialResult.map((item, index) => (
-                  <tr className="tutorial-table_tr" key={index}>
-                    {item?.id !== undefined && <td>{item.id}</td>}
-                    {item?.crime_type !== undefined && (
-                      <td className="tutorial-table_td">{item.crime_type}</td>
+            <div className="table-container">
+              <table className="tutorial-table">
+                <thead className="tutorial-table_thead">
+                  <tr className="tutorial-table_tr">
+                    {tutorialResult[0]?.id !== undefined && (
+                      <th className="tutorial-table_th">ID</th>
                     )}
-                    {item?.city !== undefined && (
-                      <td className="tutorial-table_td">{item.city}</td>
+                    {tutorialResult[0]?.crime_type !== undefined && (
+                      <th className="tutorial-table_th">Crime Type</th>
                     )}
-                    {item?.crime_report !== undefined && (
-                      <td className="tutorial-table_td">{item.crime_report}</td>
+                    {tutorialResult[0]?.city !== undefined && (
+                      <th className="tutorial-table_th">City</th>
+                    )}
+                    {tutorialResult[0]?.crime_report !== undefined && (
+                      <th className="tutorial-table_th">Crime Report</th>
                     )}
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody className="tutorial-table_tbody">
+                  {tutorialResult.map((item, index) => (
+                    <tr className="tutorial-table_tr" key={index}>
+                      {item?.id !== undefined && <td>{item.id}</td>}
+                      {item?.crime_type !== undefined && (
+                        <td className="tutorial-table_td">{item.crime_type}</td>
+                      )}
+                      {item?.city !== undefined && (
+                        <td className="tutorial-table_td">{item.city}</td>
+                      )}
+                      {item?.crime_report !== undefined && (
+                        <td className="tutorial-table_td">
+                          {item.crime_report}
+                        </td>
+                      )}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           )}
         </div>
       )}

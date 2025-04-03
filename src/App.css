@@ -2,6 +2,50 @@
   text-align: center;
 }
 
+.circle-container {
+  position: absolute;
+  top: 100px;
+  right: 20px;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background-color: white;
+  border: 10px solid transparent;
+  background-clip: padding-box;
+}
+
+.circle {
+  position: absolute;
+  top: 100px;
+  right: 20px;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 10px solid #e6e6e6;
+  transform: rotate(0deg);
+  transition: background 0.3 ease;
+}
+
+.circle-20 {
+  background: conic-gradient(green 20%, #e6e6e6 20%);
+}
+
+.circle-40 {
+  background: conic-gradient(green 40%, #e6e6e6 40%);
+}
+
+.circle-60 {
+  background: conic-gradient(green 60%, #e6e6e6 60%);
+}
+
+.circle-80 {
+  background: conic-gradient(green 80%, #e6e6e6 80%);
+}
+
+.circle-100 {
+  background: conic-gradient(green 100%, #e6e6e6 100%);
+}
+
 .App-header {
   background-color: #282c34;
   height: 100px;
@@ -135,24 +179,28 @@ pre {
   background: #2980b9;
 }
 
-@media (max-width: 768px) {
-  .tutorial-form,
-  .task-form,
-  .other-form {
-    width: 90%;
-  }
-}
-
-.tutorial-table,
-.task-table,
-.other-table {
-  width: 80%;
+.table-container {
+  width: 100%;
+  overflow: auto;
   margin: 20px auto;
   border-collapse: collapse;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   background: #fff;
   border-radius: 10px;
-  overflow: hidden;
+  max-height: 400px;
+}
+
+.tutorial-table,
+.task-table,
+.other-table {
+  min-width: 50%;
+  max-width: 80%;
+  overflow-x: hidden;
+  margin: 20px auto;
+  border-collapse: collapse;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  background: #fff;
+  border-radius: 10px;
 }
 
 .tutorial-table_thead,
@@ -160,6 +208,9 @@ pre {
 .other-table_thead {
   background: #2c3e50;
   color: #ecf0f1;
+  position: sticky;
+  z-index: 1;
+  top: 0;
 }
 
 .tutorial-table_th,
@@ -169,7 +220,7 @@ pre {
 .other-table_th,
 .other-table_td {
   padding: 12px;
-  text-align: left;
+  text-align: center;
   border-bottom: 1px solid #ddd;
   white-space: nowrap;
 }

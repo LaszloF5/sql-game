@@ -65,6 +65,8 @@ const OtherQueries: FC<visibleState> = ({
     setVisibleAnswer(otherTaskNumber);
   };
 
+  const successOtherText: string = `You have successfully completed the sqlite UPDATE, INSERT INTO \n and DELETE statements. Congratulations!`;
+
   const otherTask0Solution: string = `INSERT INTO Session (fruit_name, quantity) VALUES ('apple', '1kg')`;
   const otherTask1Solution: string = `INSERT INTO Session (fruit_name, quantity) VALUES ('banana', '2kg')`;
   const otherTask2Solution: string = `DELETE FROM Session WHERE id = 1`;
@@ -440,9 +442,8 @@ Use the DELETE command to remove the record!`;
             )}
             {otherTask5 && (
               <>
-                <p>
-                  You have successfully completed the sqlite UPDATE, INSERT INTO
-                  and DELETE statements. Congratulations!
+                <p className='text-style'>
+                  {successOtherText}
                 </p>
                 <button
                   className="other-form_button"
@@ -454,6 +455,7 @@ Use the DELETE command to remove the record!`;
               </>
             )}
             {tableData && (
+              <div className='table-container'>
               <table className="other-table">
                 <thead className="other-table_thead">
                   <tr className="other-table_tr">
@@ -480,6 +482,7 @@ Use the DELETE command to remove the record!`;
                   })}
                 </tbody>
               </table>
+              </div>
             )}
           </main>
         </div>

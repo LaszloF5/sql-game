@@ -20,9 +20,8 @@ function App() {
   const [tutorial4, setTutorial4] = useState<boolean>(false);
   const [tutorial5, setTutorial5] = useState<boolean>(false);
 
-
   // SelectTaskComponent booleans:
-  const [task0, setTask0] = useState<boolean>(true);
+  const [task0, setTask0] = useState<boolean>(false);
   const [task1, setTask1] = useState<boolean>(false);
   const [task2, setTask2] = useState<boolean>(false);
   const [task3, setTask3] = useState<boolean>(false);
@@ -31,7 +30,7 @@ function App() {
 
   // OtherQueries booleans:
 
-  const [otherTask0, setOtherTask0] = useState<boolean>(true);
+  const [otherTask0, setOtherTask0] = useState<boolean>(false);
   const [otherTask1, setOtherTask1] = useState<boolean>(false);
   const [otherTask2, setOtherTask2] = useState<boolean>(false);
   const [otherTask3, setOtherTask3] = useState<boolean>(false);
@@ -47,7 +46,7 @@ function App() {
   In the tasks, if you write these keywords in lowercase, you will receive an error message.
 `;
 
-  const [isVisibleTutorial, setIsVisibleTutorial] = useState<boolean>(false);
+  const [isVisibleTutorial, setIsVisibleTutorial] = useState<boolean>(true);
   const [isVisibleTask, setIsVisibleTask] = useState<boolean>(true);
   const [isVisibleOtherTask, setIsVisibleOtherTask] = useState<boolean>(false);
 
@@ -83,6 +82,7 @@ function App() {
               setTutorial3={setTutorial3}
               setTutorial4={setTutorial4}
               setTutorial5={setTutorial5}
+              setTask0={setTask0}
               importantRules={importantRules}
               showMe={showMe}
               isVisibleTutorial={isVisibleTutorial}
@@ -149,4 +149,5 @@ TODO:
   - a másik delete table Session-nél is 0-ra kell hozni az id-ket.
   - ne lehessen kijelölni a megoldásokat, be kelljen írni. (Oktatási célzat.)
   - Az otherqueries-nek kell átadni minden olyan beállítást, ami szükséges hogy újrakezdődjön a játék
+  - Egy kör, ami % arányosan töltődök a teljesített részekkel: fill
 */
