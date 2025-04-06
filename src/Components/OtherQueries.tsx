@@ -26,6 +26,8 @@ interface visibleState {
   isVisibleOtherTask: boolean;
   setIsVisibleOtherTask: React.Dispatch<React.SetStateAction<Boolean>>;
   setIsVisibleTutorial: React.Dispatch<React.SetStateAction<Boolean>>;
+  percentage: number;
+  setPercentage: React.Dispatch<React.SetStateAction<number>>;
 }
 
 const OtherQueries: FC<visibleState> = ({
@@ -48,8 +50,11 @@ const OtherQueries: FC<visibleState> = ({
   isVisibleOtherTask,
   setIsVisibleOtherTask,
   setIsVisibleTutorial,
+  percentage,
+  setPercentage,
 }) => {
   const goToTheStart = () => {
+    setPercentage(0);
     setIsVisibleOtherTask(false);
     setIsVisibleTutorial(true);
     setTutorial5(false);
@@ -150,9 +155,11 @@ Use the DELETE command to remove the record!`;
       });
       setTableData([...tableData, response.data.newRecord]);
       if (formattedQuery.includes("apple")) {
+        setPercentage(20);
         setOtherTask0(false);
         setOtherTask1(true);
       } else if (formattedQuery.includes("banana")) {
+        setPercentage(40);
         setOtherTask1(false);
         setOtherTask2(true);
       }
@@ -198,6 +205,7 @@ Use the DELETE command to remove the record!`;
         formattedQuery,
       });
       getElements();
+      setPercentage(80);
       setOtherTask3(false);
       setOtherTask4(true);
       setOtherQuery("");
@@ -251,10 +259,12 @@ Use the DELETE command to remove the record!`;
       });
       alert("Item deleted successfully.");
       if (formattedQuery.includes(1)) {
+        setPercentage(60);
         setOtherTask2(false);
         setOtherTask3(true);
         setOtherQuery("");
       } else if (formattedQuery.includes(2)) {
+        setPercentage(100);
         setOtherTask4(false);
         setOtherTask5(true);
         setOtherQuery("");
@@ -272,6 +282,11 @@ Use the DELETE command to remove the record!`;
         <div>
           <h2>Other Queries</h2>
           <main className="otherQueries-container">
+            <div className="circle-container">
+              <div className={`circle circle-${percentage}`}>
+                <div className="inner-circle">{percentage}%</div>
+              </div>
+            </div>
             <button
               className="other-form_button"
               type="button"
@@ -296,7 +311,7 @@ Use the DELETE command to remove the record!`;
                   >
                     {otherShowMe}
                   </button>
-                  {visibleAnswer === 1 && <pre>{otherTask0Solution}</pre>}
+                  {visibleAnswer === 1 && <pre className="text-style">{otherTask0Solution}</pre>}
                 </label>
                 <input
                   autoFocus
@@ -328,7 +343,7 @@ Use the DELETE command to remove the record!`;
                   >
                     {otherShowMe}
                   </button>
-                  {visibleAnswer === 2 && <pre>{otherTask1Solution}</pre>}
+                  {visibleAnswer === 2 && <pre className="text-style">{otherTask1Solution}</pre>}
                 </label>
                 <input
                   autoFocus
@@ -360,7 +375,7 @@ Use the DELETE command to remove the record!`;
                   >
                     {otherShowMe}
                   </button>
-                  {visibleAnswer === 3 && <pre>{otherTask2Solution}</pre>}
+                  {visibleAnswer === 3 && <pre className="text-style">{otherTask2Solution}</pre>}
                 </label>
                 <input
                   autoFocus
@@ -392,7 +407,7 @@ Use the DELETE command to remove the record!`;
                   >
                     {otherShowMe}
                   </button>
-                  {visibleAnswer === 4 && <pre>{otherTask3Solution}</pre>}
+                  {visibleAnswer === 4 && <pre className="text-style">{otherTask3Solution}</pre>}
                 </label>
                 <input
                   autoFocus
@@ -424,7 +439,7 @@ Use the DELETE command to remove the record!`;
                   >
                     {otherShowMe}
                   </button>
-                  {visibleAnswer === 5 && <pre>{otherTask4Solution}</pre>}
+                  {visibleAnswer === 5 && <pre className="text-style">{otherTask4Solution}</pre>}
                 </label>
                 <input
                   autoFocus
@@ -442,9 +457,7 @@ Use the DELETE command to remove the record!`;
             )}
             {otherTask5 && (
               <>
-                <p className='text-style'>
-                  {successOtherText}
-                </p>
+                <p className="text-style">{successOtherText}</p>
                 <button
                   className="other-form_button"
                   type="button"
@@ -455,33 +468,33 @@ Use the DELETE command to remove the record!`;
               </>
             )}
             {tableData && (
-              <div className='table-container'>
-              <table className="other-table">
-                <thead className="other-table_thead">
-                  <tr className="other-table_tr">
-                    <td className="other-table_td">ID</td>
-                    <td className="other-table_td">Fruit Name</td>
-                    <td className="other-table_td">Quantity</td>
-                    <td className="other-table_td">Delete method</td>
-                  </tr>
-                </thead>
-                <tbody className="other-table_tbody">
-                  {tableData.map((item) => {
-                    return (
-                      <tr className="other-table_tr" key={item.id}>
-                        <td className="other-table_td">{item.id}</td>
-                        <td className="other-table_td">{item.fruit_name}</td>
-                        <td className="other-table_td">{item.quantity}</td>
-                        <td className="other-table_td">
-                          <button onClick={() => deleteItem(item.id)}>
-                            Delete item
-                          </button>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
+              <div className="table-container">
+                <table className="other-table">
+                  <thead className="other-table_thead">
+                    <tr className="other-table_tr">
+                      <td className="other-table_td">ID</td>
+                      <td className="other-table_td">Fruit Name</td>
+                      <td className="other-table_td">Quantity</td>
+                      <td className="other-table_td">Delete method</td>
+                    </tr>
+                  </thead>
+                  <tbody className="other-table_tbody">
+                    {tableData.map((item) => {
+                      return (
+                        <tr className="other-table_tr" key={item.id}>
+                          <td className="other-table_td">{item.id}</td>
+                          <td className="other-table_td">{item.fruit_name}</td>
+                          <td className="other-table_td">{item.quantity}</td>
+                          <td className="other-table_td">
+                            <button onClick={() => deleteItem(item.id)}>
+                              Delete item
+                            </button>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
               </div>
             )}
           </main>

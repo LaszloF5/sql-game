@@ -47,8 +47,9 @@ function App() {
 `;
 
   const [isVisibleTutorial, setIsVisibleTutorial] = useState<boolean>(true);
-  const [isVisibleTask, setIsVisibleTask] = useState<boolean>(true);
+  const [isVisibleTask, setIsVisibleTask] = useState<boolean>(false);
   const [isVisibleOtherTask, setIsVisibleOtherTask] = useState<boolean>(false);
+  const [percentage, setPercentage] = useState<number>(0);
 
   return (
     <div className="App">
@@ -89,6 +90,8 @@ function App() {
               setIsVisibleTutorial={setIsVisibleTutorial}
               setIsVisibleTask={setIsVisibleTask}
               setError={setError}
+              percentage={percentage}
+              setPercentage={setPercentage}
             />
             <SelectTaskComponent
               task0={task0}
@@ -111,6 +114,9 @@ function App() {
               showMe={showMe}
               isVisibleOtherTask={isVisibleOtherTask}
               setIsVisibleOtherTask={setIsVisibleOtherTask}
+              percentage={percentage}
+              setPercentage={setPercentage}
+              setOtherTask0={setOtherTask0}
             />
             <OtherQueries
               otherTask0={otherTask0}
@@ -132,6 +138,8 @@ function App() {
               isVisibleOtherTask={isVisibleOtherTask}
               setIsVisibleOtherTask={setIsVisibleOtherTask}
               setIsVisibleTutorial={setIsVisibleTutorial}
+              percentage={percentage}
+              setPercentage={setPercentage}
             />
           </>
         )}
@@ -150,4 +158,6 @@ TODO:
   - ne lehessen kijelölni a megoldásokat, be kelljen írni. (Oktatási célzat.)
   - Az otherqueries-nek kell átadni minden olyan beállítást, ami szükséges hogy újrakezdődjön a játék
   - Egy kör, ami % arányosan töltődök a teljesített részekkel: fill
+  - Database structure és ah ott van a felhasználó Back to the task váltson át a szöveg.
+  - Figyelemfelhívő szöveg a space és kis nagybetűre, és hogy csekkolja a db struktúrát, sokat segít a megoldásban.
 */

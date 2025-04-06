@@ -41,6 +41,9 @@ interface SelectTaskProps {
   showMe: string;
   isVisibleOtherTask: boolean;
   setIsVisibleOtherTask: React.Dispatch<React.SetStateAction<Boolean>>;
+  setOtherTask0: React.Dispatch<React.SetStateAction<boolean>>;
+  percentage: number;
+  setPercentage: React.Dispatch<React.SetStateAction<number>>;
 }
 
 const SelectTaskComponent: FC<SelectTaskProps> = ({
@@ -64,6 +67,9 @@ const SelectTaskComponent: FC<SelectTaskProps> = ({
   showMe,
   isVisibleOtherTask,
   setIsVisibleOtherTask,
+  setOtherTask0,
+  percentage,
+  setPercentage,
 }) => {
   // Így 100% hogy tiszta lesz a Session tábla.
 
@@ -88,9 +94,11 @@ const SelectTaskComponent: FC<SelectTaskProps> = ({
   };
 
   const toggleVisibilityOtherQ = (): void => {
+    setPercentage(0);
     clearSession();
     setIsVisibleTask(false);
     setIsVisibleOtherTask(true);
+    setOtherTask0(true);
   };
 
   const [query, setQuery] = useState<string>("");
@@ -120,10 +128,10 @@ const SelectTaskComponent: FC<SelectTaskProps> = ({
     "Third Query \n The third witness stated that the man was poorly dressed, which suggests that he had a lower-than-average income. \n Determine the average income of the people in the Persons table! The result should only include the average income, and the column name should be annual_income.";
 
   const task4Text: string =
-    "Fourth Query \n The fourth witness did not see the car's brand, only its model: Taurus. The vehicle was parked not far from the scene, where the elderly man hurriedly got in. The witness also noticed that he was wearing a green wristband, which is given to visitors who purchase a VIP ticket at the zoo. \n Find out who owns a Taurus model car and who has purchased a VIP ticket at the zoo! \n As a hint, here is a partial query that you need to complete: \n SELECT car_type FROM Persons JOIN Zoo ON Persons.id = Zoo.person_id WHERE";
+    "Fourth Query \n The fourth witness did not see the car's brand, only its model: Taurus. The vehicle was parked not far from the scene, where the elderly man hurriedly got in. The witness also noticed that he was wearing a green wristband, which is given to visitors who purchase a VIP ticket at the zoo. \n Find out who owns a Taurus model car and has purchased a VIP ticket at the zoo!  \n Since the columns in the two tables are different, it's enough to refer to the columns in the WHERE clause without prefixing them with the table name (e.g., use age instead of Persons.age). \n In this case, you’ll need to use the % operator before the text, because the car type contains both the brand and the model — with the model being the second part. \n As a hint, here is a partial query that you need to complete: \n SELECT car_type FROM Persons JOIN Zoo ON Persons.id = Zoo.person_id WHERE";
 
   const task5Text: string =
-    "Fifth Query \n Now you need to combine the collected data and query conditions. \n Find the individuals who meet the following criteria: male, older than average, lower income, drive a Taurus model car, and have purchased a VIP ticket at the zoo. \n Since the columns of the two tables differ, in the WHERE condition, it is sufficient to specify the column names (e.g., age) without prefixing them with the table name (e.g., Persons.age). \n Continue the following query: \n SELECT * FROM Persons JOIN Zoo ON Persons.id = Zoo.person_id WHERE";
+    "Fifth Query \n Now you need to combine the collected data and query conditions. \n Find the individuals who meet the following criteria: male, older than 49, have an income lower than 490281, drive a Taurus model car, and have purchased a VIP ticket at the zoo. \n Since the columns in the two tables are different, it's enough to refer to the columns in the WHERE clause without prefixing them with the table name (e.g., use age instead of Persons.age). \n Continue the following query \n SELECT * FROM Persons JOIN Zoo ON Persons.id = Zoo.person_id WHERE";
 
   const getMyQuery = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -161,11 +169,13 @@ const SelectTaskComponent: FC<SelectTaskProps> = ({
         task0
       ) {
         console.log("Go to the second witness testimony.");
+        setPercentage(20);
         setTask0(false);
         setTask1(true);
       }
       if (query.trim() === `SELECT AVG(age) AS age FROM Persons` && task1) {
         console.log("Go to the third witness testimony.");
+        setPercentage(40);
         setTask1(false);
         setTask2(true);
       }
@@ -175,6 +185,7 @@ const SelectTaskComponent: FC<SelectTaskProps> = ({
         task2
       ) {
         console.log("Go to the fourth witness testimony.");
+        setPercentage(60);
         setTask2(false);
         setTask3(true);
       }
@@ -184,6 +195,7 @@ const SelectTaskComponent: FC<SelectTaskProps> = ({
         task3
       ) {
         console.log("Go to the verification query.");
+        setPercentage(80);
         setTask3(false);
         setTask4(true);
       }
@@ -193,6 +205,7 @@ const SelectTaskComponent: FC<SelectTaskProps> = ({
         task4
       ) {
         console.log("GGWP.");
+        setPercentage(100);
         setTask4(false);
         setTask5(true);
       }
@@ -206,6 +219,11 @@ const SelectTaskComponent: FC<SelectTaskProps> = ({
     <div>
       {isVisibleTask && (
         <div className="main-div">
+          <div className="circle-container">
+            <div className={`circle circle-${percentage}`}>
+              <div className="inner-circle">{percentage}%</div>
+            </div>
+          </div>
           {task0 && (
             <form
               className="task-form"
@@ -223,7 +241,7 @@ const SelectTaskComponent: FC<SelectTaskProps> = ({
                 >
                   {showMe}
                 </button>
-                {activeTask === 1 && <pre>{task1Solution}</pre>}
+                {activeTask === 1 && <pre className="text-style">{task1Solution}</pre>}
               </label>
               <input
                 autoFocus
@@ -256,7 +274,7 @@ const SelectTaskComponent: FC<SelectTaskProps> = ({
                 >
                   {showMe}
                 </button>
-                {activeTask === 2 && <pre>{task2Solution}</pre>}
+                {activeTask === 2 && <pre className="text-style">{task2Solution}</pre>}
               </label>
               <input
                 autoFocus
@@ -289,7 +307,7 @@ const SelectTaskComponent: FC<SelectTaskProps> = ({
                 >
                   {showMe}
                 </button>
-                {activeTask === 3 && <pre>{task3Solution}</pre>}
+                {activeTask === 3 && <pre className="text-style">{task3Solution}</pre>}
               </label>
               <input
                 autoFocus
@@ -322,7 +340,7 @@ const SelectTaskComponent: FC<SelectTaskProps> = ({
                 >
                   {showMe}
                 </button>
-                {activeTask === 4 && <pre>{task4Solution}</pre>}
+                {activeTask === 4 && <pre className="text-style">{task4Solution}</pre>}
               </label>
               <input
                 autoFocus
@@ -355,7 +373,7 @@ const SelectTaskComponent: FC<SelectTaskProps> = ({
                 >
                   {showMe}
                 </button>
-                {activeTask === 5 && <pre>{task5Solution}</pre>}
+                {activeTask === 5 && <pre className="text-style">{task5Solution}</pre>}
               </label>
               <input
                 autoFocus

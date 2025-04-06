@@ -31,6 +31,8 @@ interface TutorialSelectProps {
   setTutorialResult: React.Dispatch<React.SetStateAction<PoliceData[]>>;
   error: string | null;
   setError: React.Dispatch<React.SetStateAction<string | null>>;
+  percentage: number;
+  setPercentage: React.Dispatch<React.SetStateAction<number>>;
 }
 
 const TutorialSelectComponent: FC<TutorialSelectProps> = ({
@@ -54,10 +56,10 @@ const TutorialSelectComponent: FC<TutorialSelectProps> = ({
   setIsVisibleTask,
   error,
   setError,
+  percentage,
+  setPercentage,
 }) => {
   // % circle
-
-  const [tutorialPercentage, setTutorialPercentage] = useState<number>(0);
 
   const [activeTutorial, setActiveTutorial] = useState<number>(0);
 
@@ -69,6 +71,7 @@ const TutorialSelectComponent: FC<TutorialSelectProps> = ({
 
   const toggleVisibility = (): void => {
     setActiveTutorial(10);
+    setPercentage(0);
     setIsVisibleTutorial(false);
     setTask0(true);
     setIsVisibleTask(true);
@@ -97,12 +100,13 @@ const TutorialSelectComponent: FC<TutorialSelectProps> = ({
     "List 10 crime reports. \n Only crime reports should be displayed. \n You already have almost all the necessary knowledge to write this query! \n To display 10 reports, add the LIMIT 10 statement at the end of the query.";
 
   const tutorial5Text: string =
-    "Find all cities whose names start with 'Lake'. \n To do this, use the LIKE 'Lake%' operator after WHERE.";
+    "Find all cities (we only need the city column) whose names start with 'Lake'. \n To do this, use the LIKE 'Lake%' operator in the WHERE clause.";
 
   const getTutorialQuery = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError(null);
     if (
+      tutorialQuery.trim() === `SELECT * FROM Police_db` ||
       tutorialQuery.trim() === `SELECT city FROM Police_db` ||
       tutorialQuery.trim() === `SELECT AVG(id) AS id FROM Police_db` ||
       tutorialQuery.trim() === `SELECT id FROM Police_db WHERE id > 50` ||
@@ -133,7 +137,7 @@ const TutorialSelectComponent: FC<TutorialSelectProps> = ({
       console.log("Response status: ", response.status);
 
       if (tutorialQuery.trim() === `SELECT city FROM Police_db` && tutorial0) {
-        setTutorialPercentage(20);
+        setPercentage(20);
         console.log("Go to tutorial 2.");
         setTutorial0(false);
         setTutorial1(true);
@@ -142,7 +146,7 @@ const TutorialSelectComponent: FC<TutorialSelectProps> = ({
         tutorialQuery.trim() === `SELECT AVG(id) AS id FROM Police_db` &&
         tutorial1
       ) {
-        setTutorialPercentage(40);
+        setPercentage(40);
         console.log("Go to tutorial 3.");
         setTutorial1(false);
         setTutorial2(true);
@@ -151,7 +155,7 @@ const TutorialSelectComponent: FC<TutorialSelectProps> = ({
         tutorialQuery.trim() === `SELECT id FROM Police_db WHERE id > 50` &&
         tutorial2
       ) {
-        setTutorialPercentage(60);
+        setPercentage(60);
         console.log("Go to tutorial 4.");
         setTutorial2(false);
         setTutorial3(true);
@@ -161,7 +165,7 @@ const TutorialSelectComponent: FC<TutorialSelectProps> = ({
           `SELECT crime_report FROM Police_db LIMIT 10` &&
         tutorial3
       ) {
-        setTutorialPercentage(80);
+        setPercentage(80);
         console.log("Go to tutorial 5.");
         setTutorial3(false);
         setTutorial4(true);
@@ -171,7 +175,7 @@ const TutorialSelectComponent: FC<TutorialSelectProps> = ({
           `SELECT city FROM Police_db WHERE city LIKE 'Lake%'` &&
         tutorial4
       ) {
-        setTutorialPercentage(100);
+        setPercentage(100);
         console.log("Go to the real task.");
         setTutorial4(false);
         setTutorial5(true);
@@ -192,6 +196,11 @@ const TutorialSelectComponent: FC<TutorialSelectProps> = ({
     <div>
       {isVisibleTutorial && (
         <div className="tutorialDiv">
+          <div className="circle-container">
+            <div className={`circle circle-${percentage}`}>
+              <div className="inner-circle">{percentage}%</div>
+            </div>
+          </div>
           {tutorial0 && (
             <form className="tutorial-form" onSubmit={getTutorialQuery}>
               <label
@@ -207,7 +216,7 @@ const TutorialSelectComponent: FC<TutorialSelectProps> = ({
                 >
                   {showMe}
                 </button>
-                {activeTutorial === 1 && <pre>{tutorial1Solution}</pre>}
+                {activeTutorial === 1 && <pre className="text-style">{tutorial1Solution}</pre>}
               </label>
               <input
                 autoFocus
@@ -241,7 +250,7 @@ const TutorialSelectComponent: FC<TutorialSelectProps> = ({
                   >
                     {showMe}
                   </button>
-                  {activeTutorial === 2 && <pre>{tutorial2Solution}</pre>}
+                  {activeTutorial === 2 && <pre className="text-style">{tutorial2Solution}</pre>}
                 </label>
                 <input
                   autoFocus
@@ -274,7 +283,7 @@ const TutorialSelectComponent: FC<TutorialSelectProps> = ({
                   >
                     {showMe}
                   </button>
-                  {activeTutorial === 3 && <pre>{tutorial3Solution}</pre>}
+                  {activeTutorial === 3 && <pre className="text-style">{tutorial3Solution}</pre>}
                 </label>
                 <input
                   autoFocus
@@ -307,7 +316,7 @@ const TutorialSelectComponent: FC<TutorialSelectProps> = ({
                   >
                     {showMe}
                   </button>
-                  {activeTutorial === 4 && <pre>{tutorial4Solution}</pre>}
+                  {activeTutorial === 4 && <pre className="text-style">{tutorial4Solution}</pre>}
                 </label>
                 <input
                   autoFocus
@@ -340,7 +349,7 @@ const TutorialSelectComponent: FC<TutorialSelectProps> = ({
                   >
                     {showMe}
                   </button>
-                  {activeTutorial === 5 && <pre>{tutorial5Solution}</pre>}
+                  {activeTutorial === 5 && <pre className="text-style">{tutorial5Solution}</pre>}
                 </label>
                 <input
                   autoFocus
@@ -369,9 +378,6 @@ const TutorialSelectComponent: FC<TutorialSelectProps> = ({
               </button>
             </div>
           )}
-          <div className="circle-container">
-            <div className={`circle circle-${tutorialPercentage}`}></div>
-          </div>
           {tutorialResult.length > 0 && (
             <div className="table-container">
               <table className="tutorial-table">
