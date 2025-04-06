@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/sql-game/static/css/main.36193abc.css",
+    "main.js": "/sql-game/static/js/main.f5c45fbe.js",
+    "index.html": "/sql-game/index.html",
+    "main.36193abc.css.map": "/sql-game/static/css/main.36193abc.css.map",
+    "main.f5c45fbe.js.map": "/sql-game/static/js/main.f5c45fbe.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.36193abc.css",
+    "static/js/main.f5c45fbe.js"
+  ]
+}
