@@ -165,5 +165,5 @@ export default App;
 /*
 TODO: 
 - átnézni, mennyire érthető az egész,
-git commit -m 'DB Structure tables, and responsive design, favicon, full story (Intro, and main task) gh-pages.'
+- ha a fetch tartrt, btn click letiltása
 */

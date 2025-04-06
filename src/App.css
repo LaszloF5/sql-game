@@ -83,7 +83,7 @@
 
 .text-style {
   white-space: pre-line;
-  /* user-select: none; */
+  user-select: none;
 }
 
 .rules {
