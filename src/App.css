@@ -2,6 +2,13 @@
   text-align: center;
 }
 
+.story {
+  width: 50%;
+  font-size: 24px;
+  margin: 24px auto;
+  white-space: pre-line;
+}
+
 .circle-container {
   position: absolute;
   top: 100px;
@@ -64,17 +71,19 @@
   font-size: 24px;
   margin: 0;
   padding: 0;
+  user-select: none;
 }
 
 .header-nav_link {
   color: whitesmoke;
   text-decoration: none;
   font-size: 24px;
+  user-select: none;
 }
 
 .text-style {
   white-space: pre-line;
-  user-select: none;
+  /* user-select: none; */
 }
 
 .rules {

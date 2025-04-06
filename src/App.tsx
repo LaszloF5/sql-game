@@ -11,9 +11,13 @@ import OtherQueries from "./Components/OtherQueries.tsx";
 function App() {
   const location = useLocation();
 
+  const [firstPartStory, setFirstPartStory] = useState<boolean>(true);
+
+  const [secondPartStory, setSecondPartStory] = useState<boolean>(false);
+
   // TutorialSelectComponent booleans:
 
-  const [tutorial0, setTutorial0] = useState<boolean>(true);
+  const [tutorial0, setTutorial0] = useState<boolean>(false);
   const [tutorial1, setTutorial1] = useState<boolean>(false);
   const [tutorial2, setTutorial2] = useState<boolean>(false);
   const [tutorial3, setTutorial3] = useState<boolean>(false);
@@ -42,8 +46,11 @@ function App() {
 
   const importantRules: string = `
   Please pay attention to the following rules: \n
-  Although SQL is not case-sensitive, there is a convention that SQL keywords (e.g., SELECT, INSERT, DELETE, FROM, WHERE, JOIN, etc.) are written in uppercase. \n
-  In the tasks, if you write these keywords in lowercase, you will receive an error message.
+  Although SQL is not case-sensitive, there is a convention that SQL keywords (e.g., SELECT, INSERT, DELETE, FROM, WHERE, JOIN, etc.) are written in uppercase. \n 
+  Please close attention to table names and column names - including casing (uppercase, lowercase) and spaces. \n
+  In the database structure menu, you'll find all the necessary information about the database, the tables and the types of each column. \n
+  For TEXT columns, always put the values in single (' ') or double (" ") quotes. \n
+  If you write keywords in lowercase or break any of the rules above during the tasks, you'll receive an error message.
 `;
 
   const [isVisibleTutorial, setIsVisibleTutorial] = useState<boolean>(true);
@@ -57,7 +64,7 @@ function App() {
         <nav className="header-nav">
           <h1 className="header-nav_h1">Learn SQLite</h1>
           <Link className="header-nav_link" to="/">
-            Home
+            {location.pathname === "/" ? "Home" : "Back to the task"}
           </Link>
           <Link className="header-nav_link" to="/db-structure">
             Database structure
@@ -71,6 +78,9 @@ function App() {
         {location.pathname !== "/db-structure" && (
           <>
             <TutorialSelectComponent
+              firstPartStory={firstPartStory}
+              setFirstPartStory={setFirstPartStory}
+              setSecondPartStory={setSecondPartStory}
               tutorial0={tutorial0}
               tutorial1={tutorial1}
               tutorial2={tutorial2}
@@ -94,6 +104,8 @@ function App() {
               setPercentage={setPercentage}
             />
             <SelectTaskComponent
+              secondPartStory={secondPartStory}
+              setSecondPartStory={setSecondPartStory}
               task0={task0}
               task1={task1}
               task2={task2}
@@ -119,6 +131,7 @@ function App() {
               setOtherTask0={setOtherTask0}
             />
             <OtherQueries
+              setFirstPartStory={setFirstPartStory}
               otherTask0={otherTask0}
               otherTask1={otherTask1}
               otherTask2={otherTask2}
@@ -152,12 +165,5 @@ export default App;
 /*
 TODO: 
 - átnézni, mennyire érthető az egész,
-  - ha végezett az egésszel, minden lenullázni, és újrakezdeni,
-  - az Session táblához is készíteni struktúrát,
-  - a másik delete table Session-nél is 0-ra kell hozni az id-ket.
-  - ne lehessen kijelölni a megoldásokat, be kelljen írni. (Oktatási célzat.)
-  - Az otherqueries-nek kell átadni minden olyan beállítást, ami szükséges hogy újrakezdődjön a játék
-  - Egy kör, ami % arányosan töltődök a teljesített részekkel: fill
-  - Database structure és ah ott van a felhasználó Back to the task váltson át a szöveg.
-  - Figyelemfelhívő szöveg a space és kis nagybetűre, és hogy csekkolja a db struktúrát, sokat segít a megoldásban.
+git commit -m 'DB Structure tables, and responsive design, favicon, full story (Intro, and main task) gh-pages.'
 */

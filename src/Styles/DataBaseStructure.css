@@ -1,5 +1,44 @@
-.db-structure {
-    font-size: 18px;
-    width: 80vw;
-    margin: 0 auto;
+table {
+  border-collapse: collapse;
+  margin: 24px auto;
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  background-color: #fff;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+th,
+td {
+  border: 1px solid #ddd;
+  padding: 12px 15px;
+  text-align: left;
+}
+
+th {
+  background-color: #f4f4f4;
+  font-weight: bold;
+  color: #333;
+}
+
+tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+tr:hover {
+  background-color: #f1f1f1;
+}
+
+h2,
+h3,
+h4 {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  margin: 16px;
+  color: #444;
+}
+
+@media screen and (max-width: 1120px) {
+    .table-div {
+        width: 100%;
+        overflow-X: scroll;
+      }
 }

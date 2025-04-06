@@ -7,6 +7,7 @@ interface OtherQueryData {
 }
 
 interface visibleState {
+  setFirstPartStory: React.Dispatch<React.SetStateAction<boolean>>;
   otherTask0: boolean;
   otherTask1: boolean;
   otherTask2: boolean;
@@ -31,6 +32,7 @@ interface visibleState {
 }
 
 const OtherQueries: FC<visibleState> = ({
+  setFirstPartStory,
   otherTask0,
   otherTask1,
   otherTask2,
@@ -56,10 +58,9 @@ const OtherQueries: FC<visibleState> = ({
   const goToTheStart = () => {
     setPercentage(0);
     setIsVisibleOtherTask(false);
-    setIsVisibleTutorial(true);
+    setFirstPartStory(true);
     setTutorial5(false);
     setTask5(false);
-    setTutorial0(true);
   };
 
   const [visibleAnswer, setVisibleAnswer] = useState<number>(0);
@@ -172,18 +173,18 @@ Use the DELETE command to remove the record!`;
 
   // DELETE (Ezt később törölni fogjuk, csak nem akarok mindig delete query-ket írni.);
 
-  const deleteItem = async (i: number) => {
-    try {
-      const response = await axios.delete(
-        `http://localhost:5000/api/session/${i}`
-      );
-      setTableData(tableData.filter((item) => item.id !== i));
-      setOtherQuery("");
-    } catch (error) {
-      console.error("Error:", error);
-      alert("An error occurred. Please try again later.");
-    }
-  };
+  // const deleteItem = async (i: number) => {
+  //   try {
+  //     const response = await axios.delete(
+  //       `http://localhost:5000/api/session/${i}`
+  //     );
+  //     setTableData(tableData.filter((item) => item.id !== i));
+  //     setOtherQuery("");
+  //   } catch (error) {
+  //     console.error("Error:", error);
+  //     alert("An error occurred. Please try again later.");
+  //   }
+  // };
 
   // UPDATE item
 
@@ -287,13 +288,13 @@ Use the DELETE command to remove the record!`;
                 <div className="inner-circle">{percentage}%</div>
               </div>
             </div>
-            <button
+            {/* <button
               className="other-form_button"
               type="button"
               onClick={getElements}
             >
               Get my elements
-            </button>
+            </button> */}
             {otherTask0 && (
               <form
                 className="other-form"
@@ -311,7 +312,9 @@ Use the DELETE command to remove the record!`;
                   >
                     {otherShowMe}
                   </button>
-                  {visibleAnswer === 1 && <pre className="text-style">{otherTask0Solution}</pre>}
+                  {visibleAnswer === 1 && (
+                    <pre className="text-style">{otherTask0Solution}</pre>
+                  )}
                 </label>
                 <input
                   autoFocus
@@ -343,7 +346,9 @@ Use the DELETE command to remove the record!`;
                   >
                     {otherShowMe}
                   </button>
-                  {visibleAnswer === 2 && <pre className="text-style">{otherTask1Solution}</pre>}
+                  {visibleAnswer === 2 && (
+                    <pre className="text-style">{otherTask1Solution}</pre>
+                  )}
                 </label>
                 <input
                   autoFocus
@@ -375,7 +380,9 @@ Use the DELETE command to remove the record!`;
                   >
                     {otherShowMe}
                   </button>
-                  {visibleAnswer === 3 && <pre className="text-style">{otherTask2Solution}</pre>}
+                  {visibleAnswer === 3 && (
+                    <pre className="text-style">{otherTask2Solution}</pre>
+                  )}
                 </label>
                 <input
                   autoFocus
@@ -407,7 +414,9 @@ Use the DELETE command to remove the record!`;
                   >
                     {otherShowMe}
                   </button>
-                  {visibleAnswer === 4 && <pre className="text-style">{otherTask3Solution}</pre>}
+                  {visibleAnswer === 4 && (
+                    <pre className="text-style">{otherTask3Solution}</pre>
+                  )}
                 </label>
                 <input
                   autoFocus
@@ -439,7 +448,9 @@ Use the DELETE command to remove the record!`;
                   >
                     {otherShowMe}
                   </button>
-                  {visibleAnswer === 5 && <pre className="text-style">{otherTask4Solution}</pre>}
+                  {visibleAnswer === 5 && (
+                    <pre className="text-style">{otherTask4Solution}</pre>
+                  )}
                 </label>
                 <input
                   autoFocus
@@ -475,7 +486,7 @@ Use the DELETE command to remove the record!`;
                       <td className="other-table_td">ID</td>
                       <td className="other-table_td">Fruit Name</td>
                       <td className="other-table_td">Quantity</td>
-                      <td className="other-table_td">Delete method</td>
+                      {/* <td className="other-table_td">Delete method</td> */}
                     </tr>
                   </thead>
                   <tbody className="other-table_tbody">
@@ -485,11 +496,11 @@ Use the DELETE command to remove the record!`;
                           <td className="other-table_td">{item.id}</td>
                           <td className="other-table_td">{item.fruit_name}</td>
                           <td className="other-table_td">{item.quantity}</td>
-                          <td className="other-table_td">
+                          {/* <td className="other-table_td">
                             <button onClick={() => deleteItem(item.id)}>
                               Delete item
                             </button>
-                          </td>
+                          </td> */}
                         </tr>
                       );
                     })}

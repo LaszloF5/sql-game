@@ -9,6 +9,9 @@ interface PoliceData {
 }
 
 interface TutorialSelectProps {
+  firstPartStory: boolean;
+  setFirstPartStory: React.Dispatch<React.SetStateAction<boolean>>;
+  setSecondPartStory: React.Dispatch<React.SetStateAction<boolean>>;
   tutorial0: boolean;
   tutorial1: boolean;
   tutorial2: boolean;
@@ -36,6 +39,9 @@ interface TutorialSelectProps {
 }
 
 const TutorialSelectComponent: FC<TutorialSelectProps> = ({
+  firstPartStory,
+  setFirstPartStory,
+  setSecondPartStory,
   tutorial0,
   tutorial1,
   tutorial2,
@@ -73,8 +79,20 @@ const TutorialSelectComponent: FC<TutorialSelectProps> = ({
     setActiveTutorial(10);
     setPercentage(0);
     setIsVisibleTutorial(false);
-    setTask0(true);
-    setIsVisibleTask(true);
+    setFirstPartStory(false);
+    setSecondPartStory(true);
+  };
+
+  const introStory: string = `Welcome, detective! \n The city’s greatest mystery has remained unsolved for five years: \n a mysterious criminal that even the best investigators haven’t been able to catch. \n But now, a new opportunity has arisen.
+
+The police database is at your disposal to help you narrow down the list of suspects and ultimately uncover the criminal’s identity. SQLite commands will guide you in identifying the wanted individual.
+
+Are you ready for the challenge?`;
+
+  const startFunction = () => {
+    setFirstPartStory(false);
+    setIsVisibleTutorial(true);
+    setTutorial0(true);
   };
 
   const [tutorialQuery, setTutorialQuery] = useState<string>("");
@@ -194,13 +212,25 @@ const TutorialSelectComponent: FC<TutorialSelectProps> = ({
 
   return (
     <div>
+      {firstPartStory && (
+        <>
+          <p className="story">{introStory}</p>
+          <button className="showMe-btn" onClick={startFunction}>
+            Let's dive in!
+          </button>
+        </>
+      )}
       {isVisibleTutorial && (
         <div className="tutorialDiv">
-          <div className="circle-container">
-            <div className={`circle circle-${percentage}`}>
-              <div className="inner-circle">{percentage}%</div>
+          {firstPartStory ? (
+            ""
+          ) : (
+            <div className="circle-container">
+              <div className={`circle circle-${percentage}`}>
+                <div className="inner-circle">{percentage}%</div>
+              </div>
             </div>
-          </div>
+          )}
           {tutorial0 && (
             <form className="tutorial-form" onSubmit={getTutorialQuery}>
               <label
@@ -216,7 +246,9 @@ const TutorialSelectComponent: FC<TutorialSelectProps> = ({
                 >
                   {showMe}
                 </button>
-                {activeTutorial === 1 && <pre className="text-style">{tutorial1Solution}</pre>}
+                {activeTutorial === 1 && (
+                  <pre className="text-style">{tutorial1Solution}</pre>
+                )}
               </label>
               <input
                 autoFocus
@@ -250,7 +282,9 @@ const TutorialSelectComponent: FC<TutorialSelectProps> = ({
                   >
                     {showMe}
                   </button>
-                  {activeTutorial === 2 && <pre className="text-style">{tutorial2Solution}</pre>}
+                  {activeTutorial === 2 && (
+                    <pre className="text-style">{tutorial2Solution}</pre>
+                  )}
                 </label>
                 <input
                   autoFocus
@@ -283,7 +317,9 @@ const TutorialSelectComponent: FC<TutorialSelectProps> = ({
                   >
                     {showMe}
                   </button>
-                  {activeTutorial === 3 && <pre className="text-style">{tutorial3Solution}</pre>}
+                  {activeTutorial === 3 && (
+                    <pre className="text-style">{tutorial3Solution}</pre>
+                  )}
                 </label>
                 <input
                   autoFocus
@@ -316,7 +352,9 @@ const TutorialSelectComponent: FC<TutorialSelectProps> = ({
                   >
                     {showMe}
                   </button>
-                  {activeTutorial === 4 && <pre className="text-style">{tutorial4Solution}</pre>}
+                  {activeTutorial === 4 && (
+                    <pre className="text-style">{tutorial4Solution}</pre>
+                  )}
                 </label>
                 <input
                   autoFocus
@@ -349,7 +387,9 @@ const TutorialSelectComponent: FC<TutorialSelectProps> = ({
                   >
                     {showMe}
                   </button>
-                  {activeTutorial === 5 && <pre className="text-style">{tutorial5Solution}</pre>}
+                  {activeTutorial === 5 && (
+                    <pre className="text-style">{tutorial5Solution}</pre>
+                  )}
                 </label>
                 <input
                   autoFocus

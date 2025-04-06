@@ -21,6 +21,8 @@ interface PersonsData {
 }
 
 interface SelectTaskProps {
+  secondPartStory: boolean;
+  setSecondPartStory: React.Dispatch<React.SetStateAction<boolean>>;
   task0: boolean;
   task1: boolean;
   task2: boolean;
@@ -47,6 +49,8 @@ interface SelectTaskProps {
 }
 
 const SelectTaskComponent: FC<SelectTaskProps> = ({
+  secondPartStory,
+  setSecondPartStory,
   task0,
   task1,
   task2,
@@ -71,6 +75,18 @@ const SelectTaskComponent: FC<SelectTaskProps> = ({
   percentage,
   setPercentage,
 }) => {
+
+  const continueSotry: string = `After going through the police database, something didn't add up. The data you were working with seemed to be fake. \n
+“Wait a minute… something's not right. The city's police force is the most corrupt institution. The data has been tampered with,” came the message. \n
+Fortunately, a hacker who saw through the system shared the real witness testimonies with you, revealing the true identity of the criminal. \n
+You're now just a few steps away from exposing the criminal who's been evading the authorities for years.`;
+
+const continueGame = () => {
+  setSecondPartStory(false);
+  setTask0(true);
+  setIsVisibleTask(true);
+}
+
   // Így 100% hogy tiszta lesz a Session tábla.
 
   const clearSession = async () => {
@@ -217,6 +233,10 @@ const SelectTaskComponent: FC<SelectTaskProps> = ({
 
   return (
     <div>
+      {secondPartStory && (<>
+      <p className='story'>{continueSotry}</p>
+      <button className='showMe-btn' onClick={continueGame}>Let's check the database!</button>
+      </>)}
       {isVisibleTask && (
         <div className="main-div">
           <div className="circle-container">
