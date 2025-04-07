@@ -2,6 +2,11 @@
   text-align: center;
 }
 
+.disabled {
+  cursor: not-allowed;
+  background-color: #6dafdb;
+}
+
 .error {
   font-size: 24px;
   color: red;

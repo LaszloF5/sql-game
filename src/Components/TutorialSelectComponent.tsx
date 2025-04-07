@@ -9,6 +9,8 @@ interface PoliceData {
 }
 
 interface TutorialSelectProps {
+  isDisabled: boolean;
+  setIsDisabled: React.Dispatch<React.SetStateAction<boolean>>;
   firstPartStory: boolean;
   setFirstPartStory: React.Dispatch<React.SetStateAction<boolean>>;
   setSecondPartStory: React.Dispatch<React.SetStateAction<boolean>>;
@@ -37,6 +39,8 @@ interface TutorialSelectProps {
 }
 
 const TutorialSelectComponent: FC<TutorialSelectProps> = ({
+  isDisabled,
+  setIsDisabled,
   firstPartStory,
   setFirstPartStory,
   setSecondPartStory,
@@ -118,6 +122,7 @@ Are you ready for the challenge?`;
     "Find all cities (we only need the city column) whose names start with 'Lake'. \n To do this, use the LIKE 'Lake%' operator in the WHERE clause.";
 
   const getTutorialQuery = async (e: React.FormEvent<HTMLFormElement>) => {
+    setIsDisabled(true);
     e.preventDefault();
     setErrorText(null);
     const normalizedTutorialQuery = tutorialQuery.trim().replace(/"/g, "'");
@@ -217,6 +222,8 @@ Are you ready for the challenge?`;
             alert("An error occurred.");
           }
         }
+      } finally {
+        setIsDisabled(false);
       }
     } else {
       alert("The query does not match the expected format.");
@@ -274,8 +281,13 @@ Are you ready for the challenge?`;
                 placeholder="Write your solution..."
                 onChange={(e) => setTutorialQuery(e.target.value)}
               />
-              <button className="tutorial-form_button" type="submit">
-                Submit
+              <button
+                className={`tutorial-form_button ${
+                  isDisabled ? "disabled" : ""
+                }`}
+                type="submit"
+              >
+                {isDisabled ? "Loading..." : "Submit"}
               </button>
             </form>
           )}
@@ -308,8 +320,13 @@ Are you ready for the challenge?`;
                   placeholder="Write your solution..."
                   onChange={(e) => setTutorialQuery(e.target.value)}
                 />
-                <button className="tutorial-form_button" type="submit">
-                  Submit
+                <button
+                  className={`tutorial-form_button ${
+                    isDisabled ? "disabled" : ""
+                  }`}
+                  type="submit"
+                >
+                  {isDisabled ? "Loading..." : "Submit"}
                 </button>
               </form>
             </div>
@@ -343,8 +360,13 @@ Are you ready for the challenge?`;
                   placeholder="Write your solution..."
                   onChange={(e) => setTutorialQuery(e.target.value)}
                 />
-                <button className="tutorial-form_button" type="submit">
-                  Submit
+                <button
+                  className={`tutorial-form_button ${
+                    isDisabled ? "disabled" : ""
+                  }`}
+                  type="submit"
+                >
+                  {isDisabled ? "Loading..." : "Submit"}
                 </button>
               </form>
             </div>
@@ -378,8 +400,13 @@ Are you ready for the challenge?`;
                   placeholder="Write your solution..."
                   onChange={(e) => setTutorialQuery(e.target.value)}
                 />
-                <button className="tutorial-form_button" type="submit">
-                  Submit
+                <button
+                  className={`tutorial-form_button ${
+                    isDisabled ? "disabled" : ""
+                  }`}
+                  type="submit"
+                >
+                  {isDisabled ? "Loading..." : "Submit"}
                 </button>
               </form>
             </div>
@@ -413,8 +440,13 @@ Are you ready for the challenge?`;
                   placeholder="Write your solution..."
                   onChange={(e) => setTutorialQuery(e.target.value)}
                 />
-                <button className="tutorial-form_button" type="submit">
-                  Submit
+                <button
+                  className={`tutorial-form_button ${
+                    isDisabled ? "disabled" : ""
+                  }`}
+                  type="submit"
+                >
+                  {isDisabled ? "Loading..." : "Submit"}
                 </button>
               </form>
             </div>

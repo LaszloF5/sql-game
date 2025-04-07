@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, Routes, Route } from "react-router-dom";
 import { useLocation } from "react-router-dom";
+import axios from "axios";
 import "./App.css";
 import { createInferTypeNode } from "typescript";
 import TutorialSelectComponent from "./Components/TutorialSelectComponent.tsx";
@@ -11,9 +12,37 @@ import OtherQueries from "./Components/OtherQueries.tsx";
 function App() {
   const location = useLocation();
 
+  const [wakingup, setWakingUp] = useState<boolean>(true);
+
+  // Warm up ping
+
+  useEffect(() => {
+    const wakeServer = async () => {
+      try {
+        await axios.get("http://localhost:5000/api/warmup", {
+          timeout: 70000,
+        });
+        console.info("Server is available.");
+      } catch (error) {
+        if (!navigator.onLine) {
+          console.warn("Offline mode - skipping wake-up ping.");
+        } else if (error.code === "ECONNABORTED") {
+          console.warn("The request timed out after 70 seconds.");
+        } else {
+          console.warn("Error with server connection:", error.message);
+        }
+      } finally {
+        setWakingUp(false);
+      }
+    };
+    wakeServer();
+  }, []);
+
   const [firstPartStory, setFirstPartStory] = useState<boolean>(true);
 
   const [secondPartStory, setSecondPartStory] = useState<boolean>(false);
+
+  const [isDisabled, setIsDisabled] = useState<boolean>(false);
 
   // TutorialSelectComponent booleans:
 
@@ -77,86 +106,98 @@ function App() {
         </Routes>
         {location.pathname !== "/db-structure" && (
           <>
-            <TutorialSelectComponent
-              firstPartStory={firstPartStory}
-              setFirstPartStory={setFirstPartStory}
-              setSecondPartStory={setSecondPartStory}
-              tutorial0={tutorial0}
-              tutorial1={tutorial1}
-              tutorial2={tutorial2}
-              tutorial3={tutorial3}
-              tutorial4={tutorial4}
-              tutorial5={tutorial5}
-              setTutorial0={setTutorial0}
-              setTutorial1={setTutorial1}
-              setTutorial2={setTutorial2}
-              setTutorial3={setTutorial3}
-              setTutorial4={setTutorial4}
-              setTutorial5={setTutorial5}
-              setTask0={setTask0}
-              importantRules={importantRules}
-              showMe={showMe}
-              isVisibleTutorial={isVisibleTutorial}
-              setIsVisibleTutorial={setIsVisibleTutorial}
-              setIsVisibleTask={setIsVisibleTask}
-              errorText={errorText}
-              setErrorText={setErrorText}
-              percentage={percentage}
-              setPercentage={setPercentage}
-            />
-            <SelectTaskComponent
-              secondPartStory={secondPartStory}
-              setSecondPartStory={setSecondPartStory}
-              task0={task0}
-              task1={task1}
-              task2={task2}
-              task3={task3}
-              task4={task4}
-              task5={task5}
-              setTask0={setTask0}
-              setTask1={setTask1}
-              setTask2={setTask2}
-              setTask3={setTask3}
-              setTask4={setTask4}
-              setTask5={setTask5}
-              importantRules={importantRules}
-              isVisibleTask={isVisibleTask}
-              setIsVisibleTask={setIsVisibleTask}
-              errorText={errorText}
-              setErrorText={setErrorText}
-              showMe={showMe}
-              isVisibleOtherTask={isVisibleOtherTask}
-              setIsVisibleOtherTask={setIsVisibleOtherTask}
-              percentage={percentage}
-              setPercentage={setPercentage}
-              setOtherTask0={setOtherTask0}
-            />
-            <OtherQueries
-              setFirstPartStory={setFirstPartStory}
-              otherTask0={otherTask0}
-              otherTask1={otherTask1}
-              otherTask2={otherTask2}
-              otherTask3={otherTask3}
-              otherTask4={otherTask4}
-              otherTask5={otherTask5}
-              setOtherTask0={setOtherTask0}
-              setOtherTask1={setOtherTask1}
-              setOtherTask2={setOtherTask2}
-              setOtherTask3={setOtherTask3}
-              setOtherTask4={setOtherTask4}
-              setOtherTask5={setOtherTask5}
-              setTutorial0={setTutorial0}
-              setTutorial5={setTutorial5}
-              setTask5={setTask5}
-              errorText={errorText}
-              setErrorText={setErrorText}
-              importantRules={importantRules}
-              isVisibleOtherTask={isVisibleOtherTask}
-              setIsVisibleOtherTask={setIsVisibleOtherTask}
-              setIsVisibleTutorial={setIsVisibleTutorial}
-              percentage={percentage}
-              setPercentage={setPercentage}
-            />
+            {wakingup ? (
+              <p>Waking up the server, please wait...</p>
+            ) : (
+              <>
+                <TutorialSelectComponent
+                  isDisabled={isDisabled}
+                  setIsDisabled={setIsDisabled}
+                  firstPartStory={firstPartStory}
+                  setFirstPartStory={setFirstPartStory}
+                  setSecondPartStory={setSecondPartStory}
+                  tutorial0={tutorial0}
+                  tutorial1={tutorial1}
+                  tutorial2={tutorial2}
+                  tutorial3={tutorial3}
+                  tutorial4={tutorial4}
+                  tutorial5={tutorial5}
+                  setTutorial0={setTutorial0}
+                  setTutorial1={setTutorial1}
+                  setTutorial2={setTutorial2}
+                  setTutorial3={setTutorial3}
+                  setTutorial4={setTutorial4}
+                  setTutorial5={setTutorial5}
+                  setTask0={setTask0}
+                  importantRules={importantRules}
+                  showMe={showMe}
+                  isVisibleTutorial={isVisibleTutorial}
+                  setIsVisibleTutorial={setIsVisibleTutorial}
+                  setIsVisibleTask={setIsVisibleTask}
+                  errorText={errorText}
+                  setErrorText={setErrorText}
+                  percentage={percentage}
+                  setPercentage={setPercentage}
+                />
+                <SelectTaskComponent
+                  isDisabled={isDisabled}
+                  setIsDisabled={setIsDisabled}
+                  secondPartStory={secondPartStory}
+                  setSecondPartStory={setSecondPartStory}
+                  task0={task0}
+                  task1={task1}
+                  task2={task2}
+                  task3={task3}
+                  task4={task4}
+                  task5={task5}
+                  setTask0={setTask0}
+                  setTask1={setTask1}
+                  setTask2={setTask2}
+                  setTask3={setTask3}
+                  setTask4={setTask4}
+                  setTask5={setTask5}
+                  importantRules={importantRules}
+                  isVisibleTask={isVisibleTask}
+                  setIsVisibleTask={setIsVisibleTask}
+                  errorText={errorText}
+                  setErrorText={setErrorText}
+                  showMe={showMe}
+                  isVisibleOtherTask={isVisibleOtherTask}
+                  setIsVisibleOtherTask={setIsVisibleOtherTask}
+                  percentage={percentage}
+                  setPercentage={setPercentage}
+                  setOtherTask0={setOtherTask0}
+                />
+                <OtherQueries
+                  isDisabled={isDisabled}
+                  setIsDisabled={setIsDisabled}
+                  setFirstPartStory={setFirstPartStory}
+                  otherTask0={otherTask0}
+                  otherTask1={otherTask1}
+                  otherTask2={otherTask2}
+                  otherTask3={otherTask3}
+                  otherTask4={otherTask4}
+                  otherTask5={otherTask5}
+                  setOtherTask0={setOtherTask0}
+                  setOtherTask1={setOtherTask1}
+                  setOtherTask2={setOtherTask2}
+                  setOtherTask3={setOtherTask3}
+                  setOtherTask4={setOtherTask4}
+                  setOtherTask5={setOtherTask5}
+                  setTutorial0={setTutorial0}
+                  setTutorial5={setTutorial5}
+                  setTask5={setTask5}
+                  errorText={errorText}
+                  setErrorText={setErrorText}
+                  importantRules={importantRules}
+                  isVisibleOtherTask={isVisibleOtherTask}
+                  setIsVisibleOtherTask={setIsVisibleOtherTask}
+                  setIsVisibleTutorial={setIsVisibleTutorial}
+                  percentage={percentage}
+                  setPercentage={setPercentage}
+                />
+              </>
+            )}
           </>
         )}
       </main>
@@ -164,10 +205,3 @@ function App() {
   );
 }
 export default App;
-
-/*
-TODO: 
-- átnézni, mennyire érthető az egész,
-- ha a fetch tart, btn click letiltása
-- valami request kell rögtön amikor betölt az oldal, mert kell kb 30s mire feléled a backend a render.com-on az ingyenes verziónál.
-*/

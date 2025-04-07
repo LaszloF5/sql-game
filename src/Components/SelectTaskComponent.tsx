@@ -21,6 +21,8 @@ interface PersonsData {
 }
 
 interface SelectTaskProps {
+  isDisabled: boolean;
+  setIsDisabled: React.Dispatch<React.SetStateAction<boolean>>;
   secondPartStory: boolean;
   setSecondPartStory: React.Dispatch<React.SetStateAction<boolean>>;
   task0: boolean;
@@ -48,6 +50,8 @@ interface SelectTaskProps {
 }
 
 const SelectTaskComponent: FC<SelectTaskProps> = ({
+  isDisabled,
+  setIsDisabled,
   secondPartStory,
   setSecondPartStory,
   task0,
@@ -163,12 +167,13 @@ Case closed.`;
     "Third Query \n The third witness stated that the man was poorly dressed, which suggests that he had a lower-than-average income. \n Determine the average income of the people in the Persons table! The result should only include the average income, and the column name should be annual_income.";
 
   const task4Text: string =
-    "Fourth Query \n The fourth witness did not see the car's brand, only its model: Taurus. The vehicle was parked not far from the scene, where the elderly man hurriedly got in. The witness also noticed that he was wearing a green wristband, which is given to visitors who purchase a VIP ticket at the zoo. \n Find out who owns a Taurus model car and has purchased a VIP ticket at the zoo!  \n Since the columns in the two tables are different, it's enough to refer to the columns in the WHERE clause without prefixing them with the table name (e.g., use age instead of Persons.age). \n In this case, you'll need to use the % operator before the text, because the car type contains both the brand and the model — with the model being the second part. \n As a hint, here is a partial query that you need to complete: \n SELECT car_type FROM Persons JOIN Zoo ON Persons.id = Zoo.person_id WHERE";
+    "Fourth Query \n The fourth witness did not see the car's brand, only its model: Taurus. The vehicle was parked not far from the scene, where the elderly man hurriedly got in. The witness also noticed that he was wearing a green wristband, which is given to visitors who purchase a vip ticket at the zoo. \n Find out who owns a Taurus model car and has purchased a vip ticket at the zoo!  \n Since the columns in the two tables are different, it's enough to refer to the columns in the WHERE clause without prefixing them with the table name (e.g., use age instead of Persons.age). \n In this case, you'll need to use the % operator before the text, because the car type contains both the brand and the model — with the model being the second part. \n As a hint, here is a partial query that you need to complete: \n SELECT car_type FROM Persons JOIN Zoo ON Persons.id = Zoo.person_id WHERE";
 
   const task5Text: string =
-    "Fifth Query \n Now you need to combine the collected data and query conditions. \n Find the individuals who meet the following criteria: male, older than 49, have an income lower than 490281, drive a Taurus model car, and have purchased a VIP ticket at the zoo. \n Since the columns in the two tables are different, it's enough to refer to the columns in the WHERE clause without prefixing them with the table name (e.g., use age instead of Persons.age). \n Continue the following query \n SELECT * FROM Persons JOIN Zoo ON Persons.id = Zoo.person_id WHERE";
+    "Fifth Query \n Now you need to combine the collected data and query conditions. \n Find the individuals who meet the following criteria: male, older than 49, have an income lower than 490281, drive a Taurus model car, and have purchased a vip ticket at the zoo. \n Since the columns in the two tables are different, it's enough to refer to the columns in the WHERE clause without prefixing them with the table name (e.g., use age instead of Persons.age). \n Continue the following query \n SELECT * FROM Persons JOIN Zoo ON Persons.id = Zoo.person_id WHERE";
 
   const getMyQuery = async (e: React.FormEvent<HTMLFormElement>) => {
+    setIsDisabled(true);
     e.preventDefault();
     setErrorText(null);
     const normalizedQuery = query.trim().replace(/"/g, "'");
@@ -187,48 +192,56 @@ Case closed.`;
           query,
         });
         if (
-          normalizedQuery ===
-            `SELECT * FROM Persons WHERE gender = 'male'` &&
+          normalizedQuery === `SELECT * FROM Persons WHERE gender = 'male'` &&
           task0
         ) {
+          setResult(response.data)
           setPercentage(20);
           setTask0(false);
           setTask1(true);
         }
-        if (normalizedQuery === `SELECT AVG(age) AS age FROM Persons` && task1) {
+        if (
+          normalizedQuery === `SELECT AVG(age) AS age FROM Persons` &&
+          task1
+        ) {
+          setResult(response.data)
           setPercentage(40);
           setTask1(false);
           setTask2(true);
         }
         if (
           normalizedQuery ===
-            `SELECT AVG(annual_income) AS annual_income FROM Persons` &&
+          `SELECT AVG(annual_income) AS annual_income FROM Persons` &&
           task2
         ) {
+          setResult(response.data)
           setPercentage(60);
           setTask2(false);
           setTask3(true);
         }
         if (
           normalizedQuery ===
-            `SELECT car_type FROM Persons JOIN Zoo ON Persons.id = Zoo.person_id WHERE car_type LIKE '%Taurus' AND ticket_type = 'vip'` &&
+          `SELECT car_type FROM Persons JOIN Zoo ON Persons.id = Zoo.person_id WHERE car_type LIKE '%Taurus' AND ticket_type = 'vip'` &&
           task3
         ) {
+          setResult(response.data)
           setPercentage(80);
           setTask3(false);
           setTask4(true);
         }
         if (
           normalizedQuery ===
-            `SELECT * FROM Persons JOIN Zoo ON Persons.id = Zoo.person_id WHERE gender = 'male' AND age > 49 AND annual_income < 490281 AND car_type LIKE '%Taurus' AND ticket_type = 'vip'` &&
+          `SELECT * FROM Persons JOIN Zoo ON Persons.id = Zoo.person_id WHERE gender = 'male' AND age > 49 AND annual_income < 490281 AND car_type LIKE '%Taurus' AND ticket_type = 'vip'` &&
           task4
         ) {
+          setResult(response.data)
           setPercentage(100);
           setTask4(false);
           setTask5(true);
         }
         setQuery("");
-      } catch (error) {
+      }
+       catch (error) {
         if (!navigator.onLine) {
           const msg =
             "No internet connection. Please check your network settings.";
@@ -255,6 +268,8 @@ Case closed.`;
             alert("An error occurred.");
           }
         }
+      } finally {
+        setIsDisabled(false);
       }
     } else {
       alert("The query does not match the expected format.");
@@ -311,8 +326,11 @@ Case closed.`;
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
               />
-              <button className="task-form_button" type="submit">
-                Submit
+              <button
+                className={`task-form_button ${isDisabled ? "disabled" : ""}`}
+                type="submit"
+              >
+                {isDisabled ? "Loading..." : "Submit"}
               </button>
             </form>
           )}
@@ -346,8 +364,11 @@ Case closed.`;
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
               />
-              <button className="task-form_button" type="submit">
-                Submit
+              <button
+                className={`task-form_button ${isDisabled ? "disabled" : ""}`}
+                type="submit"
+              >
+                {isDisabled ? "Loading..." : "Submit"}
               </button>
             </form>
           )}
@@ -381,8 +402,11 @@ Case closed.`;
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
               />
-              <button className="task-form_button" type="submit">
-                Submit
+              <button
+                className={`task-form_button ${isDisabled ? "disabled" : ""}`}
+                type="submit"
+              >
+                {isDisabled ? "Loading..." : "Submit"}
               </button>
             </form>
           )}
@@ -416,8 +440,11 @@ Case closed.`;
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
               />
-              <button className="task-form_button" type="submit">
-                Submit
+              <button
+                className={`task-form_button ${isDisabled ? "disabled" : ""}`}
+                type="submit"
+              >
+                {isDisabled ? "Loading..." : "Submit"}
               </button>
             </form>
           )}
@@ -451,8 +478,11 @@ Case closed.`;
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
               />
-              <button className="task-form_button" type="submit">
-                Submit
+              <button
+                className={`task-form_button ${isDisabled ? "disabled" : ""}`}
+                type="submit"
+              >
+                {isDisabled ? "Loading..." : "Submit"}
               </button>
             </form>
           )}

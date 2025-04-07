@@ -70,6 +70,10 @@ db.serialize(() => {
     )`);
 });
 
+app.get("/api/warmup", (req, res) => {
+    res.status(200).send("Server responded.");
+});
+
 app.get("/api/session", (req, res) => {
   db.all("SELECT * FROM Session", [], (err, rows) => {
     if (err) {
@@ -165,47 +169,6 @@ app.delete("/api/session", (req, res) => {
   });
 });
 
-// Ezt később töröljük.
-
-app.delete("/api/session/:id", (req, res) => {
-  const { id } = req.params;
-  if (!id) {
-    return res.status(400).json({ error: "Missing id parameter" });
-  }
-  const sql = `DELETE FROM Session WHERE id =?`;
-  const params = [id];
-
-  db.run(sql, params, function (err) {
-    if (err) {
-      return res.status(500).json({ error: err.message });
-    }
-    if (this.changes === 0) {
-      return res.status(404).json({ error: "Session not found" });
-    }
-    db.get("SELECT COUNT(*) AS count FROM Session", [], (err, row) => {
-      if (err) {
-        console.error(err.message);
-        return res.status(500).json({ error: err.message });
-      }
-      if (row.count === 0) {
-        db.run(
-          'DELETE FROM sqlite_sequence WHERE name = "Session"',
-          [],
-          (err) => {
-            if (err) {
-              console.error(err.message);
-              return res.status(500).json({ error: err.message });
-            }
-            res.json("Session table ID sequence reset.");
-          }
-        );
-      } else {
-        res.json("Session deleted succesfully.");
-      }
-    });
-  });
-});
-
 //UPDATE
 
 app.put("/api/session", (req, res) => {
@@ -264,7 +227,6 @@ app.get("/api/persons", (req, res) => {
     res.json(rows);
   });
 });
-
 
 app.get("/api/persons/mydata", (req, res) => {
   db.all(
@@ -371,7 +333,6 @@ app.post("/api/Persons", (req, res) => {
     }
   });
 });
-
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

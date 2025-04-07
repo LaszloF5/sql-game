@@ -7,6 +7,8 @@ interface OtherQueryData {
 }
 
 interface visibleState {
+  isDisabled: boolean;
+  setIsDisabled: React.Dispatch<React.SetStateAction<boolean>>;
   setFirstPartStory: React.Dispatch<React.SetStateAction<boolean>>;
   otherTask0: boolean;
   otherTask1: boolean;
@@ -32,6 +34,8 @@ interface visibleState {
 }
 
 const OtherQueries: FC<visibleState> = ({
+  isDisabled,
+  setIsDisabled,
   setFirstPartStory,
   otherTask0,
   otherTask1,
@@ -158,6 +162,7 @@ Use the DELETE command to remove the record!`;
   //POST, new item
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    setIsDisabled(true);
     e.preventDefault();
     setErrorText(null);
     if (otherQuery.trim().length === 0) {
@@ -185,7 +190,8 @@ Use the DELETE command to remove the record!`;
           setOtherTask2(true);
         }
         setOtherQuery("");
-      } catch (error) {
+      } 
+      catch (error) {
         if (!navigator.onLine) {
           const msg =
             "No internet connection. Please check your network settings.";
@@ -212,6 +218,8 @@ Use the DELETE command to remove the record!`;
             alert("An error occurred.");
           }
         }
+      } finally {
+        setIsDisabled(false);
       }
     } else {
       alert("The given query does not match the expected solution.");
@@ -222,6 +230,7 @@ Use the DELETE command to remove the record!`;
   // UPDATE item
 
   const updateItem = async (e: React.FormEvent<HTMLFormElement>) => {
+    setIsDisabled(true);
     e.preventDefault();
     setErrorText(null);
     if (otherQuery.trim().length === 0) {
@@ -271,12 +280,15 @@ Use the DELETE command to remove the record!`;
           alert("An error occurred.");
         }
       }
+    } finally {
+      setIsDisabled(false);
     }
   };
 
   // DELETE QUERY
 
   const handleDelete = async (e: React.FormEvent<HTMLFormElement>) => {
+    setIsDisabled(true);
     e.preventDefault();
     setErrorText(null);
     const formattedQuery = otherQuery.trim().replace(/"/g, "'");
@@ -355,6 +367,8 @@ Use the DELETE command to remove the record!`;
             alert("An error occurred.");
           }
         }
+      } finally {
+        setIsDisabled(false);
       }
     } else {
       alert("The query does not match the expected format.");
@@ -411,8 +425,13 @@ Use the DELETE command to remove the record!`;
                   value={otherQuery}
                   onChange={(e) => setOtherQuery(e.target.value)}
                 />
-                <button className="other-form_button" type="submit">
-                  Submit
+                <button
+                  className={`other-form_button ${
+                    isDisabled ? "disabled" : ""
+                  }`}
+                  type="submit"
+                >
+                  {isDisabled ? "Loading..." : "Submit"}
                 </button>
               </form>
             )}
@@ -445,8 +464,13 @@ Use the DELETE command to remove the record!`;
                   value={otherQuery}
                   onChange={(e) => setOtherQuery(e.target.value)}
                 />
-                <button className="other-form_button" type="submit">
-                  Submit
+                <button
+                  className={`other-form_button ${
+                    isDisabled ? "disabled" : ""
+                  }`}
+                  type="submit"
+                >
+                  {isDisabled ? "Loading..." : "Submit"}
                 </button>
               </form>
             )}
@@ -479,8 +503,13 @@ Use the DELETE command to remove the record!`;
                   value={otherQuery}
                   onChange={(e) => setOtherQuery(e.target.value)}
                 />
-                <button className="other-form_button" type="submit">
-                  Submit
+                <button
+                  className={`other-form_button ${
+                    isDisabled ? "disabled" : ""
+                  }`}
+                  type="submit"
+                >
+                  {isDisabled ? "Loading..." : "Submit"}
                 </button>
               </form>
             )}
@@ -513,8 +542,13 @@ Use the DELETE command to remove the record!`;
                   value={otherQuery}
                   onChange={(e) => setOtherQuery(e.target.value)}
                 />
-                <button className="other-form_button" type="submit">
-                  Submit
+                <button
+                  className={`other-form_button ${
+                    isDisabled ? "disabled" : ""
+                  }`}
+                  type="submit"
+                >
+                  {isDisabled ? "Loading..." : "Submit"}
                 </button>
               </form>
             )}
@@ -547,8 +581,13 @@ Use the DELETE command to remove the record!`;
                   value={otherQuery}
                   onChange={(e) => setOtherQuery(e.target.value)}
                 />
-                <button className="other-form_button" type="submit">
-                  Submit
+                <button
+                  className={`other-form_button ${
+                    isDisabled ? "disabled" : ""
+                  }`}
+                  type="submit"
+                >
+                  {isDisabled ? "Loading..." : "Submit"}
                 </button>
               </form>
             )}
