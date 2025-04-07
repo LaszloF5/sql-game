@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.css": "/sql-game/static/css/main.79c55206.css",
-    "main.js": "/sql-game/static/js/main.f5c45fbe.js",
+    "main.css": "/sql-game/static/css/main.f20607c8.css",
+    "main.js": "/sql-game/static/js/main.9668dd23.js",
     "index.html": "/sql-game/index.html",
-    "main.79c55206.css.map": "/sql-game/static/css/main.79c55206.css.map",
-    "main.f5c45fbe.js.map": "/sql-game/static/js/main.f5c45fbe.js.map"
+    "main.f20607c8.css.map": "/sql-game/static/css/main.f20607c8.css.map",
+    "main.9668dd23.js.map": "/sql-game/static/js/main.9668dd23.js.map"
   },
   "entrypoints": [
-    "static/css/main.79c55206.css",
-    "static/js/main.f5c45fbe.js"
+    "static/css/main.f20607c8.css",
+    "static/js/main.9668dd23.js"
   ]
 }
