@@ -20,13 +20,13 @@ interface visibleState {
   setOtherTask3: React.Dispatch<React.SetStateAction<boolean>>;
   setOtherTask4: React.Dispatch<React.SetStateAction<boolean>>;
   setOtherTask5: React.Dispatch<React.SetStateAction<boolean>>;
-  setTutorial0: React.Dispatch<React.SetStateAction<boolean>>;
   setTutorial5: React.Dispatch<React.SetStateAction<boolean>>;
   setTask5: React.Dispatch<React.SetStateAction<boolean>>;
+  errorText: string | null;
+  setErrorText: React.Dispatch<React.SetStateAction<string | null>>;
   importantRules: string;
   isVisibleOtherTask: boolean;
   setIsVisibleOtherTask: React.Dispatch<React.SetStateAction<Boolean>>;
-  setIsVisibleTutorial: React.Dispatch<React.SetStateAction<Boolean>>;
   percentage: number;
   setPercentage: React.Dispatch<React.SetStateAction<number>>;
 }
@@ -45,13 +45,13 @@ const OtherQueries: FC<visibleState> = ({
   setOtherTask3,
   setOtherTask4,
   setOtherTask5,
-  setTutorial0,
   setTutorial5,
   setTask5,
+  errorText,
+  setErrorText,
   importantRules,
   isVisibleOtherTask,
   setIsVisibleOtherTask,
-  setIsVisibleTutorial,
   percentage,
   setPercentage,
 }) => {
@@ -79,7 +79,7 @@ const OtherQueries: FC<visibleState> = ({
   const otherTask3Solution: string = `UPDATE Session SET quantity = '1kg' WHERE fruit_name = 'banana'`;
   const otherTask4Solution: string = `DELETE FROM Session WHERE id = 2`;
 
-  const otherTask0Text: string = `The INSERT INTO command allows us to insert data into a table. After the command, we need to specify the name of the table where we want to insert the data – in this case, the Session table. \n
+  const otherTask0Text: string = `The INSERT INTO command allows us to insert data into a table. After the command, we need to specify the name of the table where we want to insert the data - in this case, the Session table. \n
 Next, we list the columns where we want to insert data in parentheses: (fruit_name, quantity). Since each inserted value must belong to a specific column, the order of the specified columns is important. \n
 After the VALUES keyword, we must provide the corresponding values in the same order as the columns were specified. String-type values should always be enclosed in quotation marks, which is why 'apple' and '1kg' are in quotes. \n
 Task: Now try to construct this SQL statement on your own!`;
@@ -90,7 +90,7 @@ Task: Insert the following data into the table: \n
   quantity: '2kg' \n
   Use the INSERT INTO command in the correct format!`;
 
-  const otherTask2Text: string = `The SQL DELETE command allows us to delete a specific record from a table. After the command, we need to specify the name of the table from which we want to delete data – in this case, the Session table. \n
+  const otherTask2Text: string = `The SQL DELETE command allows us to delete a specific record from a table. After the command, we need to specify the name of the table from which we want to delete data - in this case, the Session table. \n
 Then, using the WHERE keyword, we define the condition for deleting a specific row. The condition id = 1 means that we will delete the first record in the table (with id 1), which contains the data 'apple' and '1kg'.\n
 It's important to note that without the WHERE condition, the entire table would be deleted, so always ensure that you specify the deletion conditions precisely! \n
 Now, let's go through it step by step: \n 
@@ -121,12 +121,37 @@ Use the DELETE command to remove the record!`;
   // GET
 
   const getElements = async () => {
+    setErrorText(null);
     try {
       const response = await axios.get("http://localhost:5000/api/session");
       setTableData(response.data);
     } catch (error) {
-      console.error("Error:", error);
-      alert("An error occurred. Please try again later.");
+      if (!navigator.onLine) {
+        const msg =
+          "No internet connection. Please check your network settings.";
+        setErrorText(msg);
+        alert(msg);
+        return;
+      }
+      if (axios.isAxiosError(error)) {
+        if (error.response) {
+          const serverMsg =
+            error.response.data?.error || "An error occurred on the server.";
+          console.error("Server responded with an error: ", serverMsg);
+          setErrorText(serverMsg);
+          alert(serverMsg);
+        } else if (error.request) {
+          console.error("No response received from server.");
+          setErrorText(
+            "No response received from server. Please try again later."
+          );
+          alert("No response received from server. Please try again later.");
+        } else {
+          console.error("An error occurred:", error.message);
+          setErrorText("An error occurred. Please try again later.");
+          alert("An error occurred.");
+        }
+      }
     }
   };
 
@@ -134,6 +159,7 @@ Use the DELETE command to remove the record!`;
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setErrorText(null);
     if (otherQuery.trim().length === 0) {
       alert("Please enter a query");
       return;
@@ -143,60 +169,68 @@ Use the DELETE command to remove the record!`;
       (otherQuery.trim() === otherTask0Solution && otherTask0) ||
       (otherQuery.trim() === otherTask1Solution && otherTask1)
     ) {
-      console.log("");
+      const formattedQuery = otherQuery.trim().replace(/"/g, "'");
+      try {
+        const response = await axios.post("http://localhost:5000/api/session", {
+          formattedQuery,
+        });
+        setTableData([...tableData, response.data.newRecord]);
+        if (formattedQuery.includes("apple")) {
+          setPercentage(20);
+          setOtherTask0(false);
+          setOtherTask1(true);
+        } else if (formattedQuery.includes("banana")) {
+          setPercentage(40);
+          setOtherTask1(false);
+          setOtherTask2(true);
+        }
+        setOtherQuery("");
+      } catch (error) {
+        if (!navigator.onLine) {
+          const msg =
+            "No internet connection. Please check your network settings.";
+          setErrorText(msg);
+          alert(msg);
+          return;
+        }
+        if (axios.isAxiosError(error)) {
+          if (error.response) {
+            const serverMsg =
+              error.response.data?.error || "An error occurred on the server.";
+            console.error("Server responded with an error: ", serverMsg);
+            setErrorText(serverMsg);
+            alert(serverMsg);
+          } else if (error.request) {
+            console.error("No response received from server.");
+            setErrorText(
+              "No response received from server. Please try again later."
+            );
+            alert("No response received from server. Please try again later.");
+          } else {
+            console.error("An error occurred:", error.message);
+            setErrorText("An error occurred. Please try again later.");
+            alert("An error occurred.");
+          }
+        }
+      }
     } else {
       alert("The given query does not match the expected solution.");
       return;
     }
-
-    const formattedQuery = otherQuery.replace(/"/g, "'");
-    try {
-      const response = await axios.post("http://localhost:5000/api/session", {
-        formattedQuery,
-      });
-      setTableData([...tableData, response.data.newRecord]);
-      if (formattedQuery.includes("apple")) {
-        setPercentage(20);
-        setOtherTask0(false);
-        setOtherTask1(true);
-      } else if (formattedQuery.includes("banana")) {
-        setPercentage(40);
-        setOtherTask1(false);
-        setOtherTask2(true);
-      }
-      setOtherQuery("");
-    } catch (error) {
-      console.error("Error:", error);
-      alert("An error occurred. Please try again later.");
-    }
   };
-
-  // DELETE (Ezt később törölni fogjuk, csak nem akarok mindig delete query-ket írni.);
-
-  // const deleteItem = async (i: number) => {
-  //   try {
-  //     const response = await axios.delete(
-  //       `http://localhost:5000/api/session/${i}`
-  //     );
-  //     setTableData(tableData.filter((item) => item.id !== i));
-  //     setOtherQuery("");
-  //   } catch (error) {
-  //     console.error("Error:", error);
-  //     alert("An error occurred. Please try again later.");
-  //   }
-  // };
 
   // UPDATE item
 
   const updateItem = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setErrorText(null);
     if (otherQuery.trim().length === 0) {
       alert("Please enter a query");
       return;
     }
-    const formattedQuery = otherQuery.replace(/"/g, "'");
+    const formattedQuery = otherQuery.trim().replace(/"/g, "'");
     const expectedQuery = `UPDATE Session SET quantity = '1kg' WHERE fruit_name = 'banana'`;
-    if (formattedQuery.trim() !== expectedQuery) {
+    if (formattedQuery !== expectedQuery) {
       alert("The query does not match the expected format.");
       return;
     }
@@ -211,8 +245,32 @@ Use the DELETE command to remove the record!`;
       setOtherTask4(true);
       setOtherQuery("");
     } catch (error) {
-      console.error("Error:", error);
-      alert("An error occurred. Please try again later.");
+      if (!navigator.onLine) {
+        const msg =
+          "No internet connection. Please check your network settings.";
+        setErrorText(msg);
+        alert(msg);
+        return;
+      }
+      if (axios.isAxiosError(error)) {
+        if (error.response) {
+          const serverMsg =
+            error.response.data?.error || "An error occurred on the server.";
+          console.error("Server responded with an error: ", serverMsg);
+          setErrorText(serverMsg);
+          alert(serverMsg);
+        } else if (error.request) {
+          console.error("No response received from server.");
+          setErrorText(
+            "No response received from server. Please try again later."
+          );
+          alert("No response received from server. Please try again later.");
+        } else {
+          console.error("An error occurred:", error.message);
+          setErrorText("An error occurred. Please try again later.");
+          alert("An error occurred.");
+        }
+      }
     }
   };
 
@@ -220,60 +278,87 @@ Use the DELETE command to remove the record!`;
 
   const handleDelete = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (otherQuery.trim().length === 0) {
+    setErrorText(null);
+    const formattedQuery = otherQuery.trim().replace(/"/g, "'");
+    if (formattedQuery.length === 0) {
       alert("Please enter a query");
       return;
     }
 
     if (
-      (otherQuery.trim() === otherTask2Solution && otherTask2) ||
-      (otherQuery.trim() === otherTask4Solution && otherTask4)
+      (formattedQuery === otherTask2Solution && otherTask2) ||
+      (formattedQuery === otherTask4Solution && otherTask4)
     ) {
-      console.log("");
-    } else {
-      alert("The query does not match the expected format.");
-      return;
-    }
+      let query: string;
+      const possibleQuery1 = "DELETE FROM Session WHERE id = 1";
+      const possibleQuery2 = "DELETE FROM Session WHERE id = 2";
 
-    let query: string;
-    const formattedQuery = otherQuery.replace(/"/g, "'").trim();
-    const possibleQuery1 = "DELETE FROM Session WHERE id = 1";
-    const possibleQuery2 = "DELETE FROM Session WHERE id = 2";
-
-    if (formattedQuery === possibleQuery1) {
-      query = possibleQuery1;
-    } else if (formattedQuery === possibleQuery2) {
-      query = possibleQuery2;
-    } else {
-      alert("The query does not match the expected format.");
-      return;
-    }
-
-    try {
-      const response = await axios.delete("http://localhost:5000/api/session", {
-        data: { formattedQuery: query },
-      });
-      setTableData((prevTableData) => {
-        prevTableData.filter((item) => {
-          return item.id !== parseInt(query.split("=")[1]);
-        });
-      });
-      alert("Item deleted successfully.");
-      if (formattedQuery.includes(1)) {
-        setPercentage(60);
-        setOtherTask2(false);
-        setOtherTask3(true);
-        setOtherQuery("");
-      } else if (formattedQuery.includes(2)) {
-        setPercentage(100);
-        setOtherTask4(false);
-        setOtherTask5(true);
-        setOtherQuery("");
+      if (formattedQuery === possibleQuery1) {
+        query = possibleQuery1;
+      } else if (formattedQuery === possibleQuery2) {
+        query = possibleQuery2;
+      } else {
+        alert("The query does not match the expected format.");
+        return;
       }
-      setOtherQuery("");
-    } catch (error) {
-      console.error("Error:", error);
-      alert("An error occurred. Please try again later.");
+
+      try {
+        const response = await axios.delete(
+          "http://localhost:5000/api/session",
+          {
+            data: { formattedQuery: query },
+          }
+        );
+        setTableData((prevTableData) => {
+          prevTableData.filter((item) => {
+            return item.id !== parseInt(query.split("=")[1]);
+          });
+        });
+        alert("Item deleted successfully.");
+        getElements();
+        if (formattedQuery.includes(1)) {
+          setPercentage(60);
+          setOtherTask2(false);
+          setOtherTask3(true);
+          setOtherQuery("");
+        } else if (formattedQuery.includes(2)) {
+          setPercentage(100);
+          setOtherTask4(false);
+          setOtherTask5(true);
+          setOtherQuery("");
+        }
+        setOtherQuery("");
+      } catch (error) {
+        if (!navigator.onLine) {
+          const msg =
+            "No internet connection. Please check your network settings.";
+          setErrorText(msg);
+          alert(msg);
+          return;
+        }
+        if (axios.isAxiosError(error)) {
+          if (error.response) {
+            const serverMsg =
+              error.response.data?.error || "An error occurred on the server.";
+            console.error("Server responded with an error: ", serverMsg);
+            setErrorText(serverMsg);
+            alert(serverMsg);
+          } else if (error.request) {
+            console.error("No response received from server.");
+            setErrorText(
+              "No response received from server. Please try again later."
+            );
+            alert("No response received from server. Please try again later.");
+          } else {
+            console.error("An error occurred:", error.message);
+            setErrorText("An error occurred. Please try again later.");
+            alert("An error occurred.");
+          }
+        }
+      }
+    } else {
+      alert("The query does not match the expected format.");
+      return;
     }
   };
 
@@ -281,6 +366,7 @@ Use the DELETE command to remove the record!`;
     <>
       {isVisibleOtherTask && (
         <div>
+          {errorText?.length > 0 && <p className="error">Error: {errorText}</p>}
           <h2>Other Queries</h2>
           <main className="otherQueries-container">
             <div className="circle-container">
@@ -486,7 +572,6 @@ Use the DELETE command to remove the record!`;
                       <td className="other-table_td">ID</td>
                       <td className="other-table_td">Fruit Name</td>
                       <td className="other-table_td">Quantity</td>
-                      {/* <td className="other-table_td">Delete method</td> */}
                     </tr>
                   </thead>
                   <tbody className="other-table_tbody">
@@ -496,11 +581,6 @@ Use the DELETE command to remove the record!`;
                           <td className="other-table_td">{item.id}</td>
                           <td className="other-table_td">{item.fruit_name}</td>
                           <td className="other-table_td">{item.quantity}</td>
-                          {/* <td className="other-table_td">
-                            <button onClick={() => deleteItem(item.id)}>
-                              Delete item
-                            </button>
-                          </td> */}
                         </tr>
                       );
                     })}

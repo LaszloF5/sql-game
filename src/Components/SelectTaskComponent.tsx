@@ -35,13 +35,12 @@ interface SelectTaskProps {
   setTask3: React.Dispatch<React.SetStateAction<Boolean>>;
   setTask4: React.Dispatch<React.SetStateAction<Boolean>>;
   setTask5: React.Dispatch<React.SetStateAction<Boolean>>;
+  errorText: string | null;
+  setErrorText: React.Dispatch<React.SetStateAction<string | null>>;
   importantRules: string;
   isVisibleTask: boolean;
   setIsVisibleTask: React.Dispatch<React.SetStateAction<Boolean>>;
-  error: string | null;
-  setError: React.Dispatch<React.SetStateAction<string | null>>;
   showMe: string;
-  isVisibleOtherTask: boolean;
   setIsVisibleOtherTask: React.Dispatch<React.SetStateAction<Boolean>>;
   setOtherTask0: React.Dispatch<React.SetStateAction<boolean>>;
   percentage: number;
@@ -63,31 +62,32 @@ const SelectTaskComponent: FC<SelectTaskProps> = ({
   setTask3,
   setTask4,
   setTask5,
+  errorText,
+  setErrorText,
   importantRules,
   isVisibleTask,
   setIsVisibleTask,
-  error,
-  setError,
   showMe,
-  isVisibleOtherTask,
   setIsVisibleOtherTask,
   setOtherTask0,
   percentage,
   setPercentage,
 }) => {
-
-  const continueSotry: string = `After going through the police database, something didn't add up. The data you were working with seemed to be fake. \n
+  const continueStory: string = `After going through the police database, something didn't add up. The data you were working with seemed to be fake. \n
 “Wait a minute… something's not right. The city's police force is the most corrupt institution. The data has been tampered with,” came the message. \n
 Fortunately, a hacker who saw through the system shared the real witness testimonies with you, revealing the true identity of the criminal. \n
 You're now just a few steps away from exposing the criminal who's been evading the authorities for years.`;
 
-const continueGame = () => {
-  setSecondPartStory(false);
-  setTask0(true);
-  setIsVisibleTask(true);
-}
+  const endOfTheStory: string = `Well done, detective! \n
+You uncovered the one behind the crime — something no one has solved for years. \n
+The city can finally breathe easy. Justice has been served. \n
+Case closed.`;
 
-  // Így 100% hogy tiszta lesz a Session tábla.
+  const continueGame = () => {
+    setSecondPartStory(false);
+    setTask0(true);
+    setIsVisibleTask(true);
+  };
 
   const clearSession = async () => {
     try {
@@ -97,15 +97,34 @@ const continueGame = () => {
           "Content-Type": "application/json",
         },
       });
-
-      console.log("Sikeres törlés:", response.data);
       return response.data;
     } catch (error) {
-      console.error("Hiba a session törlésekor:", {
-        status: error.response?.status,
-        message: error.response?.data?.error || error.message,
-      });
-      throw error;
+      if (!navigator.onLine) {
+        const msg =
+          "No internet connection. Please check your network settings.";
+        setErrorText(msg);
+        alert(msg);
+        return;
+      }
+      if (axios.isAxiosError(error)) {
+        if (error.response) {
+          const serverMsg =
+            error.response.data?.error || "An error occurred on the server.";
+          console.error("Server responded with an error: ", serverMsg);
+          setErrorText(serverMsg);
+          alert(serverMsg);
+        } else if (error.request) {
+          console.error("No response received from server.");
+          setErrorText(
+            "No response received from server. Please try again later."
+          );
+          alert("No response received from server. Please try again later.");
+        } else {
+          console.error("An error occurred:", error.message);
+          setErrorText("An error occurred. Please try again later.");
+          alert("An error occurred.");
+        }
+      }
     }
   };
 
@@ -144,101 +163,118 @@ const continueGame = () => {
     "Third Query \n The third witness stated that the man was poorly dressed, which suggests that he had a lower-than-average income. \n Determine the average income of the people in the Persons table! The result should only include the average income, and the column name should be annual_income.";
 
   const task4Text: string =
-    "Fourth Query \n The fourth witness did not see the car's brand, only its model: Taurus. The vehicle was parked not far from the scene, where the elderly man hurriedly got in. The witness also noticed that he was wearing a green wristband, which is given to visitors who purchase a VIP ticket at the zoo. \n Find out who owns a Taurus model car and has purchased a VIP ticket at the zoo!  \n Since the columns in the two tables are different, it's enough to refer to the columns in the WHERE clause without prefixing them with the table name (e.g., use age instead of Persons.age). \n In this case, you’ll need to use the % operator before the text, because the car type contains both the brand and the model — with the model being the second part. \n As a hint, here is a partial query that you need to complete: \n SELECT car_type FROM Persons JOIN Zoo ON Persons.id = Zoo.person_id WHERE";
+    "Fourth Query \n The fourth witness did not see the car's brand, only its model: Taurus. The vehicle was parked not far from the scene, where the elderly man hurriedly got in. The witness also noticed that he was wearing a green wristband, which is given to visitors who purchase a VIP ticket at the zoo. \n Find out who owns a Taurus model car and has purchased a VIP ticket at the zoo!  \n Since the columns in the two tables are different, it's enough to refer to the columns in the WHERE clause without prefixing them with the table name (e.g., use age instead of Persons.age). \n In this case, you'll need to use the % operator before the text, because the car type contains both the brand and the model — with the model being the second part. \n As a hint, here is a partial query that you need to complete: \n SELECT car_type FROM Persons JOIN Zoo ON Persons.id = Zoo.person_id WHERE";
 
   const task5Text: string =
     "Fifth Query \n Now you need to combine the collected data and query conditions. \n Find the individuals who meet the following criteria: male, older than 49, have an income lower than 490281, drive a Taurus model car, and have purchased a VIP ticket at the zoo. \n Since the columns in the two tables are different, it's enough to refer to the columns in the WHERE clause without prefixing them with the table name (e.g., use age instead of Persons.age). \n Continue the following query \n SELECT * FROM Persons JOIN Zoo ON Persons.id = Zoo.person_id WHERE";
 
   const getMyQuery = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setError(null);
+    setErrorText(null);
+    const normalizedQuery = query.trim().replace(/"/g, "'");
     if (
-      query.trim().replace(/"/g, "'") ===
-        `SELECT * FROM Persons WHERE gender = 'male'` ||
-      query.trim() === `SELECT AVG(age) AS age FROM Persons` ||
-      query.trim() ===
+      normalizedQuery === `SELECT * FROM Persons WHERE gender = 'male'` ||
+      normalizedQuery === `SELECT AVG(age) AS age FROM Persons` ||
+      normalizedQuery ===
         `SELECT AVG(annual_income) AS annual_income FROM Persons` ||
-      query.trim().replace(/"/g, "'") ===
+      normalizedQuery ===
         `SELECT car_type FROM Persons JOIN Zoo ON Persons.id = Zoo.person_id WHERE car_type LIKE '%Taurus' AND ticket_type = 'vip'` ||
-      query.trim().replace(/"/g, "'") ===
+      normalizedQuery ===
         `SELECT * FROM Persons JOIN Zoo ON Persons.id = Zoo.person_id WHERE gender = 'male' AND age > 49 AND annual_income < 490281 AND car_type LIKE '%Taurus' AND ticket_type = 'vip'`
     ) {
-      console.log("");
+      try {
+        const response = await axios.post("http://localhost:5000/api/Persons", {
+          query,
+        });
+        if (
+          normalizedQuery ===
+            `SELECT * FROM Persons WHERE gender = 'male'` &&
+          task0
+        ) {
+          setPercentage(20);
+          setTask0(false);
+          setTask1(true);
+        }
+        if (normalizedQuery === `SELECT AVG(age) AS age FROM Persons` && task1) {
+          setPercentage(40);
+          setTask1(false);
+          setTask2(true);
+        }
+        if (
+          normalizedQuery ===
+            `SELECT AVG(annual_income) AS annual_income FROM Persons` &&
+          task2
+        ) {
+          setPercentage(60);
+          setTask2(false);
+          setTask3(true);
+        }
+        if (
+          normalizedQuery ===
+            `SELECT car_type FROM Persons JOIN Zoo ON Persons.id = Zoo.person_id WHERE car_type LIKE '%Taurus' AND ticket_type = 'vip'` &&
+          task3
+        ) {
+          setPercentage(80);
+          setTask3(false);
+          setTask4(true);
+        }
+        if (
+          normalizedQuery ===
+            `SELECT * FROM Persons JOIN Zoo ON Persons.id = Zoo.person_id WHERE gender = 'male' AND age > 49 AND annual_income < 490281 AND car_type LIKE '%Taurus' AND ticket_type = 'vip'` &&
+          task4
+        ) {
+          setPercentage(100);
+          setTask4(false);
+          setTask5(true);
+        }
+        setQuery("");
+      } catch (error) {
+        if (!navigator.onLine) {
+          const msg =
+            "No internet connection. Please check your network settings.";
+          setErrorText(msg);
+          alert(msg);
+          return;
+        }
+        if (axios.isAxiosError(error)) {
+          if (error.response) {
+            const serverMsg =
+              error.response.data?.error || "An error occurred on the server.";
+            console.error("Server responded with an error: ", serverMsg);
+            setErrorText(serverMsg);
+            alert(serverMsg);
+          } else if (error.request) {
+            console.error("No response received from server.");
+            setErrorText(
+              "No response received from server. Please try again later."
+            );
+            alert("No response received from server. Please try again later.");
+          } else {
+            console.error("An error occurred:", error.message);
+            setErrorText("An error occurred. Please try again later.");
+            alert("An error occurred.");
+          }
+        }
+      }
     } else {
       alert("The query does not match the expected format.");
       return;
-    }
-    try {
-      const response = await axios.post("http://localhost:5000/api/Persons", {
-        query,
-      });
-      console.log("Server Response:", response.data);
-      if (response.status === 200) {
-        console.log("Check your dev tools for more details. (ctlr + shift + i");
-      }
-      setResult(response.data);
-      console.log("Response status: ", response.status);
-      console.log(response.data);
-      if (
-        query.trim().replace(/"/g, "'") ===
-          `SELECT * FROM Persons WHERE gender = 'male'` &&
-        task0
-      ) {
-        console.log("Go to the second witness testimony.");
-        setPercentage(20);
-        setTask0(false);
-        setTask1(true);
-      }
-      if (query.trim() === `SELECT AVG(age) AS age FROM Persons` && task1) {
-        console.log("Go to the third witness testimony.");
-        setPercentage(40);
-        setTask1(false);
-        setTask2(true);
-      }
-      if (
-        query.trim() ===
-          `SELECT AVG(annual_income) AS annual_income FROM Persons` &&
-        task2
-      ) {
-        console.log("Go to the fourth witness testimony.");
-        setPercentage(60);
-        setTask2(false);
-        setTask3(true);
-      }
-      if (
-        query.trim().replace(/"/g, "'") ===
-          `SELECT car_type FROM Persons JOIN Zoo ON Persons.id = Zoo.person_id WHERE car_type LIKE '%Taurus' AND ticket_type = 'vip'` &&
-        task3
-      ) {
-        console.log("Go to the verification query.");
-        setPercentage(80);
-        setTask3(false);
-        setTask4(true);
-      }
-      if (
-        query.trim().replace(/"/g, "'") ===
-          `SELECT * FROM Persons JOIN Zoo ON Persons.id = Zoo.person_id WHERE gender = 'male' AND age > 49 AND annual_income < 490281 AND car_type LIKE '%Taurus' AND ticket_type = 'vip'` &&
-        task4
-      ) {
-        console.log("GGWP.");
-        setPercentage(100);
-        setTask4(false);
-        setTask5(true);
-      }
-      setQuery("");
-    } catch (err) {
-      setError(err.response?.data?.message);
     }
   };
 
   return (
     <div>
-      {secondPartStory && (<>
-      <p className='story'>{continueSotry}</p>
-      <button className='showMe-btn' onClick={continueGame}>Let's check the database!</button>
-      </>)}
+      {secondPartStory && (
+        <>
+          <p className="story">{continueStory}</p>
+          <button className="showMe-btn" onClick={continueGame}>
+            Let's check the database!
+          </button>
+        </>
+      )}
       {isVisibleTask && (
         <div className="main-div">
+          {errorText?.length > 0 && <p className="error">Error: {errorText}</p>}
           <div className="circle-container">
             <div className={`circle circle-${percentage}`}>
               <div className="inner-circle">{percentage}%</div>
@@ -261,7 +297,9 @@ const continueGame = () => {
                 >
                   {showMe}
                 </button>
-                {activeTask === 1 && <pre className="text-style">{task1Solution}</pre>}
+                {activeTask === 1 && (
+                  <pre className="text-style">{task1Solution}</pre>
+                )}
               </label>
               <input
                 autoFocus
@@ -294,7 +332,9 @@ const continueGame = () => {
                 >
                   {showMe}
                 </button>
-                {activeTask === 2 && <pre className="text-style">{task2Solution}</pre>}
+                {activeTask === 2 && (
+                  <pre className="text-style">{task2Solution}</pre>
+                )}
               </label>
               <input
                 autoFocus
@@ -327,7 +367,9 @@ const continueGame = () => {
                 >
                   {showMe}
                 </button>
-                {activeTask === 3 && <pre className="text-style">{task3Solution}</pre>}
+                {activeTask === 3 && (
+                  <pre className="text-style">{task3Solution}</pre>
+                )}
               </label>
               <input
                 autoFocus
@@ -360,7 +402,9 @@ const continueGame = () => {
                 >
                   {showMe}
                 </button>
-                {activeTask === 4 && <pre className="text-style">{task4Solution}</pre>}
+                {activeTask === 4 && (
+                  <pre className="text-style">{task4Solution}</pre>
+                )}
               </label>
               <input
                 autoFocus
@@ -393,7 +437,9 @@ const continueGame = () => {
                 >
                   {showMe}
                 </button>
-                {activeTask === 5 && <pre className="text-style">{task5Solution}</pre>}
+                {activeTask === 5 && (
+                  <pre className="text-style">{task5Solution}</pre>
+                )}
               </label>
               <input
                 autoFocus
@@ -412,6 +458,7 @@ const continueGame = () => {
           )}
           {task5 && (
             <>
+              <p className="story">{endOfTheStory}</p>
               <p className="text-style">{successText}</p>
               <button
                 className="task-form_button"
@@ -421,7 +468,6 @@ const continueGame = () => {
               </button>
             </>
           )}
-          {error && <p className="error">{error}</p>}
           {result.length > 0 && (
             <div className="table-container">
               <table className="task-table">

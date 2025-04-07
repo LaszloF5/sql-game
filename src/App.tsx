@@ -41,7 +41,7 @@ function App() {
   const [otherTask4, setOtherTask4] = useState<boolean>(false);
   const [otherTask5, setOtherTask5] = useState<boolean>(false);
 
-  const [error, setError] = useState<string | null>(null);
+  const [errorText, setErrorText] = useState<string | null>(null);
   const showMe: string = "Show me the answer!";
 
   const importantRules: string = `
@@ -99,7 +99,8 @@ function App() {
               isVisibleTutorial={isVisibleTutorial}
               setIsVisibleTutorial={setIsVisibleTutorial}
               setIsVisibleTask={setIsVisibleTask}
-              setError={setError}
+              errorText={errorText}
+              setErrorText={setErrorText}
               percentage={percentage}
               setPercentage={setPercentage}
             />
@@ -121,8 +122,8 @@ function App() {
               importantRules={importantRules}
               isVisibleTask={isVisibleTask}
               setIsVisibleTask={setIsVisibleTask}
-              error={error}
-              setError={setError}
+              errorText={errorText}
+              setErrorText={setErrorText}
               showMe={showMe}
               isVisibleOtherTask={isVisibleOtherTask}
               setIsVisibleOtherTask={setIsVisibleOtherTask}
@@ -147,6 +148,8 @@ function App() {
               setTutorial0={setTutorial0}
               setTutorial5={setTutorial5}
               setTask5={setTask5}
+              errorText={errorText}
+              setErrorText={setErrorText}
               importantRules={importantRules}
               isVisibleOtherTask={isVisibleOtherTask}
               setIsVisibleOtherTask={setIsVisibleOtherTask}
@@ -165,5 +168,6 @@ export default App;
 /*
 TODO: 
 - átnézni, mennyire érthető az egész,
-- ha a fetch tartrt, btn click letiltása
+- ha a fetch tart, btn click letiltása
+- valami request kell rögtön amikor betölt az oldal, mert kell kb 30s mire feléled a backend a render.com-on az ingyenes verziónál.
 */

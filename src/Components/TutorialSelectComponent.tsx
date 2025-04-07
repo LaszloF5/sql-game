@@ -24,16 +24,14 @@ interface TutorialSelectProps {
   setTutorial3: React.Dispatch<React.SetStateAction<boolean>>;
   setTutorial4: React.Dispatch<React.SetStateAction<boolean>>;
   setTutorial5: React.Dispatch<React.SetStateAction<boolean>>;
-  setTask0: React.Dispatch<React.SetStateAction<boolean>>;
   importantRules: string;
   showMe: boolean;
   isVisibleTutorial: boolean;
   setIsVisibleTutorial: React.Dispatch<React.SetStateAction<boolean>>;
-  setIsVisibleTask: React.Dispatch<React.SetStateAction<boolean>>;
   tutorialResult: PoliceData[];
   setTutorialResult: React.Dispatch<React.SetStateAction<PoliceData[]>>;
-  error: string | null;
-  setError: React.Dispatch<React.SetStateAction<string | null>>;
+  errorText: string | null;
+  setErrorText: React.Dispatch<React.SetStateAction<string | null>>;
   percentage: number;
   setPercentage: React.Dispatch<React.SetStateAction<number>>;
 }
@@ -54,14 +52,12 @@ const TutorialSelectComponent: FC<TutorialSelectProps> = ({
   setTutorial3,
   setTutorial4,
   setTutorial5,
-  setTask0,
   importantRules,
   showMe,
   isVisibleTutorial,
   setIsVisibleTutorial,
-  setIsVisibleTask,
-  error,
-  setError,
+  errorText,
+  setErrorText,
   percentage,
   setPercentage,
 }) => {
@@ -77,15 +73,16 @@ const TutorialSelectComponent: FC<TutorialSelectProps> = ({
 
   const toggleVisibility = (): void => {
     setActiveTutorial(10);
+    setTutorialResult([]);
     setPercentage(0);
     setIsVisibleTutorial(false);
     setFirstPartStory(false);
     setSecondPartStory(true);
   };
 
-  const introStory: string = `Welcome, detective! \n The city’s greatest mystery has remained unsolved for five years: \n a mysterious criminal that even the best investigators haven’t been able to catch. \n But now, a new opportunity has arisen.
+  const introStory: string = `Welcome, detective! \n The city's greatest mystery has remained unsolved for five years: \n a mysterious criminal that even the best investigators haven't been able to catch. \n But now, a new opportunity has arisen.
 
-The police database is at your disposal to help you narrow down the list of suspects and ultimately uncover the criminal’s identity. SQLite commands will guide you in identifying the wanted individual.
+The police database is at your disposal to help you narrow down the list of suspects and ultimately uncover the criminal's identity. SQLite commands will guide you in identifying the wanted individual.
 
 Are you ready for the challenge?`;
 
@@ -122,91 +119,108 @@ Are you ready for the challenge?`;
 
   const getTutorialQuery = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setError(null);
+    setErrorText(null);
+    const normalizedTutorialQuery = tutorialQuery.trim().replace(/"/g, "'");
     if (
-      tutorialQuery.trim() === `SELECT * FROM Police_db` ||
-      tutorialQuery.trim() === `SELECT city FROM Police_db` ||
-      tutorialQuery.trim() === `SELECT AVG(id) AS id FROM Police_db` ||
-      tutorialQuery.trim() === `SELECT id FROM Police_db WHERE id > 50` ||
-      tutorialQuery.trim() === `SELECT crime_report FROM Police_db LIMIT 10` ||
-      tutorialQuery.trim().replace(/"/g, "'") ===
+      normalizedTutorialQuery === `SELECT * FROM Police_db` ||
+      normalizedTutorialQuery === `SELECT city FROM Police_db` ||
+      normalizedTutorialQuery === `SELECT AVG(id) AS id FROM Police_db` ||
+      normalizedTutorialQuery === `SELECT id FROM Police_db WHERE id > 50` ||
+      normalizedTutorialQuery ===
+        `SELECT crime_report FROM Police_db LIMIT 10` ||
+      normalizedTutorialQuery ===
         `SELECT city FROM Police_db WHERE city LIKE 'Lake%'`
     ) {
-      console.log("");
+      try {
+        const response = await axios.post(
+          "http://localhost:5000/api/PoliceDB",
+          {
+            tutorialQuery,
+          }
+        );
+
+        if (response.data.error) {
+          alert(`Error: ${response.data.error}`);
+          return;
+        }
+
+        setTutorialResult(response.data);
+
+        if (
+          normalizedTutorialQuery === `SELECT city FROM Police_db` &&
+          tutorial0
+        ) {
+          setPercentage(20);
+          setTutorial0(false);
+          setTutorial1(true);
+        }
+        if (
+          normalizedTutorialQuery === `SELECT AVG(id) AS id FROM Police_db` &&
+          tutorial1
+        ) {
+          setPercentage(40);
+          setTutorial1(false);
+          setTutorial2(true);
+        }
+        if (
+          normalizedTutorialQuery ===
+            `SELECT id FROM Police_db WHERE id > 50` &&
+          tutorial2
+        ) {
+          setPercentage(60);
+          setTutorial2(false);
+          setTutorial3(true);
+        }
+        if (
+          normalizedTutorialQuery ===
+            `SELECT crime_report FROM Police_db LIMIT 10` &&
+          tutorial3
+        ) {
+          setPercentage(80);
+          setTutorial3(false);
+          setTutorial4(true);
+        }
+        if (
+          normalizedTutorialQuery ===
+            `SELECT city FROM Police_db WHERE city LIKE 'Lake%'` &&
+          tutorial4
+        ) {
+          setPercentage(100);
+          setTutorial4(false);
+          setTutorial5(true);
+        }
+        setTutorialQuery("");
+      } catch (error) {
+        if (!navigator.onLine) {
+          const msg =
+            "No internet connection. Please check your network settings.";
+          setErrorText(msg);
+          alert(msg);
+          return;
+        }
+        if (axios.isAxiosError(error)) {
+          if (error.response) {
+            const serverMsg =
+              error.response.data?.error || "An error occurred on the server.";
+            console.error("Server responded with an error: ", serverMsg);
+            setErrorText(serverMsg);
+            alert(serverMsg);
+          } else if (error.request) {
+            console.error("No response received from server.");
+            setErrorText(
+              "No response received from server. Please try again later."
+            );
+            alert("No response received from server. Please try again later.");
+          } else {
+            console.error("An error occurred:", error.message);
+            setErrorText("An error occurred. Please try again later.");
+            alert("An error occurred.");
+          }
+        }
+      }
     } else {
       alert("The query does not match the expected format.");
       return;
-    }
-    try {
-      const response = await axios.post("http://localhost:5000/api/PoliceDB", {
-        tutorialQuery,
-      });
-      console.log("Server Response:", response.data.error);
-
-      if (response.data.error) {
-        console.log(
-          "Check your dev tools for more details. (ctrl + shift + i)"
-        );
-        alert(`Error: ${response.data.error}`);
-        return;
-      }
-
-      setTutorialResult(response.data);
-      console.log("Response status: ", response.status);
-
-      if (tutorialQuery.trim() === `SELECT city FROM Police_db` && tutorial0) {
-        setPercentage(20);
-        console.log("Go to tutorial 2.");
-        setTutorial0(false);
-        setTutorial1(true);
-      }
-      if (
-        tutorialQuery.trim() === `SELECT AVG(id) AS id FROM Police_db` &&
-        tutorial1
-      ) {
-        setPercentage(40);
-        console.log("Go to tutorial 3.");
-        setTutorial1(false);
-        setTutorial2(true);
-      }
-      if (
-        tutorialQuery.trim() === `SELECT id FROM Police_db WHERE id > 50` &&
-        tutorial2
-      ) {
-        setPercentage(60);
-        console.log("Go to tutorial 4.");
-        setTutorial2(false);
-        setTutorial3(true);
-      }
-      if (
-        tutorialQuery.trim() ===
-          `SELECT crime_report FROM Police_db LIMIT 10` &&
-        tutorial3
-      ) {
-        setPercentage(80);
-        console.log("Go to tutorial 5.");
-        setTutorial3(false);
-        setTutorial4(true);
-      }
-      if (
-        tutorialQuery.trim().replace(/"/g, "'") ===
-          `SELECT city FROM Police_db WHERE city LIKE 'Lake%'` &&
-        tutorial4
-      ) {
-        setPercentage(100);
-        console.log("Go to the real task.");
-        setTutorial4(false);
-        setTutorial5(true);
-      }
-      setTutorialQuery("");
-    } catch (error) {
-      if (error.response) {
-        console.error("Hiba történt:", error.response.data.error);
-        alert(`Network Error: ${error.response.data.error}`);
-      } else {
-        console.error("Unexpected error:", error);
-        alert("Unexpected error occurred.");
-      }
     }
   };
 
@@ -222,6 +236,7 @@ Are you ready for the challenge?`;
       )}
       {isVisibleTutorial && (
         <div className="tutorialDiv">
+          {errorText?.length > 0 && <p className="error">Error: {errorText}</p>}
           {firstPartStory ? (
             ""
           ) : (
@@ -264,8 +279,6 @@ Are you ready for the challenge?`;
               </button>
             </form>
           )}
-
-          {error && <p className="error">{error}</p>}
           {tutorial1 && (
             <div>
               <p>Tutorial part 1 is done.</p>
