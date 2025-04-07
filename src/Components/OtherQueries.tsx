@@ -127,7 +127,7 @@ Use the DELETE command to remove the record!`;
   const getElements = async () => {
     setErrorText(null);
     try {
-      const response = await axios.get("http://localhost:5000/api/session");
+      const response = await axios.get("https://sql-game-sd9w.onrender.com/api/session");
       setTableData(response.data);
     } catch (error) {
       if (!navigator.onLine) {
@@ -176,7 +176,7 @@ Use the DELETE command to remove the record!`;
     ) {
       const formattedQuery = otherQuery.trim().replace(/"/g, "'");
       try {
-        const response = await axios.post("http://localhost:5000/api/session", {
+        const response = await axios.post("https://sql-game-sd9w.onrender.com/api/session", {
           formattedQuery,
         });
         setTableData([...tableData, response.data.newRecord]);
@@ -245,7 +245,7 @@ Use the DELETE command to remove the record!`;
     }
 
     try {
-      const response = await axios.put("http://localhost:5000/api/session", {
+      const response = await axios.put("https://sql-game-sd9w.onrender.com/api/session", {
         formattedQuery,
       });
       getElements();
@@ -316,7 +316,7 @@ Use the DELETE command to remove the record!`;
 
       try {
         const response = await axios.delete(
-          "http://localhost:5000/api/session",
+          "https://sql-game-sd9w.onrender.com/api/session",
           {
             data: { formattedQuery: query },
           }

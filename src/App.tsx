@@ -19,7 +19,7 @@ function App() {
   useEffect(() => {
     const wakeServer = async () => {
       try {
-        await axios.get("http://localhost:5000/api/warmup", {
+        await axios.get("https://sql-game-sd9w.onrender.com/api/warmup", {
           timeout: 70000,
         });
         console.info("Server is available.");

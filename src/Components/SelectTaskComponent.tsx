@@ -95,7 +95,7 @@ Case closed.`;
 
   const clearSession = async () => {
     try {
-      const response = await axios.delete("http://localhost:5000/api/session", {
+      const response = await axios.delete("https://sql-game-sd9w.onrender.com/api/session", {
         data: { formattedQuery: "del" },
         headers: {
           "Content-Type": "application/json",
@@ -167,10 +167,10 @@ Case closed.`;
     "Third Query \n The third witness stated that the man was poorly dressed, which suggests that he had a lower-than-average income. \n Determine the average income of the people in the Persons table! The result should only include the average income, and the column name should be annual_income.";
 
   const task4Text: string =
-    "Fourth Query \n The fourth witness did not see the car's brand, only its model: Taurus. The vehicle was parked not far from the scene, where the elderly man hurriedly got in. The witness also noticed that he was wearing a green wristband, which is given to visitors who purchase a vip ticket at the zoo. \n Find out who owns a Taurus model car and has purchased a vip ticket at the zoo!  \n Since the columns in the two tables are different, it's enough to refer to the columns in the WHERE clause without prefixing them with the table name (e.g., use age instead of Persons.age). \n In this case, you'll need to use the % operator before the text, because the car type contains both the brand and the model — with the model being the second part. \n As a hint, here is a partial query that you need to complete: \n SELECT car_type FROM Persons JOIN Zoo ON Persons.id = Zoo.person_id WHERE";
+    "Fourth Query \n The fourth witness did not see the car's brand, only its model: Taurus. The vehicle was parked not far from the scene, where the elderly man hurriedly got in. The witness also noticed that he was wearing a green wristband, which is given to visitors who purchase a vip ticket at the zoo. \n Find out who owns a Taurus model car and has purchased a vip ticket at the zoo!  \n Since the columns in the two tables are different, it's enough to refer to the columns in the WHERE clause without prefixing them with the table name (e.g., use age instead of Persons.age). \n In this case, you'll need to use the % operator before the text, because the car type contains both the brand and the model — with the model being the second part. \n The car type is searched first, and the ticket type comes second in the WHERE clause. \n As a hint, here is a partial query that you need to complete: \n SELECT car_type FROM Persons JOIN Zoo ON Persons.id = Zoo.person_id WHERE ";
 
   const task5Text: string =
-    "Fifth Query \n Now you need to combine the collected data and query conditions. \n Find the individuals who meet the following criteria: male, older than 49, have an income lower than 490281, drive a Taurus model car, and have purchased a vip ticket at the zoo. \n Since the columns in the two tables are different, it's enough to refer to the columns in the WHERE clause without prefixing them with the table name (e.g., use age instead of Persons.age). \n Continue the following query \n SELECT * FROM Persons JOIN Zoo ON Persons.id = Zoo.person_id WHERE";
+    "Fifth Query \n Now you need to combine the collected data and query conditions. \n Find the individuals who meet the following criteria (Write in this order after the where clause): male, older than 49, have an income lower than 490281, drive a Taurus model car, and have purchased a vip ticket at the zoo. \n Since the columns in the two tables are different, it's enough to refer to the columns in the WHERE clause without prefixing them with the table name (e.g., use age instead of Persons.age). \n Continue the following query \n SELECT * FROM Persons JOIN Zoo ON Persons.id = Zoo.person_id WHERE";
 
   const getMyQuery = async (e: React.FormEvent<HTMLFormElement>) => {
     setIsDisabled(true);
@@ -188,7 +188,7 @@ Case closed.`;
         `SELECT * FROM Persons JOIN Zoo ON Persons.id = Zoo.person_id WHERE gender = 'male' AND age > 49 AND annual_income < 490281 AND car_type LIKE '%Taurus' AND ticket_type = 'vip'`
     ) {
       try {
-        const response = await axios.post("http://localhost:5000/api/Persons", {
+        const response = await axios.post("https://sql-game-sd9w.onrender.com/api/Persons", {
           query,
         });
         if (
