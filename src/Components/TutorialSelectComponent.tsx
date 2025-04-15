@@ -293,7 +293,7 @@ Are you ready for the challenge?`;
           )}
           {tutorial1 && (
             <div>
-              <p>Tutorial part 1 is done.</p>
+              <p>Tutorial part 1 done.</p>
               <form className="tutorial-form" onSubmit={getTutorialQuery}>
                 <label
                   className="tutorial-form_label"
@@ -333,7 +333,7 @@ Are you ready for the challenge?`;
           )}
           {tutorial2 && (
             <div>
-              <p>Tutorial part 2 is done.</p>
+              <p>Tutorial part 2 done.</p>
               <form className="tutorial-form" onSubmit={getTutorialQuery}>
                 <label
                   className="tutorial-form_label"
@@ -373,7 +373,7 @@ Are you ready for the challenge?`;
           )}
           {tutorial3 && (
             <div>
-              <p>Tutorial part 3 is done.</p>
+              <p>Tutorial part 3 done.</p>
               <form className="tutorial-form" onSubmit={getTutorialQuery}>
                 <label
                   className="tutorial-form_label"
@@ -413,7 +413,7 @@ Are you ready for the challenge?`;
           )}
           {tutorial4 && (
             <div>
-              <p>Tutorial part 4 is done.</p>
+              <p>Tutorial part 4 done.</p>
               <form className="tutorial-form" onSubmit={getTutorialQuery}>
                 <label
                   className="tutorial-form_label"
@@ -453,7 +453,7 @@ Are you ready for the challenge?`;
           )}
           {tutorial5 && (
             <div>
-              <p>Tutorial part 5 is done.</p>
+              <p>Tutorial part 5 done.</p>
               <p className="text-style">{successTutorialText}</p>
               <button
                 className="tutorial-form_button"
